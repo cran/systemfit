@@ -1,14 +1,16 @@
-correlation              Correlation between Predictions from Equation i
-                         and j
-correlation.resids	 Correlation matrix of the residuals
-hausman                  Hausman's Test
-kmenta                   Partly Artificial Data on the U. S. Economy
-ols                      Ordinary Least Squares Estimation
-se.ratio                 Ratio of the Standard Errors
-summary                  Summary
-summary.system           Summary
-sur                      Seemingly Unrelated Regressions Estimation
-threestage               Three-Stage Least Squares Estimation
-threestage.cov           Variance-Covariance Matrix
-twostage                 Two-Stage Least Squares Estimation
-varcov                   Variance-Covariance
+correlation.systemfit   Correlation between Predictions from Equation i
+                        and j
+hausman.systemfit       Hausman's Test
+kmenta                  Partly Artificial Data on the U. S. Economy
+lrtest.systemfit        Likelihood Ratio test for Equation Systems
+prediction.systemfit    Predictions from Equation System Estimation
+print.systemfit.equation
+                        print.systemfit.equation
+print.systemfit.system
+                        print.systemfit.system
+se.ratio.systemfit      Ratio of the Standard Errors
+summary.systemfit.equation
+                        summary.systemfit.equation
+summary.systemfit.system
+                        summary.systemfit.system
+systemfit               Equation System Estimation

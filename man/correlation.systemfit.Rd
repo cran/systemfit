@@ -1,10 +1,5 @@
-
-% 	$Id: correlation.Rd,v 1.4 2002/12/18 06:40:07 hamannj Exp $	
-
-\name{correlation}
-\alias{correlation}
+\name{correlation.systemfit}
 \alias{correlation.systemfit}
-
 
 \title{Correlation between Predictions from Equation i and j}
 
@@ -55,11 +50,11 @@ correlation.systemfit( results, eqni, eqnj )
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
+\seealso{\code{\link{systemfit}}}
 
 
 \examples{
-library( systemfit )
+\dontrun{library( systemfit )}
 
 data( kmenta )
 attach( kmenta )
@@ -70,32 +65,23 @@ labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
 ## perform 2SLS on each of the equations in the system
-fit2sls <- twostage.systemfit( system, inst, labels, kmenta )
+fit2sls <- systemfit( "2SLS", system, labels, inst)
 print( fit2sls )
-print( varcov.systemfit( fit2sls ) )
+print( fit2sls$rcov )
 
-## perform the 3SLS 
-fit3sls <- threestage.systemfit( system, inst, labels, kmenta )
+## perform the 3SLS
+fit3sls <- systemfit( "3SLS", system, labels, inst )
 print( fit3sls )
 print( "covariance of residuals used for estimation (from 2sls)" )
-print( varcov.systemfit( fit2sls ) )
+print( fit3sls$rcovest )
 print( "covariance of residuals" )
-print( varcov.systemfit( fit3sls ) )
+print( fit3sls$rcov )
 
 ## examine the correlation between the predicted values
 ## of suppy and demand by plotting the correlation over
 ## the value of q
 r12 <- correlation.systemfit( fit3sls, 1, 2 )
-plot( q, r12, main="correlation between predictions from supply and demand" )  
-
-## examine the improvement of 3SLS over OLS by computing
-## the ratio of the standard errors of the estimates
-improve.ratio <- se.ratio.systemfit( fit2sls, fit3sls, 2 )
-print( "summary values for the ratio in the std. err. for the predictions" )
-print( summary( improve.ratio ) )
-
+plot( q, r12, main="correlation between predictions from supply and demand" )
 }
+
 \keyword{models}
-
-
-

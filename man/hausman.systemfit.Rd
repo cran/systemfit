@@ -1,8 +1,4 @@
-
-% 	$Id: hausman.Rd,v 1.4 2002/12/18 06:40:07 hamannj Exp $	
-
-\name{hausman}
-\alias{hausman}
+\name{hausman.systemfit}
 \alias{hausman.systemfit}
 
 \title{Hausman's Test}
@@ -49,11 +45,10 @@ hausman.systemfit( li.results, fi.results )
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
-
+\seealso{\code{\link{systemfit}}}
 
 \examples{
-library( systemfit )
+\dontrun{library( systemfit )}
 
 data( kmenta )
 attach( kmenta )
@@ -64,12 +59,12 @@ labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
 ## perform the estimation and report the results for the whoel system
-fit2sls <- twostage.systemfit( system, inst, labels, kmenta )
-fit3sls <- threestage.systemfit( system, inst, labels, kmenta )
+fit2sls <- systemfit( "2SLS", system, labels, inst)
+fit3sls <- systemfit( "3SLS", system, labels, inst)
 
 ## perform the hausman test on the first equation
 h <- hausman.systemfit( fit2sls, fit3sls )
-pval <- pchisq( h, dim( fit3sls[[1]]$systemcovb )[1] )
+pval <- pchisq( h, dim( fit3sls$bcov )[1] )
 
 print( h )
 print( pval )

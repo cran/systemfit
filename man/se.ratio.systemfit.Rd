@@ -1,8 +1,4 @@
-
-% 	$Id: se.ratio.Rd,v 1.3 2002/12/18 06:40:08 hamannj Exp $	
-
-\name{se.ratio}
-\alias{se.ratio}
+\name{se.ratio.systemfit}
 \alias{se.ratio.systemfit}
 
 \title{Ratio of the Standard Errors}
@@ -17,9 +13,9 @@ se.ratio.systemfit( resultsi, resultsj, eqni )
 }
 
 \arguments{
-  \item{resultsi}{an object of type systemfit.system (\code{ols}, \code{twostage} or \code{threestage}.}
-  \item{resultsj}{an object of type systemfit.system (\code{ols}, \code{twostage} or \code{threestage}.}
-  \item{eqni}{index for equation to obtain the ratio of standard errors}
+  \item{resultsi}{an object of type systemfit.system.}
+  \item{resultsj}{an object of type systemfit.system.}
+  \item{eqni}{index for equation to obtain the ratio of standard errors.}
 }
 
 \value{
@@ -39,11 +35,11 @@ se.ratio.systemfit( resultsi, resultsj, eqni )
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
+\seealso{\code{\link{systemfit}} and \code{\link{correlation.systemfit}}}
 
 
 \examples{
-library( systemfit )
+\dontrun{library( systemfit )}
 
 data( kmenta )
 attach( kmenta )
@@ -54,24 +50,18 @@ labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
 ## perform 2SLS on each of the equations in the system
-fit2sls <- twostage.systemfit( system, inst, labels, kmenta )
-fit3sls <- threestage.systemfit( system, inst, labels, kmenta )
+fit2sls <- systemfit( "2SLS", system, labels, inst )
+fit3sls <- systemfit( "3SLS", system, labels, inst )
 
 ## print the results from the fits
 print( fit2sls )
 print( fit3sls )
 print( "covariance of residuals used for estimation (from 2sls)" )
-print( varcov.systemfit( fit2sls ) )
+print( fit3sls$rcovest )
 print( "covariance of residuals" )
-print( varcov.systemfit( fit3sls ) )
+print( fit3sls$rcov )
 
-## examine the correlation between the predicted values
-## of suppy and demand by plotting the correlation over
-## the value of q
-r12 <- correlation.systemfit( fit3sls, 1, 2 )
-plot( q, r12, main="correlation between predictions from supply and demand" )  
-
-## examine the improvement of 3SLS over OLS by computing
+## examine the improvement of 3SLS over 2SLS by computing
 ## the ratio of the standard errors of the estimates
 improve.ratio <- se.ratio.systemfit( fit2sls, fit3sls, 2 )
 print( "summary values for the ratio in the std. err. for the predictions" )

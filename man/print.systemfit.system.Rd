@@ -1,21 +1,18 @@
-
-% 	$Id: print.systemfit.system.Rd,v 1.3 2002/12/18 06:40:07 hamannj Exp $	
-
 \name{print.systemfit.system}
 \alias{print.systemfit.system}
 \title{print.systemfit.system}
 
 \description{
-  This function prints a summary of the system of equations.
+  This function prints a summary of the estimated equation system.
 }
 
 \usage{
-print.systemfit.system(x,digits=6,...)
+print.systemfit.system(x, digits=6,...)
 }
 
 \arguments{
-  \item{x}{an object of type \code{threestage.systemfit}.}
-  \item{digits}{the number of digits to print.}
+  \item{x}{an object of type \code{systemfit.system}.}
+  \item{digits}{number of digits to print.}
   \item{...}{not used by user.}
 }
 
@@ -25,26 +22,26 @@ print.systemfit.system(x,digits=6,...)
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
-
+\seealso{\code{\link{systemfit}}, \code{\link{print.systemfit.equation}}
+  and \code{\link{summary.systemfit.system}}}
 
 
 \examples{
-library( systemfit )
+\dontrun{library( systemfit )}
 
 data( kmenta )
 attach( kmenta )
 demand <- q ~ p + d
 supply <- q ~ p + f + a
-inst <- ~ d + f + a
 labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
-## perform 2SLS on each of the equations in the system
-fit3sls <- ols.systemfit( system, inst, labels, kmenta )
+## perform OLS on each of the equations in the system
+fitols <- systemfit( "OLS", system, labels )
 
 ## print the results
-print( fit3sls )
+print( fitols )
+
 
 }
 \keyword{models}
