@@ -1,9 +1,7 @@
 ### two stage least squares....
 # 
 
-## #	$Id: systemfit.R,v 1.5 2002/06/06 03:26:31 hamannj Exp $	
-
-
+#	$Id: systemfit.R,v 1.1 2002/09/18 08:32:44 hamannj Exp $	
 
 
 # performs two-stage least squares on the system of equations 
@@ -280,9 +278,228 @@ print.systemfit.twostage <- function( x,digits=6,... )
 }
 
 
+# add the SUR firs here...
+sur.systemfit <- function(	
+                          eqns, 
+                          instruments,
+                          eqnlabels,
+                          data )	
+{
+
+	results <- list()
+	resulti <- list()
+	u2	<-  matrix( 0, dim(data)[1], length( eqns ) )
+
+	# perform the two-stage fits
+	osls <- ols.systemfit(	
+                              eqns, 
+                              instruments,
+                              eqnlabels,
+                              data )	
+        
+
+	# these are the ones that wil be used to build the big matrix
+	t3 <- NULL
+	bigb <- NULL
+	bigy <- NULL
+	bigt <- NULL
+	bigse <- NULL
+	bigp <- NULL
+
+	for(i in 1:length( eqns ) ) 
+	{
+		# build the final large matrix...
+		tr <- NULL
+	
+		# get the dimensions of the current matrix
+		for(j in 1:length( eqns ) ) 
+		{
+			if( i == j )
+			{
+				##tr <- cbind( tr, tsls[[i]]$tslsres )
+				##tr <- cbind( tr, osls[[i]]$residuals )
+				tr <- cbind( tr, osls[[i]]$model.matrix )
+			}		
+			else
+			{
+				# bind the zero matrix to the row
+				di <- dim( model.matrix( eqns[[j]] ) )[1]
+				dj <- dim( model.matrix( eqns[[j]] ) )[2]
+				tr <- cbind( tr, matrix( 0, di, dj ) )
+			}
+		}
+
+		t3 <- rbind( t3, tr )
+
+		# now add the rows to the bigX matrix
+		# or should this be the new fitted y values
+		# from the two stage least squares fits...
+		y      <- eval( attr( terms( eqns[[i]] ), "variables" )[[2]] )
+		bigy <- rbind( bigy, matrix( y ) )
+	} 
+
+	## get the variance-covariance matrix from the two stage results
+	varcov <- varcov.systemfit( osls )	
+
+	parta <- kronecker( solve( varcov ), 
+			    diag( dim( model.matrix( eqns[[1]] ) )[1] ) )
+	part1 <- solve( t(t3) %*% parta %*% t3 ) # covariance matrix
+	part2 <- t(t3) %*% parta %*% bigy
+	bigb <- part1 %*% part2
+
+	# compute the se, t, and p values...
+	bigse <- matrix( sqrt( diag( part1 ) ) )
+	bigt <- bigb/bigse
+
+	# extract the results
+	idx <- matrix( 0, length( eqns ), 2 )
+	for(i in 1:length( eqns ) ) 
+	{
 
 
-# performs two-stage least squares on the system of equations 
+		## get the index for stripping out the estimates
+		if( i == 1 )
+		{
+			idx[i,1] <- 1
+			idx[i,2] <- dim( model.matrix( eqns[[i]] ) )[2]
+		}      
+		else
+		{
+			idx[i,1] <- idx[i-1,2]+1
+			idx[i,2] <- idx[i,1] + 
+				    dim( model.matrix(eqns[[i]]))[2]-1	
+		}
+
+		start1	<- idx[i,1]
+		start2	<- idx[i,2]		
+
+		# tree stage least squares results...
+		x	  <- model.matrix( eqns[[i]] )
+		y	  <- eval( attr( terms( eqns[[i]] ), "variables" )[[2]] )
+		b	  <- matrix( bigb[start1:start2] )
+		resids	  <- y - x %*% b
+		n	  <- length( y )
+		p	  <- ncol( x )
+		s	  <- sum(resids^2)/(n - p)
+		dfe	  <- n - p
+		se	  <- matrix( bigse[start1:start2] )
+		t	  <- matrix( bigt[start1:start2] )
+		prob	  <- 2.0*(1.0 - pt(abs(t), dfe))
+		mse	  <- ( s * dfe / dfe )
+		rmse	  <- sqrt( mse ) 
+		r2	  <- 1.0 - ((t(resids)%*%resids)/(t(y)%*%y-n*mean(y)^2))
+		adjr2	  <- 1.0 - ((n-1)/(n-p))*(1.0-r2)
+
+		# get the parameter var-cov matrix fo the eq
+		icol	  <- ncol( model.matrix( eqns[[i]] ) )
+		jcol	  <- ncol( model.matrix( eqns[[i]] ) )
+		startrow  <- idx[i,1]
+		endrow	  <- idx[i,2]
+		startcol  <- idx[i,1]
+		endcol	  <- idx[i,2]
+		covb	  <- matrix( part1[startrow:endrow,startcol:endcol], icol, jcol )
+
+		# build the "return" structure for the 3sls part
+		resulti$method	     <- "sur"
+		resulti$eqnlabel     <- eqnlabels[[i]]			
+		resulti$formula	     <- eqns[[i]]
+		resulti$dfe	     <- dfe
+		resulti$dfm	     <- n - dfe
+		resulti$model.matrix <- model.matrix(eqns[[i]] )
+		resulti$model.frame  <- model.frame(eqns[[i]] )
+		resulti$instruments  <- inst
+		resulti$response     <- osls[[i]]$reponse
+		resulti$predicted    <- x %*% b
+		resulti$residuals    <- resids 
+		##resulti$ztzinv	     <- tsls[[i]]$ztzinv
+		resulti$v	     <- osls[[i]]$v
+		resulti$b	     <- b
+		names(resulti$b)     <- colnames( model.matrix( eqns[[i]] ) )
+		resulti$n	     <- n
+		resulti$s	     <- s
+		resulti$sse	     <- s * dfe
+		resulti$mse	     <- mse 
+		resulti$rmse	     <- rmse 
+		resulti$se	     <- se
+		resulti$t	     <- t
+		resulti$p	     <- prob
+		resulti$r2	     <- r2
+		resulti$adjr2	     <- adjr2
+		resulti$systemcovb   <- part1	# sneak in the whole covariance matrix 
+		resulti$covb	     <- covb	# this is the var-cov matrix for the eq  
+		class(resulti)	     <- "systemfit.sur"
+		results[[i]]	     <- resulti
+
+	}
+
+	class(results)	<- "systemfit.system"
+	sur <- results
+}
+
+
+summary.systemfit.sur <- function(object,...)
+{
+  summary.systemfit.sur <- object
+  summary.systemfit.sur
+}
+
+## now print the object that comes from the fits...
+print.systemfit.sur <- function( x,digits=6,... )
+{
+
+  object <- x
+
+  save.digits <- unlist(options(digits=digits))
+  on.exit(options(digits=save.digits))
+
+    cat("\n")
+    cat( paste( attr( object, "class" ), "estimates for", object$eqnlabel, "\n" ) )
+    
+    cat("Model Formula: ")
+    print(object$formula)
+    cat("Instruments: ")
+    print(object$instruments)
+    cat("\n")
+    
+    Signif <- symnum(object$p, corr = FALSE, na = FALSE,
+                     cutpoints = c(0,  .001,.01,.05, .1, 1),
+                     symbols   =  c("***","**","*","."," "))
+    
+    table <- cbind(round( object$b, digits ), 
+                   round( object$se, digits ), 
+                   round( object$t, digits ), 
+                   round( object$p, digits ),
+                   Signif)
+    
+    rownames(table) <- names(object$b)
+    colnames(table) <- c("Estimate","Std. Error","t value","Pr(>|t|)","")
+    
+    print.matrix(table, quote = FALSE, right = TRUE )
+    cat("---\nSignif. codes: ",attr(Signif,"legend"),"\n")
+    
+    cat(paste("\nResidual standard error:", round(object$s, digits),
+              "on", object$dfe, "degrees of freedom\n"))
+    
+    cat( paste( "DF-Error:", round(object$dfe, digits),
+               "DF-Model:", round(object$dfm, digits),
+               "\n" ) )
+    
+    cat( paste( "SSE:", round(object$sse, digits),
+               "MSE:", round(object$s, digits),
+               "Root MSE:", round( sqrt(object$s), digits), "\n" ) )
+    
+    cat( paste( "Multiple R-Squared:", round(object$r2, digits), 
+               "Adjusted R-Squared:", round(object$adjr2, digits),
+               "\n" ) )
+    cat("\n")
+  
+}
+
+
+
+
+
+# performs three-stage least squares on the system of equations 
 threestage.systemfit <- function(	
 					eqns, 
 					instruments,

@@ -29,7 +29,7 @@ se.ratio.systemfit( resultsi, resultsj, eqni )
 \references{    
 
   Hasenauer, H; Monserud, R and T. Gregoire. (1998)
-  Using Simultansous Regression Techniques with Individual-Tree Growth Models.
+  Using Simultaneous Regression Techniques with Individual-Tree Growth Models.
   \emph{Forest Science}. 44(1):87-95
 
 }

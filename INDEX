@@ -6,6 +6,7 @@ ols                      Ordinary Least Squares Estimation
 se.ratio                 Ratio of the Standard Errors
 summary                  Summary
 summary.system           Summary
+sur                      Seemingly Unrelated Regressions Estimation
 threestage               Three-Stage Least Squares Estimation
 threestage.cov           Variance-Covariance Matrix
 twostage                 Two-Stage Least Squares Estimation
