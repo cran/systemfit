@@ -1,3 +1,6 @@
+
+% 	$Id: lrtest.systemfit.Rd,v 1.2 2003/08/12 20:27:48 hamannj Exp $	
+
 \name{lrtest.systemfit}
 \alias{lrtest.systemfit}
 

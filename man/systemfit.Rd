@@ -1,3 +1,7 @@
+
+% 	$Id: systemfit.Rd,v 1.5 2003/11/18 08:48:42 henningsena Exp $	
+
+
 \name{systemfit}
 \alias{systemfit}
 
@@ -18,12 +22,12 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
            rcovformula=1, formula3sls="GLS",
            probdfsys=!(is.null(R.restr) & is.null(TX)),
            single.eq.sigma=(is.null(R.restr) & is.null(TX)),
-           solvetol=1e-7 )
+           solvetol=.Machine$double.eps )
 }
 
 \arguments{
   \item{method}{the estimation method, one of "OLS", "WLS", "SUR",
-    "2SLS" , "W2SLS" or "3SLS".}
+    "2SLS", "W2SLS" or "3SLS".}
   \item{eqns}{a list of structural equations to be estimated; a regression
     constant is implied if not explicitly omitted.}
   \item{eqnlabels}{an optional list of character vectors of names
@@ -211,9 +215,9 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
   \emph{Principles of Econometrics}, Wiley, New York.
 }
 
-\author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}
-
-  Arne Henningsen (\url{http://www.arne-henningsen.de})
+%\author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}
+\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}
+  Arne Henningsen (\url{http://www.arne-henningsen.de}) }
 }
 
 \seealso{\code{\link{lm}}}

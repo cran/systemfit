@@ -1,8 +1,6 @@
 ### this is the systemfit project....
-### hopefully, We'll be able to add more econometrics features...
-### you need to figure out how to translate the single equation
-### into a lm object!
 
+#	$Id: systemfit.R,v 1.18 2003/11/10 20:19:04 hamannj Exp $	
 
 systemfit <- function( method,
                         eqns,
@@ -18,9 +16,18 @@ systemfit <- function( method,
                         formula3sls="GLS",
                         probdfsys=!(is.null(R.restr) & is.null(TX)),
                         single.eq.sigma=(is.null(R.restr) & is.null(TX)),
-                        solvetol=1e-7)
+                        solvetol=.Machine$double.eps)
 {
   attach(data)
+
+   ## some tests
+   if(!(method=="OLS" | method=="WLS" | method=="SUR" | method=="2SLS" | method=="W2SLS" |
+      method=="3SLS")){
+      stop("The method must be 'OLS', 'WLS', 'SUR', '2SLS', 'W2SLS' or '3SLS'")}
+   if((method=="2SLS" | method=="W2SLS" | method=="3SLS") & is.null(inst)) {
+      stop("The methods '2SLS', 'W2SLS' and '3SLS' need instruments!")}
+
+
   results <- list()               # results to be returned
   results$eq <- list()            # results for the individual equations
   resulti <- list()               # results of the ith equation
@@ -86,7 +93,7 @@ systemfit <- function( method,
   ## only for OLS, WLS and SUR estimation
   if(method=="OLS" | method=="WLS" | method=="SUR") {
     if(is.null(R.restr)) {
-      b <- solve( t( X ) %*% X, t( X ) %*% Y, tol=solvetol )         # estimated coefficients
+      b <- solve( crossprod( X ), crossprod( X, Y ), tol=solvetol )  # estimated coefficients
     } else {
       W <- rbind( cbind( t(X) %*% X, t(R.restr) ),
                   cbind( R.restr, matrix( 0, nrow(R.restr), nrow(R.restr) )))
@@ -104,16 +111,16 @@ systemfit <- function( method,
       for(i in 1:G) rcov[i,i] <- sum(residi[[i]]*residi[[i]])/df[i]
       Oinv   <- solve( rcov, tol=solvetol ) %x% diag(1,n[1],n[1])              # Omega inverse
       if(is.null(R.restr)) {
-        bcov   <- solve( t(X) %*% Oinv %*% X, tol=solvetol )          # coefficient covariance matrix
+        bcov   <- solve( t(X) %*% Oinv %*% X, tol=solvetol )    # coefficient covariance matrix
       } else {
         W <- rbind( cbind( t(X) %*% Oinv %*% X, t(R.restr) ),
                     cbind( R.restr, matrix( 0, nrow(R.restr), nrow(R.restr) )))
         bcov <- solve( W, tol=solvetol )[1:ncol(X),1:ncol(X)]
       }
     } else {
-      s2     <- sum(resids^2)/(N-Ki)                             # sigma squared
+      s2     <- sum(resids^2)/(N-Ki)                            # sigma squared
       if(is.null(R.restr)) {
-        bcov   <- s2 * solve( t(X) %*% X, tol=solvetol )          # coefficient covariance matrix
+        bcov   <- s2 * solve( crossprod( X ), tol=solvetol )    # coefficient covariance matrix
       } else {
         bcov   <- s2 * solve( W, tol=solvetol )[1:ncol(X),1:ncol(X)]  # coefficient covariance matrix
       }
@@ -138,7 +145,7 @@ systemfit <- function( method,
           rcov[i,i] <- sum(residi[[i]]*residi[[i]])/df[i]
         }
       }
-      Oinv <- solve( rcov, tol=solvetol ) %x% diag(1,n[1],n[1])  # Omega inverse (= weighting matrix)
+      Oinv <- solve( rcov, tol=solvetol ) %x% diag(1,n[1],n[1]) # Omega inverse (= weight. matrix)
       if(is.null(R.restr)) {
         b  <- solve(t(X) %*% Oinv %*% X, tol=solvetol) %*% t(X) %*% Oinv %*%Y   # coefficients
       } else {
@@ -148,10 +155,10 @@ systemfit <- function( method,
         Winv <- solve( W, tol=solvetol )
         b <- ( Winv %*% V )[1:ncol(X)]     # restricted coefficients
       }
-      bdif <- b-bl                         # difference of coefficients between this and previous step
+      bdif <- b-bl                 # difference of coefficients between this and previous step
     }
     if(is.null(R.restr)) {
-      bcov <- solve(t(X) %*% Oinv %*% X, tol=solvetol )   # final step coefficient covariance matrix
+      bcov <- solve(t(X) %*% Oinv %*% X, tol=solvetol ) # final step coefficient covariance matrix
     } else {
       bcov   <- Winv[1:ncol(X),1:ncol(X)]     # coefficient covariance matrix
     }
@@ -178,8 +185,11 @@ systemfit <- function( method,
           } else {
             rcov[i,j] <- sum(residi[[i]]*residi[[j]])/(
                             n[i]-ki[i]-ki[j] + sum( diag(
-                            solve( t(x[[i]]) %*% x[[i]] ) %*% t(x[[i]]) %*% x[[j]]
-                            %*% solve( t(x[[j]]) %*% x[[j]] ) %*% t(x[[j]]) %*% x[[i]])))
+                            solve( crossprod( x[[i]] ), tol=solvetol ) %*%
+                            crossprod( x[[i]], x[[j]]) %*%
+                            solve( crossprod( x[[j]] ), tol=solvetol ) %*%
+                            crossprod( x[[j]], x[[i]] ))))
+
           }
         }
       }
@@ -216,19 +226,19 @@ systemfit <- function( method,
     for(i in 1:G) {
       Xi <- X[(1+sum(n[1:i])-n[i]):(sum(n[1:i])),]  # regressors of the ith equation (including zeros)
       h[[i]] <- model.matrix( instl[[i]] )
-      Xf <- rbind(Xf, h[[i]] %*% solve( t(h[[i]]) %*% h[[i]], tol=solvetol )
-              %*% t(h[[i]]) %*% Xi)                                # 'fitted' X-values
+      Xf <- rbind(Xf, h[[i]] %*% solve( crossprod( h[[i]]) , tol=solvetol )
+              %*% crossprod( h[[i]], Xi ))                                # 'fitted' X-values
       H  <-  rbind( cbind( H, matrix( 0, nrow( H ), ncol( h[[i]] ))),
                          cbind( matrix( 0, nrow( h[[i]] ), ncol( H )), h[[i]]))
 
     }
     if(is.null(R.restr)) {
-      b <- solve( t(Xf) %*% Xf,t(Xf) %*% Y, tol=solvetol )  # 2nd stage coefficients
+      b <- solve( crossprod( Xf ), crossprod( Xf, Y ), tol=solvetol )  # 2nd stage coefficients
     } else {
-      W <- rbind( cbind( t(Xf) %*% Xf, t(R.restr) ),
+      W <- rbind( cbind( crossprod(Xf), t(R.restr) ),
                   cbind( R.restr, matrix(0, nrow(R.restr), nrow(R.restr))))
       V <- rbind( t(Xf) %*% Y , q.restr )
-      b <- ( solve( W ) %*% V )[1:ncol(X)]     # restricted coefficients
+      b <- ( solve( W, tol=solvetol ) %*% V )[1:ncol(X)]     # restricted coefficients
     }
     b2 <- b
   }
@@ -251,9 +261,9 @@ systemfit <- function( method,
     } else {
       s2     <- sum(resids^2)/(N-Ki)                             # sigma squared
       if(is.null(R.restr)) {
-        bcov   <- s2 * solve( t(Xf) %*% Xf, tol=solvetol )          # coefficient covariance matrix
+        bcov   <- s2 * solve( crossprod( Xf ), tol=solvetol )     # coefficient covariance matrix
       } else {
-        bcov   <- s2 * solve( W, tol=solvetol )[1:ncol(X),1:ncol(X)]  # coefficient covariance matrix
+        bcov   <- s2 * solve( W, tol=solvetol )[1:ncol(X),1:ncol(X)]  # coeff. covariance matrix
       }
     }
   }
@@ -276,7 +286,7 @@ systemfit <- function( method,
           rcov[i,i] <- sum(residi[[i]]*residi[[i]])/df[i]
         }
       }
-      Oinv <- solve( rcov, tol=solvetol ) %x% diag(1,n[1],n[1])  # Omega inverse (= weighting matrix)
+      Oinv <- solve( rcov, tol=solvetol ) %x% diag(1,n[1],n[1]) # Omega inverse(= weight. matrix)
       if(is.null(R.restr)) {
         b <- solve(t(Xf) %*% Oinv %*% Xf, tol=solvetol) %*% t(Xf) %*% Oinv %*% Y  # (unrestr.) coeffic.
       } else {
@@ -316,8 +326,10 @@ systemfit <- function( method,
           } else {
             rcov[i,j] <- sum(residi[[i]]*residi[[j]])/(
                           n[i]-ki[i]-ki[j] + sum( diag(
-                          solve( t(x[[i]]) %*% x[[i]] ) %*% t(x[[i]]) %*% x[[j]]
-                          %*% solve( t(x[[j]]) %*% x[[j]] ) %*% t(x[[j]]) %*% x[[i]])))
+                          solve( crossprod( x[[i]] ), tol=solvetol ) %*%
+                          crossprod( x[[i]], x[[j]]) %*%
+                          solve( crossprod( x[[j]] ), tol=solvetol ) %*%
+                          crossprod( x[[j]], x[[i]]))))
           }
         }
       }
@@ -361,12 +373,14 @@ systemfit <- function( method,
       }
       if(formula3sls=="Schmidt") {
         if(is.null(R.restr)) {
-          b <- solve(t(Xf) %*% Oinv %*% Xf, tol=solvetol) %*% ( t(Xf) %*% Oinv
-                      %*% H %*% solve( t(H) %*% H ) %*% t(H) %*% Y )   # (unrestr.) coeffic.
+          b <- solve( t(Xf) %*% Oinv %*% Xf, tol=solvetol) %*% ( t(Xf) %*% Oinv
+                      %*% H %*% solve( crossprod( H ), tol=solvetol ) %*% crossprod(H, Y) )
+                           # (unrestr.) coeffic.
         } else {
           W <- rbind( cbind( t(Xf) %*% Oinv %*% XF, t(R.restr) ),
                       cbind( R.restr, matrix(0, nrow(R.restr), nrow(R.restr))))
-          V <- rbind( t(Xf) %*% Oinv %*% H %*% solve( t(H) %*% H ) %*% t(H) %*% Y , q.restr )
+          V <- rbind( t(Xf) %*% Oinv %*% H %*% solve( crossprod( H ), tol=solvetol ) %*%
+                      crossprod( H, Y ), q.restr )
           Winv <- solve( W, tol=solvetol )
           b <- ( Winv %*% V )[1:ncol(X)]     # restricted coefficients
         }
@@ -489,10 +503,10 @@ systemfit <- function( method,
     resulti$k            <- k[i]            # number of coefficients/regressors
     resulti$ki           <- ki[i]           # number of linear independent coefficients
     resulti$df           <- df[i]           # degrees of freedom of residuals
-    resulti$b            <- bi              # estimated coefficients
-    resulti$se           <- sei             # standard errors of estimated coefficients
-    resulti$t            <- ti              # t-values of estimated coefficients
-    resulti$p            <- probi           # p-values of estimated coefficients
+    resulti$b            <- c(bi)           # estimated coefficients
+    resulti$se           <- c(sei)          # standard errors of estimated coefficients
+    resulti$t            <- c(ti)           # t-values of estimated coefficients
+    resulti$p            <- c(probi)        # p-values of estimated coefficients
     resulti$bcov         <- bcovi           # covariance matrix of estimated coefficients
     resulti$y            <- y[[i]]          # vector of endogenous variables
     resulti$x            <- x[[i]]          # matrix of regressors
@@ -530,16 +544,19 @@ systemfit <- function( method,
                      sqrt((n[i]-rcovformula*ki[i])*(n[j]-rcovformula*ki[j])))
       } else {
         rcov[i,j] <- sum(residi[[i]]*residi[[j]])/(
-                         n[i]-ki[i]-ki[j] + sum( diag(
-                         solve( t(x[[i]]) %*% x[[i]] ) %*% t(x[[i]]) %*% x[[j]]
-                         %*% solve( t(x[[j]]) %*% x[[j]] ) %*% t(x[[j]]) %*% x[[i]])))
-      }
+                           n[i]-ki[i]-ki[j] + sum( diag(
+                           solve( crossprod( x[[i]] ), tol=solvetol ) %*%
+                           crossprod( x[[i]], x[[j]] ) %*%
+                           solve( crossprod( x[[j]] ), tol=solvetol ) %*%
+                           crossprod( x[[j]], x[[i]] ))))
+             }
 
   } }
   drcov <- det(rcov, tol=solvetol)
-  mcelr2 <- 1 - ( t(resids) %*% ( solve(rcov) %x% diag(1, n[1],n[1])) %*% resids ) / (
-             t(Y) %*% ( solve(rcov) %x% ( diag(1,n[1],n[1]) - rep(1,n[1]) %*%
-             t(rep(1,n[1])) / n[1] )) %*% Y )   # McElroy's (1977a) R2
+   mcelr2 <- 1 - ( t(resids) %*% ( solve(rcov, tol=solvetol) %x% diag(1, n[1],n[1])) %*% resids ) / (
+              t(Y) %*% ( solve(rcov, tol=solvetol) %x% ( diag(1,n[1],n[1]) - rep(1,n[1]) %*%
+              t(rep(1,n[1])) / n[1] )) %*% Y )   # McElroy's (1977a) R2
+
   b              <- array(b,c(K,1))
   rownames(b)    <- xnames
   colnames(b)    <- c("coefficient")
@@ -878,8 +895,8 @@ hausman.systemfit <- function( li.results, fi.results ) {
 
     ## now add the rows of the parameter estimates
     ## to the big_beta matrix to compute the differences
-    lib <- rbind( lib, li.results$eq[[i]]$b )
-    fib <- rbind( fib, fi.results$eq[[i]]$b )
+    lib <- c( lib, li.results$eq[[i]]$b )
+    fib <- c( fib, fi.results$eq[[i]]$b )
   }
   vli <- licovb
   vfi <- fi.results$bcov
@@ -910,3 +927,5 @@ lrtest.systemfit <- function( resultc, resultu ) {
   }
   lrtest
 }
+
+

@@ -1,3 +1,6 @@
+
+% 	$Id: hausman.systemfit.Rd,v 1.3 2003/11/10 20:19:04 hamannj Exp $	
+
 \name{hausman.systemfit}
 \alias{hausman.systemfit}
 
@@ -43,7 +46,7 @@ hausman.systemfit( li.results, fi.results )
 
 }
 
-\author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
+\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
 
 \seealso{\code{\link{systemfit}}}
 

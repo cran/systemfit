@@ -1,5 +1,5 @@
-correlation.systemfit   Correlation between Predictions from Equation i
-                        and j
+correlation.systemfit   Correlation between Predictions from Equation
+                        i and j
 hausman.systemfit       Hausman's Test
 kmenta                  Partly Artificial Data on the U. S. Economy
 lrtest.systemfit        Likelihood Ratio test for Equation Systems

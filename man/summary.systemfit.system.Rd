@@ -19,7 +19,7 @@ summary.systemfit.system(object,...)
   \code{summary.systemfit.system} returns an object of type \code{systemfit.system}.
 }
 
-\author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
+\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
 
 \seealso{\code{\link{systemfit}}, \code{\link{print.systemfit.system}} and
   \code{\link{print.systemfit.system}}}

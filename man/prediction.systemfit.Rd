@@ -1,3 +1,6 @@
+
+% 	$Id: prediction.systemfit.Rd,v 1.3 2003/11/18 08:54:16 henningsena Exp $	
+
 \name{prediction.systemfit}
 \alias{prediction.systemfit}
 
@@ -9,7 +12,7 @@
 }
 
 \usage{
-prediction.systemfit( object, data=results$data, alpha=0.05 )
+prediction.systemfit( object, data=object$data, alpha=0.05 )
 }
 
 \arguments{

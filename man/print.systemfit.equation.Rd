@@ -1,3 +1,6 @@
+
+% 	$Id: print.systemfit.equation.Rd,v 1.3 2003/11/10 20:19:04 hamannj Exp $	
+
 \name{print.systemfit.equation}
 \alias{print.systemfit.equation}
 \title{print.systemfit.equation}
@@ -20,7 +23,7 @@
   \code{print.systemfit.equation} returns nothing.
 }
 
-\author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
+\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
 
 \seealso{\code{\link{systemfit}}, \code{\link{print.systemfit.system}} and
   \code{\link{summary.systemfit.equation}}}

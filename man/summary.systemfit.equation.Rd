@@ -1,3 +1,6 @@
+
+% 	$Id: summary.systemfit.equation.Rd,v 1.3 2003/11/10 20:19:05 hamannj Exp $	
+
 \name{summary.systemfit.equation}
 \alias{summary.systemfit.equation}
 \title{summary.systemfit.equation}
@@ -19,7 +22,7 @@ summary.systemfit.equation(object,...)
   \code{summary.systemfit.equation} returns an object of type \code{systemfit.equation}.
 }
 
-\author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
+\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
 
 \seealso{\code{\link{systemfit}}, \code{\link{summary.systemfit.system}} and
   \code{\link{print.systemfit.equation}}}
