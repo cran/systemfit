@@ -1,6 +1,6 @@
 Package: systemfit
-Version: 0.7-2
-Date: 2004/08/19
+Version: 0.7-3
+Date: 2004/11/26
 Title: Simultaneous Equation Estimation Package
 Author: Jeff D. Hamann <jeff.hamann@forestinformatics.com> and
         Arne Henningsen <ahenningsen@agric-econ.uni-kiel.de>
@@ -14,4 +14,4 @@ Description: This package contains functions for fitting simultaneous
  and Weighted Three-Stage Least Squares (W3SLS).
 License: GPL version 2 or newer
 URL: http://www.r-project.org, http://www.forestinformatics.com, http://www.arne-henningsen.de
-
+Packaged: Fri Nov 26 10:38:49 2004; suapm095

@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd,v 1.9 2004/02/24 13:12:01 henningsena Exp $
+%    $Id: systemfit.Rd,v 1.10 2004/11/15 16:25:04 henningsena Exp $
 
 
 \name{systemfit}
@@ -23,7 +23,8 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
            probdfsys=!(is.null(R.restr) & is.null(TX)),
            single.eq.sigma=(is.null(R.restr) & is.null(TX)),
            solvetol=.Machine$double.eps,
-           saveMemory = FALSE )
+           saveMemory=( nrow(data) * length(eqns) > 1000 &&
+              length(data) > 0 ) )
 }
 
 \arguments{
@@ -66,9 +67,9 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
    \item{solvetol}{tolerance level for detecting linear dependencies
       when inverting a matrix or calculating a determinant (see
       \code{\link{solve}} and \code{\link{det}}).}
-   \item{saveMemory}{save memory by omitting some calculation that
+   \item{saveMemory}{logical. Save memory by omitting some calculation that
       are not crucial for the basic estimation (e.g McElroy's
-      \eqn{R^2}).}
+      \eqn{R^2})?}
 }
 
 \details{
@@ -89,24 +90,32 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
    if the restrictions are imposed by \code{R.restr} and \code{q.restr}.
 
    If iterated (WLS, SUR, W2SLS or 3SLS estimation with \code{maxit}>1),
-     the convergence criterion is \cr
-   \eqn{\sqrt{\sum_i (b_{i,g} - b_{i,g-1})^2 \left/ \sum_i b_{i,g-1}^2 \right.}}
-   < \code{tol} (\eqn{b_{i,g}} is the ith coefficient of the gth iteration step).
+      the convergence criterion is
+   \deqn{\sqrt{ \frac{ \sum_i (b_{i,g} - b_{i,g-1})^2 }{ \sum_i b_{i,g-1}^2 }}
+      < \code{tol}}
+   (\eqn{b_{i,g}} is the ith coefficient of the gth iteration step).
 
    The formula to calculate the estimated covariance matrix of the residuals
-   (\eqn{\hat{\Sigma}}) can be one of the following (see Judge et al., 1985, p. 469): \cr
-   if rcovformula=0: \eqn{\hat{\sigma}_{ij} = (\hat{e}_i' \hat{e}_j) / T}; \cr
-   if rcovformula=1: \eqn{\hat{\sigma}_{ij} = (\hat{e}_i' \hat{e}_j) /
-       \sqrt{(T - k_i)*(T - k_j)}}; \cr
-   if rcovformula=2: \eqn{\hat{\sigma}_{ij} = (\hat{e}_i' \hat{e}_j) / (T - k_i - k_j
-   + tr[(X_i'X_i)^{-1}X_i'X_j(X_j'X_j)^{-1}X_j'X_i]}. \cr
-   If \eqn{k_i = k_j}, formula 1 and 2 are equal and yield an unbiased estimator for the
-   residual covariance matrix.
-   If \eqn{k_i \neq k_j}, only formula 2 yields an unbiased estimator for the residual
-   covariance matrix, but it is not neccessarily positive semidefinit and
-   its inverse is \bold{not} an unbiased estimator for the inverse of the residual
-   covariance matrix. Thus, it is doubtful whether formula 2 is really superior
-   to formula 1 (see Theil, 1971, p. 322).
+   (\eqn{\hat{\Sigma}}) can be one of the following
+   (see Judge et al., 1985, p. 469): \cr
+   if rcovformula=0:
+      \deqn{\hat{\sigma}_{ij} = \frac{\hat{e}_i' \hat{e}_j}{T}}
+   if rcovformula=1 or rcovformula='geomean':
+      \deqn{\hat{\sigma}_{ij} = \frac{\hat{e}_i' \hat{e}_j}
+         {\sqrt{(T - k_i)*(T - k_j)}}}
+   if rcovformula=2 or rcovformula='Theil':
+      \deqn{\hat{\sigma}_{ij} = \frac{\hat{e}_i' \hat{e}_j}{T - k_i - k_j
+      + tr[X_i(X_i'X_i)^{-1}X_i'X_j(X_j'X_j)^{-1}X_j']}}
+   if rcovformula=3 or rcovformula='max':
+      \deqn{\hat{\sigma}_{ij} = \frac{\hat{e}_i' \hat{e}_j}
+         {T - \max( k_i, k_j)}}
+   If \eqn{i = j}, formula 1, 2 and 3 are equal.
+   All these three formulas yield unbiased estimators
+   for the diagonal elements of the residual covariance matrix.
+   If \eqn{i \neq j}, only formula 2 yields an unbiased estimator for the residual
+   covariance matrix, but it is not neccessarily positive semidefinit. Thus, it is
+   doubtful whether formula 2 is really superior to formula 1
+   (Theil, 1971, p. 322).
 
    The formulas to calculate the 3SLS estimator lead to identical results
    if the same instruments are used in all equations. If different instruments
