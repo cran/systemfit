@@ -1,3 +1,6 @@
+
+% 	$Id: threestage.cov.Rd,v 1.4 2002/12/18 06:40:09 hamannj Exp $	
+
 \name{threestage.cov}
 \alias{threestage.cov}
 \alias{threestage.cov.systemfit}
@@ -36,7 +39,7 @@ threestage.cov( results, eqni, eqnj )
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{ols}},\code{\link{twostage}} and \code{\link{threestage}}}
+\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
 
 
 \examples{

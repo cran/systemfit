@@ -1,5 +1,6 @@
 correlation              Correlation between Predictions from Equation i
                          and j
+correlation.resids	 Correlation matrix of the residuals
 hausman                  Hausman's Test
 kmenta                   Partly Artificial Data on the U. S. Economy
 ols                      Ordinary Least Squares Estimation

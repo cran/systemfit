@@ -1,6 +1,8 @@
+
+% 	$Id: summary.systemfit.sur.Rd,v 1.3 2002/12/18 06:40:08 hamannj Exp $	
+
 \name{summary.systemfit.sur}
 \alias{summary.systemfit.sur}
-
 \title{summary.systemfit.sur}
 
 \description{
@@ -22,7 +24,7 @@ summary.systemfit.sur(object,...)
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{ols}},\code{\link{sur}},\code{\link{twostage}} and \code{\link{threestage}}}
+\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
 
 
 \examples{

@@ -1,3 +1,6 @@
+
+% 	$Id: threestage.Rd,v 1.4 2002/12/18 06:40:09 hamannj Exp $	
+
 \name{threestage}
 \alias{threestage}
 \alias{threestage.systemfit}
@@ -22,7 +25,7 @@ threestage.systemfit( eqns, instruments, eqnlabels, data )
     constant is implied if not explicitly omitted.}
   \item{instruments}{one-sided model formula specifying instrumental variables.}
   \item{data}{an optional data frame containing the variables in the model. 
-    By default the variables are taken from the environment from which twostage is
+    By default the variables are taken from the environment from which threestage is
     called.}
   \item{eqnlabels}{list of character vectors of names for the equation labels.}
 }
@@ -68,6 +71,9 @@ threestage.systemfit( eqns, instruments, eqnlabels, data )
   \item{r2}{r2}
   \item{adjr2}{adjusted r-squared}
   \item{covb}{covb}
+  \item{se.prediction}{standard error of the predicted values}
+  \item{prediction.limts}{lower and upper 95 percent prediction limits}
+  \item{confidence.limts}{lower and upper 95 percent confidence limits}
 }
 
 \references{    
@@ -83,7 +89,7 @@ threestage.systemfit( eqns, instruments, eqnlabels, data )
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{ols}},\code{\link{twostage}} and \code{\link{threestage}}}
+\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
 
 
 \examples{
@@ -123,8 +129,8 @@ print( "summary values for the ratio in the std. err. for the predictions" )
 print( summary( improve.ratio ) )
 
 ## perform the hausman test 
-h <- hausman.systemfit( fit3sls[[1]], fit2sls[[1]] )
-pval <- pchisq( h, dim( fit3sls[[1]]$covb )[1] )
+h <- hausman.systemfit( fit2sls, fit3sls )
+pval <- pchisq( h, dim( fit3sls[[1]]$systemcovb )[1] )
 }
 \keyword{models}
 

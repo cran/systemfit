@@ -1,6 +1,8 @@
+
+% 	$Id: print.systemfit.threestage.Rd,v 1.3 2002/12/18 06:40:08 hamannj Exp $	
+
 \name{print.systemfit.threestage}
 \alias{print.systemfit.threestage}
-
 \title{print.systemfit.threestage}
 
 \description{
@@ -23,7 +25,8 @@ print.systemfit.threestage(x,digits=6,...)
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{ols}},\code{\link{twostage}} and \code{\link{threestage}}}
+
+\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
 
 
 \examples{

@@ -1,3 +1,6 @@
+
+% 	$Id: kmenta.Rd,v 1.2 2002/11/30 01:56:28 hamannj Exp $	
+
 \keyword{datasets}
 \name{kmenta}
 \alias{kmenta}

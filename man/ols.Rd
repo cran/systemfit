@@ -1,3 +1,6 @@
+
+% 	$Id: ols.Rd,v 1.3 2002/11/30 01:53:52 hamannj Exp $	
+
 \name{ols}
 \alias{ols}
 \alias{ols.systemfit}
@@ -22,7 +25,7 @@ ols.systemfit( eqns, instruments, eqnlabels, data )
   \item{instruments}{one-sided model formula specifying instrumental variables.}
   \item{eqnlabels}{list of character vectors of names for the equation labels.}
   \item{data}{an optional data frame containing the variables in the model. 
-    By default the variables are taken from the environment from which twostage is
+    By default the variables are taken from the environment from which ols is
     called.}
 }
 
@@ -67,6 +70,10 @@ ols.systemfit( eqns, instruments, eqnlabels, data )
   \item{r2}{r2}
   \item{adjr2}{adjusted r-squared}
   \item{covb}{covb}
+  \item{se.prediction}{standard error of the predicted values}
+  \item{prediction.limits}{lower and upper 95 percent prediction limits}
+  \item{confidence.limits}{lower and upper 95 percent confidence limits}
+  
 }
 
 \references{    
@@ -81,7 +88,7 @@ ols.systemfit( eqns, instruments, eqnlabels, data )
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{twostage}}, \code{\link{threestage}}}
+\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
 
 
 \examples{

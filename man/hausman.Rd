@@ -1,3 +1,6 @@
+
+% 	$Id: hausman.Rd,v 1.4 2002/12/18 06:40:07 hamannj Exp $	
+
 \name{hausman}
 \alias{hausman}
 \alias{hausman.systemfit}
@@ -16,13 +19,14 @@
 }
 
 \usage{
-hausman.systemfit( results0, results1 )
+hausman.systemfit( li.results, fi.results )
 }
 
 \arguments{
-  \item{results0}{the ith equation in the set of \code{twostage} or \code{threestage} objects}
-  \item{results1}{the jth equation in the set of \code{twostage} or
-    \code{threestage} objects}
+  \item{li.results}{the limited information results object
+    (\code{twostage}) }
+  \item{fi.results}{the full information results object
+    (\code{threestage}) }
 }
 
 \value{
@@ -45,7 +49,8 @@ hausman.systemfit( results0, results1 )
 
 \author{Jeff D. Hamann \email{jeff\_hamann@hamanndonald.com}}
 
-\seealso{\code{\link{ols}},\code{\link{twostage}} and \code{\link{threestage}}}
+\seealso{\code{\link{ols}},\code{\link{twostage}},\code{\link{sur}}and \code{\link{threestage}}}
+
 
 \examples{
 library( systemfit )
@@ -63,8 +68,11 @@ fit2sls <- twostage.systemfit( system, inst, labels, kmenta )
 fit3sls <- threestage.systemfit( system, inst, labels, kmenta )
 
 ## perform the hausman test on the first equation
-h <- hausman.systemfit( fit3sls[[1]], fit2sls[[1]] )
-pval <- pchisq( h, dim( fit3sls[[1]]$covb )[1] )
+h <- hausman.systemfit( fit2sls, fit3sls )
+pval <- pchisq( h, dim( fit3sls[[1]]$systemcovb )[1] )
+
+print( h )
+print( pval )
 
 }
 \keyword{models}

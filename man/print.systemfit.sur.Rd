@@ -1,6 +1,8 @@
+
+% 	$Id: print.systemfit.sur.Rd,v 1.2 2002/11/30 01:57:27 hamannj Exp $	
+
 \name{print.systemfit.sur}
 \alias{print.systemfit.sur}
-
 \title{print.systemfit.sur}
 
 \description{
