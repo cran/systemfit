@@ -1,0 +1,12 @@
+correlation              Correlation between Predictions from Equation i
+                         and j
+hausman                  Hausman's Test
+kmenta                   Partly Artificial Data on the U. S. Economy
+ols                      Ordinary Least Squares Estimation
+se.ratio                 Ratio of the Standard Errors
+summary                  Summary
+summary.system           Summary
+threestage               Three-Stage Least Squares Estimation
+threestage.cov           Variance-Covariance Matrix
+twostage                 Two-Stage Least Squares Estimation
+varcov                   Variance-Covariance
