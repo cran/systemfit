@@ -1,32 +1,29 @@
 
-% 	$Id: print.systemfit.system.Rd,v 1.6 2003/11/10 20:19:05 hamannj Exp $	
+%    $Id: print.systemfit.Rd,v 1.2 2004/02/23 14:23:46 henningsena Exp $
 
-\name{print.systemfit.system}
-\alias{print.systemfit.system}
-\title{print.systemfit.system}
+\name{print.systemfit}
+\alias{print.systemfit}
+\title{Print output of systemfit estimation}
 
 \description{
   This function prints a summary of the estimated equation system.
 }
 
 \usage{
-print.systemfit.system(x, digits=6,...)
+   \method{print}{systemfit}(x, digits=6, \dots)
 }
 
 \arguments{
-  \item{x}{an object of type \code{systemfit.system}.}
+  \item{x}{an object of type \code{systemfit}.}
   \item{digits}{number of digits to print.}
-  \item{...}{not used by user.}
+  \item{\dots}{other arguments.}
 }
 
-\value{
-  \code{print.systemfit.system} returns nothing.
-}
-
-\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
+\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com},\cr
+   Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de} }
 
 \seealso{\code{\link{systemfit}}, \code{\link{print.systemfit.equation}}
-  and \code{\link{summary.systemfit.system}}}
+  and \code{\link{summary.systemfit}}}
 
 
 \examples{
@@ -44,9 +41,8 @@ fitols <- systemfit( "OLS", system, labels )
 
 ## print the results
 print( fitols )
-
-
 }
+
 \keyword{models}
 
 

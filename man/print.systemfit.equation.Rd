@@ -1,16 +1,16 @@
 
-% 	$Id: print.systemfit.equation.Rd,v 1.3 2003/11/10 20:19:04 hamannj Exp $	
+%    $Id: print.systemfit.equation.Rd,v 1.5 2004/02/23 14:23:46 henningsena Exp $
 
 \name{print.systemfit.equation}
 \alias{print.systemfit.equation}
-\title{print.systemfit.equation}
+\title{Print output of systemfit estimation}
 
 \description{
   This function prints a summary of one equation of the estimated equation system.
 }
 
 \usage{
-  print.systemfit.equation(x, digits=6,...)
+   \method{print}{systemfit.equation}(x, digits=6,...)
 }
 
 \arguments{
@@ -25,7 +25,7 @@
 
 \author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
 
-\seealso{\code{\link{systemfit}}, \code{\link{print.systemfit.system}} and
+\seealso{\code{\link{systemfit}}, \code{\link{print.systemfit}} and
   \code{\link{summary.systemfit.equation}}}
 
 

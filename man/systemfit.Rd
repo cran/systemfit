@@ -1,5 +1,5 @@
 
-% 	$Id: systemfit.Rd,v 1.7 2004/01/30 20:03:43 hamannj Exp $	
+%    $Id: systemfit.Rd,v 1.9 2004/02/24 13:12:01 henningsena Exp $
 
 
 \name{systemfit}
@@ -22,49 +22,53 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
            rcovformula=1, formula3sls="GLS",
            probdfsys=!(is.null(R.restr) & is.null(TX)),
            single.eq.sigma=(is.null(R.restr) & is.null(TX)),
-           solvetol=.Machine$double.eps )
+           solvetol=.Machine$double.eps,
+           saveMemory = FALSE )
 }
 
 \arguments{
-  \item{method}{the estimation method, one of "OLS", "WLS", "SUR",
-    "2SLS", "W2SLS" or "3SLS".}
-  \item{eqns}{a list of structural equations to be estimated; a regression
-    constant is implied if not explicitly omitted.}
-  \item{eqnlabels}{an optional list of character vectors of names
-    for the equation labels.}
-  \item{inst}{one-sided model formula specifying instrumental variables
-    or a list of one-sided model formulas if different instruments should
-    be used for the different equations (only needed for 2SLS, W2SLS and
-    3SLS estimations).}
-  \item{data}{an optional data frame containing the variables in the model.
-    By default the variables are taken from the environment from which
-    systemfit is called.}
-  \item{R.restr}{an optional j x k matrix to impose linear
-    restrictions on the parameters by \code{R.restr} * \eqn{b} = \code{q.restr}
-    (j = number of restrictions, k = number of all parameters,
-    \eqn{b} = vector of all parameters).}
-  \item{q.restr}{an optional j x 1 matrix to impose linear
-    restrictions (see \code{R.restr}); default is a j x 1 matrix
-    that contains only zeros.}
-  \item{TX}{an optional matrix to transform the regressor matrix and,
-    hence, also the coefficient vector (see details).}
-  \item{maxiter}{maximum number of iterations for WLS, SUR, W2SLS and
-    3SLS estimations.}
-  \item{tol}{tolerance level indicating when to stop the iteration (only
-    WLS, SUR, W2SLS and 3SLS estimations).}
-  \item{rcovformula}{formula to calculate the estimated residual covariance
-    matrix (see details).}
-  \item{formula3sls}{formula for calculating the 3SLS estimator,
-    one of "GLS", "IV", "GMM", "Schmidt" or "EViews" (see details).}
-  \item{probdfsys}{use the degrees of freedom of the whole system
-    (in place of the degrees of freedom of the single equation)
-    to calculate prob values for the t-test of individual parameters.}
-  \item{single.eq.sigma}{use different \eqn{\sigma^2}s for each
-    single equation to calculate the covariance matrix and the
-    standard errors of the coefficients (only OLS and 2SLS).}
-  \item{solvetol}{tolerance level for detecting linear dependencies
-    when inverting a matrix or calculating a determinant (see
-    \code{\link{solve}} and \code{\link{det}}).}
+   \item{method}{the estimation method, one of "OLS", "WLS", "SUR",
+      "2SLS", "W2SLS" or "3SLS".}
+   \item{eqns}{a list of structural equations to be estimated; a regression
+      constant is implied if not explicitly omitted.}
+   \item{eqnlabels}{an optional list of character vectors of names
+      for the equation labels.}
+   \item{inst}{one-sided model formula specifying instrumental variables
+      or a list of one-sided model formulas if different instruments should
+      be used for the different equations (only needed for 2SLS, W2SLS and
+      3SLS estimations).}
+   \item{data}{an optional data frame containing the variables in the model.
+      By default the variables are taken from the environment from which
+      systemfit is called.}
+   \item{R.restr}{an optional j x k matrix to impose linear
+      restrictions on the parameters by \code{R.restr} * \eqn{b} = \code{q.restr}
+      (j = number of restrictions, k = number of all parameters,
+      \eqn{b} = vector of all parameters).}
+   \item{q.restr}{an optional j x 1 matrix to impose linear
+      restrictions (see \code{R.restr}); default is a j x 1 matrix
+      that contains only zeros.}
+   \item{TX}{an optional matrix to transform the regressor matrix and,
+      hence, also the coefficient vector (see details).}
+   \item{maxiter}{maximum number of iterations for WLS, SUR, W2SLS and
+      3SLS estimations.}
+   \item{tol}{tolerance level indicating when to stop the iteration (only
+      WLS, SUR, W2SLS and 3SLS estimations).}
+   \item{rcovformula}{formula to calculate the estimated residual covariance
+      matrix (see details).}
+   \item{formula3sls}{formula for calculating the 3SLS estimator,
+      one of "GLS", "IV", "GMM", "Schmidt" or "EViews" (see details).}
+   \item{probdfsys}{use the degrees of freedom of the whole system
+      (in place of the degrees of freedom of the single equation)
+      to calculate prob values for the t-test of individual parameters.}
+   \item{single.eq.sigma}{use different \eqn{\sigma^2}s for each
+      single equation to calculate the covariance matrix and the
+      standard errors of the coefficients (only OLS and 2SLS).}
+   \item{solvetol}{tolerance level for detecting linear dependencies
+      when inverting a matrix or calculating a determinant (see
+      \code{\link{solve}} and \code{\link{det}}).}
+   \item{saveMemory}{save memory by omitting some calculation that
+      are not crucial for the basic estimation (e.g McElroy's
+      \eqn{R^2}).}
 }
 
 \details{
@@ -112,14 +116,14 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
 }
 
 \value{
-  \code{systemfit} returns a list of the class \code{systemfit.system} and
+  \code{systemfit} returns a list of the class \code{systemfit} and
   contains all results that belong to the whole system.
   This list contains one special object: "eq". It is a list and contains
   one object for each estimated equation. These objects are of the class
   \code{systemfit.equation} and contain the results that belong only to the
   regarding equation.
 
-  The objects of the class \code{systemfit.system} and
+  The objects of the class \code{systemfit} and
   \code{systemfit.equation} have the following components (the elements of
   the latter are marked with an asterisk (\eqn{*})):
 
@@ -128,6 +132,7 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
   \item{n}{total number of observations.}
   \item{k}{total number of coefficients.}
   \item{ki}{total number of linear independent coefficients.}
+  \item{df}{degrees of freedom of the whole system.}
   \item{iter}{number of iteration steps.}
   \item{b}{vector of all estimated coefficients.}
   \item{bt}{coefficient vector transformed by \code{TX}.}
@@ -179,7 +184,7 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
   \item{x*}{matrix of regressors (model matrix) of the ith equation.}
   \item{h*}{matrix of instrumental variables of the ith equation (only 2SLS and 3SLS).}
   \item{data*}{data frame (including instruments) of the ith equation.}
-  \item{predicted*}{vector of predicted values of the ith equation.}
+  \item{fitted*}{vector of fitted values of the ith equation.}
   \item{residuals*}{vector of residuals of the ith equation.}
 
   \item{ssr*}{sum of squared residuals of the ith equation.}
@@ -215,8 +220,8 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
   \emph{Principles of Econometrics}, Wiley, New York.
 }
 
-\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}
-  Arne Henningsen (\url{http://www.arne-henningsen.de}) }
+\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com},\cr
+  Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de} }
 }
 
 \seealso{\code{\link{lm}} and \code{\link{nlsystemfit}}}
@@ -265,7 +270,6 @@ print( fit2sls2 )
 inst <- ~ d + f + a
 fit3sls <- systemfit( "3SLS", system, labels, inst, kmenta, formula3sls="GMM" )
 print( fit3sls )
-
 }
 
 \keyword{models}

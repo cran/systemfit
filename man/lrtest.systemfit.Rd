@@ -1,5 +1,5 @@
 
-% 	$Id: lrtest.systemfit.Rd,v 1.2 2003/08/12 20:27:48 hamannj Exp $	
+% 	$Id: lrtest.systemfit.Rd,v 1.3 2004/02/23 13:06:55 henningsena Exp $	
 
 \name{lrtest.systemfit}
 \alias{lrtest.systemfit}
@@ -16,9 +16,9 @@ lrtest.systemfit( resultc, resultu )
 }
 
 \arguments{
-  \item{resultc}{an object of type systemfit.system that
+  \item{resultc}{an object of type \code{systemfit} that
     contains the results of the restricted estimation.}
-  \item{resultu}{an object of type systemfit.system that
+  \item{resultu}{an object of type \code{systemfit} that
     contains the results of the unconstrained estimation.}
 }
 
@@ -46,7 +46,7 @@ lrtest.systemfit( resultc, resultu )
   \emph{Econometric Analysis, Fifth Edition}, Prentice Hall.
 }
 
-\author{Arne Henningsen (\url{http://www.arne-henningsen.de})}
+\author{Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}}
 
 \seealso{\code{\link{systemfit}}}
 

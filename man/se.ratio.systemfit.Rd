@@ -1,5 +1,5 @@
 
-% 	$Id: se.ratio.systemfit.Rd,v 1.3 2003/11/10 20:19:05 hamannj Exp $	
+% 	$Id: se.ratio.systemfit.Rd,v 1.4 2004/02/23 13:06:56 henningsena Exp $	
 
 
 \name{se.ratio.systemfit}
@@ -17,8 +17,8 @@ se.ratio.systemfit( resultsi, resultsj, eqni )
 }
 
 \arguments{
-  \item{resultsi}{an object of type systemfit.system.}
-  \item{resultsj}{an object of type systemfit.system.}
+  \item{resultsi}{an object of type \code{systemfit}.}
+  \item{resultsj}{an object of type \code{systemfit}.}
   \item{eqni}{index for equation to obtain the ratio of standard errors.}
 }
 

@@ -1,16 +1,16 @@
 
-% 	$Id: summary.systemfit.equation.Rd,v 1.3 2003/11/10 20:19:05 hamannj Exp $	
+%    $Id: summary.systemfit.equation.Rd,v 1.5 2004/02/23 14:23:47 henningsena Exp $
 
 \name{summary.systemfit.equation}
 \alias{summary.systemfit.equation}
-\title{summary.systemfit.equation}
+\title{Print output of systemfit estimation}
 
 \description{
   This function returns a summary of one equation of the estimated equation system.
 }
 
 \usage{
-summary.systemfit.equation(object,...)
+   \method{summary}{systemfit.equation}( object, ... )
 }
 
 \arguments{
@@ -24,7 +24,7 @@ summary.systemfit.equation(object,...)
 
 \author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
 
-\seealso{\code{\link{systemfit}}, \code{\link{summary.systemfit.system}} and
+\seealso{\code{\link{systemfit}}, \code{\link{summary.systemfit}} and
   \code{\link{print.systemfit.equation}}}
 
 

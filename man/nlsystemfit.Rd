@@ -1,5 +1,5 @@
 
-% 	$Id: nlsystemfit.Rd,v 1.2 2004/02/04 02:34:27 hamannj Exp $	
+% 	$Id: nlsystemfit.Rd,v 1.3 2004/02/05 19:12:56 hamannj Exp $	
 
 
 \name{nlsystemfit}

@@ -1,5 +1,5 @@
 
-% 	$Id: hausman.systemfit.Rd,v 1.3 2003/11/10 20:19:04 hamannj Exp $	
+% 	$Id: hausman.systemfit.Rd,v 1.5 2004/02/18 17:35:41 henningsena Exp $	
 
 \name{hausman.systemfit}
 \alias{hausman.systemfit}
@@ -35,10 +35,10 @@ hausman.systemfit( li.results, fi.results )
 \references{
 
   Greene, W. H. (1993)
-  \emph{Econometric Analysis, Second Edition}, Macmillan.
+  \emph{Econometric Analysis, Fifth Edition}, Macmillan.
 
   Hausman, J. A. (1978)
-  Specification Tests in Econometrics. \emph{Economtrica}. 46:1251-1271.
+  Specification Tests in Econometrics. \emph{Econometrica}. 46:1251-1271.
 
   Kmenta, J. (1997)
   \emph{Elements of Econometrics, Second Edition}, University of
@@ -61,13 +61,13 @@ inst <- ~ d + f + a
 labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
-## perform the estimation and report the results for the whoel system
+## perform the estimation and report the results for the whole system
 fit2sls <- systemfit( "2SLS", system, labels, inst)
 fit3sls <- systemfit( "3SLS", system, labels, inst)
 
 ## perform the hausman test on the first equation
 h <- hausman.systemfit( fit2sls, fit3sls )
-pval <- pchisq( h, dim( fit3sls$bcov )[1] )
+pval <- 1 - pchisq( h, dim( fit3sls$bcov )[1] )
 
 print( h )
 print( pval )

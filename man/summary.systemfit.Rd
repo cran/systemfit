@@ -1,28 +1,28 @@
-\name{summary.systemfit.system}
-\alias{summary.systemfit.system}
-\title{summary.systemfit.system}
+\name{summary.systemfit}
+\alias{summary.systemfit}
+\title{Print output of systemfit estimation}
 
 \description{
   This function returns a summary of the system of equations.
 }
 
 \usage{
-summary.systemfit.system(object,...)
+   \method{summary}{systemfit}( object, ... )
 }
 
 \arguments{
-  \item{object}{an object of type \code{systemfit.system}.}
+  \item{object}{an object of type \code{systemfit}.}
   \item{...}{not used by user.}
 }
 
 \value{
-  \code{summary.systemfit.system} returns an object of type \code{systemfit.system}.
+  \code{summary.systemfit} returns an object of type \code{systemfit}.
 }
 
 \author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
 
-\seealso{\code{\link{systemfit}}, \code{\link{print.systemfit.system}} and
-  \code{\link{print.systemfit.system}}}
+\seealso{\code{\link{systemfit}}, \code{\link{print.systemfit}} and
+  \code{\link{print.systemfit}}}
 
 
 \examples{
@@ -40,7 +40,7 @@ system <- list( demand, supply )
 fitols <- systemfit( "OLS", system, labels )
 
 ## print the results
-summary.systemfit.system( fitols )
+summary.systemfit( fitols )
 }
 
 \keyword{models}

@@ -1,5 +1,5 @@
 
-% 	$Id: correlation.systemfit.Rd,v 1.3 2003/11/10 20:19:04 hamannj Exp $	
+% 	$Id: correlation.systemfit.Rd,v 1.4 2004/02/23 13:06:55 henningsena Exp $	
 
 \name{correlation.systemfit}
 \alias{correlation.systemfit}
@@ -26,7 +26,7 @@ correlation.systemfit( results, eqni, eqnj )
 }
 
 \arguments{
-  \item{results}{an object of type systemfit.system.}
+  \item{results}{an object of type \code{systemfit}.}
   \item{eqni}{index for equation i}
   \item{eqnj}{index for equation j}
 }
