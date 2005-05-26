@@ -1,4 +1,4 @@
-###	$Id: nlsystemfit.r,v 1.13 2004/08/18 17:33:14 hamannj Exp $	
+###   $Id: nlsystemfit.r,v 1.18 2005/03/23 12:42:20 henningsena Exp $
 ###
 ###            Simultaneous Nonlinear Least Squares for R
 ###
@@ -23,76 +23,109 @@
 ### uses the Dennis + Schnabel Minimizer which is the one utilized by R's nlm()
 
 ### remove before release
-# rm(list=ls(all=TRUE)) 
+# rm(list=ls(all=TRUE))
 
 ### this function is the "driver" function for the minimization...
 knls <- function( theta, eqns, data, fitmethod="OLS", parmnames, instr=NULL, S=NULL ) {
 
   r  <- matrix()               # residuals equation wise
   r <- NULL
-    
+
   gmm.resids <- matrix()
   gmm.resids <- NULL
-  
+
   residi  <- list()               # residuals equation wise
   lhs <- list()
   rhs <- list()
   neqs <- length( eqns )
-  nobs <- dim( data )[[1]]            # number of nonmissing observations  
-  
+  nobs <- dim( data )[[1]]            # number of nonmissing observations
+
   ## GMM specific variables, in this case... g = 2, k = 3
 #  V <- matrix( 0, g*k, g*k )          # V is a 6x6 matrix
   moments <- list()
   mn <- array()
-  
+
   moments <- NULL
   mn <- NULL
   lhs <- NULL
   rhs <- NULL
   residi <- NULL
-    
+  # partial derivatives of the residuals with respect to the parameters
+  dResidTheta <- NULL
+  dResidThetai <- list()
+  d2ResidTheta <- array( NA, c( 0, 0, 0 ) )
+  d2ResidThetai <- list()
+
   ## get the values of the parameters
   for( i in 1:length( parmnames ) ) {
     name <- names( parmnames )[i]
     val <- theta[i]
     storage.mode( val ) <-  "double"
     assign( name, val )
-  }                          
-    
+  }
+
   ## build the residual vector...
   for( i in 1:length( eqns ) ) {
-   lhs[[i]] <- as.matrix( eval( as.formula( eqns[[i]] )[[2]] ) )
-   rhs[[i]] <- as.matrix( eval( as.formula( eqns[[i]] )[[3]] ) )
-   residi[[i]] <- lhs[[i]] - rhs[[i]]
-   r <- rbind( r, as.matrix( residi[[i]] ) )    
-   if( fitmethod == "GMM" ) {
-     gmm.resids <- cbind( gmm.resids, as.matrix( residi[[i]] ) )
-   }   
- }
-
+    lhs[[i]] <- as.matrix( eval( as.formula( eqns[[i]] )[[2]] ) )
+    rhs[[i]] <- as.matrix( eval( as.formula( eqns[[i]] )[[3]] ) )
+    residi[[i]] <- lhs[[i]] - rhs[[i]]
+    r <- rbind( r, as.matrix( residi[[i]] ) )
+    if( fitmethod == "GMM" ) {
+      gmm.resids <- cbind( gmm.resids, as.matrix( residi[[i]] ) )
+    }
+    dResidThetai[[ i ]] <- - attributes( with( data, with( as.list( theta ),
+      eval( deriv( eqns[[i]], names( parmnames ))))))$gradient
+    dResidTheta <- rbind( dResidTheta, dResidThetai[[ i ]] )
+    d2ResidThetai[[ i ]] <- - attributes( with( data, with( as.list( theta ),
+      eval( deriv3( eqns[[i]], names( parmnames ) )))))$hessian
+    temp <- array( NA, c( dim( d2ResidTheta )[ 1 ] +
+      dim( d2ResidThetai[[ i ]] )[ 1 ], dim( d2ResidThetai[[ i ]] )[ 2:3 ] ) )
+    if( i > 1 ) {
+      temp[ 1:dim( d2ResidTheta )[ 1 ], , ] <- d2ResidTheta
+    }
+    temp[ ( dim( d2ResidTheta )[ 1 ] + 1 ):( dim( temp )[ 1 ] ),
+      , ] <- d2ResidThetai[[ i ]]
+    d2ResidTheta <- temp
+  }
   ## these are the objective functions for the various fitting methods
   if( fitmethod == "OLS" ) {
     obj <- crossprod( r )
+    gradient <- 2 * t( r ) %*% dResidTheta
+#print( d2ResidTheta )
+#print( t( dResidTheta ) %*% dResidTheta )
+    hessian <- matrix( NA, nrow = length( parmnames ), ncol = length( parmnames ) )
+    for( i in 1:length( parmnames ) ) {
+      hessian[ i, ] <- 2 * t( r ) %*% d2ResidTheta[ , , i ]
+    }
+    hessian <- hessian + 2 * t( dResidTheta ) %*% dResidTheta
+    rownames( hessian ) <- colnames( dResidTheta )
+    colnames( hessian ) <- colnames( dResidTheta )
+#print( hessian - t( hessian ) )
+    hessian <- NULL
+    attributes( obj ) <- list( gradient = gradient, hessian = hessian )
   }
   if( fitmethod == "2SLS" ) {
     ## W is premultiplied == ( diag( neqs ) %x% W )
     ##obj <- ( t(r) %*% S %*% r )
     obj <- crossprod(t(crossprod(r,S)),r)
+    attributes( obj ) <- list( gradient = 2 * t( r ) %*% S %*% dResidTheta )
   }
   if( fitmethod == "SUR" ) {
     ## S is premultiplied == ( qr.solve( S ) %x% diag( nobs ) )
     ##obj <- ( t(r) %*% S %*% r )
     obj <- crossprod(t(crossprod(r,S)),r)
+    attributes( obj ) <- list( gradient = 2 * t( r ) %*% S %*% dResidTheta )
   }
   if( fitmethod == "3SLS" ) {
     ## S is premultiplied == ( qr.solve( S ) %x% W )
     ##obj <- ( t(r) %*% S %*% r )
     obj <- crossprod(t(crossprod(r,S)),r)
+    attributes( obj ) <- list( gradient = 2 * t( r ) %*% S %*% dResidTheta )
   }
   if( fitmethod == "GMM" ) {
     ## this just can't be correct... or can it...
     ## S is a gx x gk matrix
-    ## g = number of eqns, k = number of inst variables 
+    ## g = number of eqns, k = number of inst variables
     z <- as.matrix( model.frame( instr ) )
     for(t in 1:nobs) {
       moments <- rbind( moments, gmm.resids[t,] %x% z[t,] )
@@ -107,13 +140,13 @@ knls <- function( theta, eqns, data, fitmethod="OLS", parmnames, instr=NULL, S=N
     ##obj <- ( t(mn) %*% S %*% (mn) )
     obj <- crossprod(t(crossprod(mn,S)),mn)
   }
-  
+
   ## it would be nice to place the gradient and/or hessian attributes...
   ## how can I make this work???
   ## attr( obj, "gradient" ) <- "hi mom"
   ## attr( obj, "hessian" ) <- hessian...
 
-  obj
+  return( obj )
 }
 
 
@@ -124,21 +157,20 @@ nlsystemfit <- function( method="OLS",
                         inst=NULL,
                         data=list(),
                         solvtol=.Machine$double.eps,
-                        pl=0,
-                        maxiter=1000 ) {
-  
+                        maxiter=1000, ... ) {
+
   attach( data )
-  
+
   ## some tests
   if(!(method=="OLS" | method=="SUR" | method=="2SLS" | method=="3SLS" | method=="GMM" )){
     stop("The method must be 'OLS', 'SUR', '2SLS', or '3SLS'")}
   if((method=="2SLS" | method=="3SLS" | method=="GMM") & is.null(inst)) {
     stop("The methods '2SLS', '3SLS' and 'GMM' need instruments!")}
-  
+
   lhs <- list()
   rhs <- list()
   derivs <- list()
-  
+
   results <- list()               # results to be returned
   results$eq <- list()            # results for the individual equations
   resulti <- list()               # results of the ith equation
@@ -155,58 +187,67 @@ nlsystemfit <- function( method="OLS",
   r2      <- array( 0, c(G))      # R-squared value
   adjr2   <- array( 0, c(G))      # adjusted R-squared value
   nobs <- dim( data )[[1]]
-  S <- matrix( 0, G, G )               # covariance matrix of the residuals  
+  S <- matrix( 0, G, G )               # covariance matrix of the residuals
   X <- array()
   x <- list()
-  
+
   resids <- array()
   resids <- NULL
 
   if( method == "OLS" ) {
-    est <- nlm( knls, startvals,
-               gradtol=solvtol,typsize=abs(startvals),print.level=pl,iterlim=maxiter,steptol=solvtol,
-               eqns=eqns,
-               data=data,
-               fitmethod=method,
-               parmnames=startvals )
-  }
-  if( method == "2SLS" ) {
-    ## just fit and part out the return structure 
-    z <- as.matrix( model.frame( inst ) )
-    Wt <- z %*% qr.solve( crossprod( z ), tol=solvtol ) %*% t(z)
-    W2 <- diag( length( eqns ) ) %x% Wt        
-    est <- nlm( knls, startvals,
-               gradtol=solvtol,typsize=abs(startvals),print.level=pl,iterlim=maxiter,steptol=solvtol,
+    if( TRUE ) {
+      est <- nlm( knls, startvals,
+               typsize=abs(startvals),iterlim=maxiter,
                eqns=eqns,
                data=data,
                fitmethod=method,
                parmnames=startvals,
-               S=W2 )
+               ... )
+    } else {
+      est <- optim( fn = knls, par = startvals,
+               eqns=eqns,
+               data=data,
+               fitmethod=method,
+               parmnames=startvals )
+    }
+  }
+  if( method == "2SLS" ) {
+    ## just fit and part out the return structure
+    z <- as.matrix( model.frame( inst ) )
+    Wt <- z %*% qr.solve( crossprod( z ), tol=solvtol ) %*% t(z)
+    W2 <- diag( length( eqns ) ) %x% Wt
+    est <- nlm( knls, startvals,
+               typsize=abs(startvals),iterlim=maxiter,
+               eqns=eqns,
+               data=data,
+               fitmethod=method,
+               parmnames=startvals,
+               S=W2, ... )
   }
   if( method == "SUR" || method == "3SLS" || method == "GMM" ) {
     ## fit ols/2sls, build the cov matrix for estimation and refit
     if( method == "SUR" ) {
       estols <- nlm( knls, startvals,
-                    gradtol=solvtol,typsize=abs(startvals),print.level=pl,iterlim=maxiter,steptol=solvtol,
+                    typsize=abs(startvals),iterlim=maxiter,
                     eqns=eqns,
                     data=data,
                     fitmethod="OLS",
-                    parmnames=startvals )
+                    parmnames=startvals, ... )
     }
     if( method == "3SLS" || method == "GMM" ) {
       z <- as.matrix( model.frame( inst ) )
       W <- z %*% qr.solve( crossprod( z ), tol=solvtol ) %*% t(z)
       W2 <- ( diag( length( eqns ) ) %x% W )
       estols <- nlm( knls, startvals,
-                    gradtol=solvtol,typsize=abs(startvals),print.level=pl,iterlim=maxiter,steptol=solvtol,
+                    typsize=abs(startvals),iterlim=maxiter,
                     eqns=eqns,
                     data=data,
                     fitmethod="2SLS",
                     parmnames=startvals,
                     instr=inst,
-                    S=W2)
+                    S=W2, ... )
     }
-        
+
     ## build the S matrix
     names( estols$estimate ) <- names( startvals )
     for( i in 1:length( estols$estimate ) ) {
@@ -214,8 +255,8 @@ nlsystemfit <- function( method="OLS",
       val <- estols$estimate[i]
       storage.mode( val ) <-  "double"
       assign( name, val )
-    }                          
-    
+    }
+
     ## get the rank for the eqns, compute the first-stage
     ## cov matrix to finish the SUR and 3SLS methods
     for(i in 1:G) {
@@ -229,7 +270,7 @@ nlsystemfit <- function( method="OLS",
       k[i] <- qr( jacobian )$rank
       df[i] <- n[i] - k[i]
     }
-    
+
     ## covariance matrix of the residuals from the first stage...
     Sols <- matrix( 0, G, G )
     rcovformula <- 1
@@ -241,18 +282,20 @@ nlsystemfit <- function( method="OLS",
     }
 
     if( method == "SUR" ) {
-      Solsinv <- qr.solve( Sols, tol=solvtol ) %x% diag( nobs )      
+      Solsinv <- qr.solve( Sols, tol=solvtol ) %x% diag( nobs )
       est <- nlm( knls,estols$estimate,
-                 gradtol=solvtol,typsize=abs(startvals),print.level=pl,iterlim=maxiter,steptol=solvtol,
-                 eqns=eqns, data=data, fitmethod=method, parmnames=startvals, S=Solsinv )
+                 typsize=abs(estols$estimate),iterlim=maxiter,
+                 eqns=eqns, data=data, fitmethod=method, parmnames=startvals,
+                 S=Solsinv, ... )
     }
     if( method == "3SLS" ) {
       z <- as.matrix( model.frame( inst ) )
       W <- z %*% qr.solve( crossprod( z ), tol=solvtol ) %*% t(z)
-      Solsinv <- qr.solve( Sols, tol=solvtol ) %x% W      
+      Solsinv <- qr.solve( Sols, tol=solvtol ) %x% W
       est <- nlm( knls, estols$estimate,
-                 gradtol=solvtol,typsize=abs(startvals),print.level=pl,iterlim=maxiter,steptol=solvtol,
-                 eqns=eqns, data=data, fitmethod=method, parmnames=startvals, S=Solsinv, instr=z )
+                 typsize=abs(estols$estimate),iterlim=maxiter,
+                 eqns=eqns, data=data, fitmethod=method, parmnames=startvals,
+                 S=Solsinv, instr=z, ... )
     }
     if( method == "GMM" ) {
       resids <- NULL
@@ -267,28 +310,34 @@ nlsystemfit <- function( method="OLS",
       }
       v2sls <- qr.solve( var( moments ), tol=solvtol )
       est <- nlm( knls,estols$estimate,
-                 gradtol=solvtol,typsize=abs(startvals),print.level=pl,iterlim=maxiter,steptol=solvtol,
-                 eqns=eqns, data=data, fitmethod="GMM", parmnames=startvals, S=v2sls, instr=inst )
+                 typsize=abs(estols$estimate),iterlim=maxiter,
+                 eqns=eqns, data=data, fitmethod="GMM", parmnames=startvals,
+                 S=v2sls, instr=inst, ... )
     }
   }
 
   ## done with the fitting...
   ## now, part out the results from the nlm function
   ## to rebuild the equations and return object
-  ## get the parameters for each of the equations and 
+  ## get the parameters for each of the equations and
 
-  
+
   ## evaluate the residuals for eqn
   ## get the values of the final parameters
-  names( est$estimate ) <- names( startvals )
-  for( i in 1:length( est$estimate ) ) {
-    name <- names( est$estimate )[i]
+  if( TRUE ) {
+    estimate <- est$estimate
+  } else {
+    estimate <- est$par
+  }
+  names( estimate ) <- names( startvals )
+  for( i in 1:length( estimate ) ) {
+    name <- names( estimate )[i]
     ### I wonder if I need to clear out the variables before assigning them for good measure...
     assign( name, NULL )
-    val <- est$estimate[i]
+    val <- estimate[i]
     storage.mode( val ) <-  "double"
     assign( name, val )
-  } 
+  }
 
   ## get the rank for the eqns, compute the first-stage
   ## cov matrix to finish the SUR and 3SLS methods
@@ -315,7 +364,7 @@ nlsystemfit <- function( method="OLS",
     X <- rbind( X, jacobian )
     results$resids <- cbind( results$resids, as.matrix( residi[[i]] ) )
   }
-  
+
   ## compute the final covariance matrix
   ## you really should use the code below to handle weights...
   rcovformula <- 1
@@ -350,7 +399,7 @@ nlsystemfit <- function( method="OLS",
 #     covb <- qr.solve(t(X) %*% SI %*% X, tol=solvtol )
 
 
-  
+
   ## get the variance-covariance matrix
   if( method == "OLS" ) {
     SI <- diag( diag( qr.solve( S, tol=solvtol ) ) ) %x% diag( nrow( data ) )
@@ -394,18 +443,18 @@ nlsystemfit <- function( method="OLS",
     covb <- qr.solve( t( Y %*% X ) %*% Vinv %*% ( Y %*% X  ), tol=solvtol )
 #    print( covb )
   }
+  colnames( covb ) <- rownames( covb )
 
-  
-  
+
   ## bind the standard errors to the parameter estimate matrix
   se2 <- sqrt( diag( covb ) )
-  t.val <- est$estimate / se2
+  t.val <- estimate / se2
   prob  <- 2*( 1 - pt( abs( t.val ), sum( n ) - sum( k ) ) ) ### you better check this...
 
   results$method       <- method
   results$n <- sum( n )
   results$k <- sum( k )
-  results$b <- est$estimate
+  results$b <- estimate
   results$se <- se2
   results$t <- t.val
   results$p <- prob
@@ -414,13 +463,13 @@ nlsystemfit <- function( method="OLS",
   for(i in 1:G) {
     ## you may be able to shrink this up a little and write the values directly to the return structure...
     eqn.terms <- vector()
-    eqn.est <- vector()    
-    eqn.se <- vector()    
+    eqn.est <- vector()
+    eqn.se <- vector()
     jacob <- attr( eval( deriv( as.formula( eqns[[i]] ), names( startvals ) ) ), "gradient" )
-    for( v in 1:length( est$estimate ) ) {
+    for( v in 1:length( estimate ) ) {
       if( qr( jacob[,v] )$rank > 0 ) {
-        eqn.terms <- rbind( eqn.terms, name <- names( est$estimate )[v] )
-        eqn.est <- rbind( eqn.est, est$estimate[v] )
+        eqn.terms <- rbind( eqn.terms, name <- names( estimate )[v] )
+        eqn.est <- rbind( eqn.est, estimate[v] )
         eqn.se <- rbind( eqn.se, se2[v] )
       }
     }
@@ -433,29 +482,32 @@ nlsystemfit <- function( method="OLS",
     resulti$formula      <- eqns[[i]]
     resulti$b <- as.vector( eqn.est )
     names( resulti$b )   <- eqn.terms
-    resulti$se           <- eqn.se 
-    resulti$t            <- resulti$b / resulti$se 
+    resulti$se           <- eqn.se
+    resulti$t            <- resulti$b / resulti$se
     resulti$p            <- 2*( 1-pt(abs(resulti$t), n[i] - k[i] ))
     resulti$n            <- n[i]            # number of observations
     resulti$k            <- k[i]            # number of coefficients/regressors
-    resulti$df           <- df[i]           # degrees of freedom of residuals    
+    resulti$df           <- df[i]           # degrees of freedom of residuals
     resulti$predicted    <- rhs[[i]]           # predicted values
     resulti$residuals    <- residi[[i]]     # residuals
     resulti$ssr          <- ssr[i]             # sum of squared errors/residuals
     resulti$mse          <- mse[i]             # estimated variance of the residuals (mean squared error)
     resulti$s2           <- mse[i]             #        the same (sigma hat squared)
     resulti$rmse         <- rmse[i]            # estimated standard error of the residuals
-    resulti$s            <- rmse[i]            #        the same (sigma hat)    
+    resulti$s            <- rmse[i]            #        the same (sigma hat)
 
 #     ## you'll need these to compute the correlations...
 #     print( paste( "eqn ", i ) )
-     resulti$covb  <- covb[(1+sum(k[1:i])-k[i]):(sum(k[1:i])),(1+sum(k[1:i])-k[i]):(sum(k[1:i]))]
+    coefNames <- rownames( covb )[ rownames( covb ) %in%
+      strsplit( as.character( eqns[[ i ]] )[ 3 ], "[^a-zA-Z0-9.]" )[[ 1 ]] ]
+    resulti$covb <- covb[ coefNames, coefNames ]
+
 #     resulti$x <- model.frame( as.formula( eqns[[i]] )[[3]] )
-#     print( resulti$x )    
+#     print( resulti$x )
 #    print( model.frame( eval( eqns[[i]] ) ) )
-    
-    
-    
+
+
+
     ## fix this to allow for multiple instruments?
     if(method=="2SLS" | method=="3SLS" | method=="GMM") {
       resulti$inst         <- inst
@@ -467,7 +519,7 @@ nlsystemfit <- function( method="OLS",
     resulti$r2     <- 1 - ssr[i] / ( ( crossprod( lhs[[i]]) ) - mean( lhs[[i]] )^2 * nobs )
     resulti$adjr2  <- 1 - ((n[i]-1)/df[i])*(1-resulti$r2)
 
-    class(resulti)	     <- "nlsystemfit.equation"
+    class(resulti)        <- "nlsystemfit.equation"
     results$eq[[i]]      <- resulti
   }
 
@@ -476,7 +528,7 @@ nlsystemfit <- function( method="OLS",
   results$rcov <- S
   results$rcor <- cor( results$resids )
   results$drcov <- det(results$rcov)          # det(rcov, tol=solvetol)
-  
+
   if(method=="2SLS" || method=="3SLS") {
     ##      results$h       <- H            # matrix of all (diagonally stacked) instrumental variables
   }
@@ -484,15 +536,20 @@ nlsystemfit <- function( method="OLS",
     results$rcovest <- Sols      # residual covarance matrix used for estimation
     ##results$mcelr2  <- mcelr2       # McElroy's R-squared value for the equation system
   }
-  
+
   ## build the "return" structure for the whole system
   results$method  <- method
   results$g       <- G              # number of equations
   results$nlmest  <- est
-  
+
   class(results)  <- "nlsystemfit.system"
-  
+
   detach(data)
+
+  if( results$nlmest$code >= 4 ) {
+    warning( "Estimation did not converge!" )
+  }
+
   results
 }
 
@@ -533,7 +590,7 @@ print.nlsystemfit.system <- function( x, digits=6,... ) {
   cat( paste( "convergence achieved after",object$nlmest$iterations,"iterations\n" ) )
   cat( paste( "nlsystemfit objective function value:",object$nlmest$minimum,"\n\n" ) )
 
-  
+
   for(i in 1:object$g) {
     row <- NULL
     row <- cbind( round( object$eq[[i]]$n,     digits ),
@@ -579,7 +636,7 @@ print.nlsystemfit.system <- function( x, digits=6,... ) {
   colnames(rcor) <- labels
   print( rcor )
   cat("\n")
-  
+
   cat("The determinant of the residual covariance matrix: ")
   cat(object$drcov)
   cat("\n")
@@ -666,7 +723,7 @@ print.nlsystemfit.equation <- function( x, digits=6, ... ) {
 ## Akaike's Information Criterion
 ## AIC = n * log( sigmahat^2 ) + 2K
 ## n = number of obs
-## sigmahat^2 = sum( error^2 ) / n == residual sums of squares 
+## sigmahat^2 = sum( error^2 ) / n == residual sums of squares
 ## K is the total number if estimated parameters, including the intercept and sigma^2 (nparams + 1)
 ## second order AIC
 ## AICc = AIC + (2K*(K+1))/(n-K-1)

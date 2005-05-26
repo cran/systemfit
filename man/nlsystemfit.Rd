@@ -1,5 +1,5 @@
 
-% 	$Id: nlsystemfit.Rd,v 1.3 2004/02/05 19:12:56 hamannj Exp $	
+%  $Id: nlsystemfit.Rd,v 1.5 2005/03/18 15:25:32 henningsena Exp $
 
 
 \name{nlsystemfit}
@@ -16,10 +16,10 @@
 
 \usage{ nlsystemfit( method="OLS", eqns, startvals,
                      eqnlabels=c(as.character(1:length(eqns))), inst=NULL,
-                     data=list(), solvtol=.Machine$double.eps, pl=0,
-                     maxiter=1000 )
+                     data=list(), solvtol=.Machine$double.eps,
+                     maxiter=1000, ... )
 }
-		   
+
 
 \arguments{
   \item{method}{the estimation method, one of "OLS", "SUR", "2SLS",
@@ -35,12 +35,10 @@
   \item{data}{an optional data frame containing the variables in the model.
     By default the variables are taken from the environment from which
     nlsystemfit is called.}
-  \item{pl}{print.level argument that is passed to the \code{\link{nlm}} function. }
-  \item{solvtol}{tolerance level used in the step tolerance and gradient
-    tolerances arguments for \code{\link{nlm}} and the tolerance for
-    detecting linear dependencies in the columns of X in the
-    \code{\link{qr}} function calls.}
+  \item{solvtol}{tolerance for detecting linear dependencies in the columns
+    of X in the \code{\link{qr}} function calls.}
   \item{maxiter}{the maximum number of iterations for the \code{\link{nlm}} function.}
+  \item{...}{arguments passed to \code{\link{nlm}}.}
 }
 
 \details{
@@ -48,31 +46,31 @@
   The nlsystemfit function relies on \code{\link{nlm}} to perform the
   minimization of the objective functions and the \code{\link{qr}} set
   of functions.
-  
+
   A system of nonlinear equations can be written as:
-  
+
   \deqn{\epsilon_{t} = q( y_t, x_t, \theta )}
   \deqn{z_{t} = Z( x_t )}
-  
+
   where \eqn{\epsilon_{t}} are the residuals from the y observations and
-  the function evaluated at the parameter estimates. 
-  
+  the function evaluated at the parameter estimates.
+
   The objective functions for the methods are:
-  
+
   \tabular{lccc}{
     %    \hline
     Method \tab Instruments \tab Objective Function \tab Covariance of
-    \eqn{\theta}\cr %\hline  
+    \eqn{\theta}\cr %\hline
     OLS \tab no \tab \eqn{r'r} \tab \eqn{(X(diag(S)^{-1}\bigotimes
       I)X)^{-1}}\cr %\hline
     SUR \tab no \tab \eqn{r'(diag(S)_{OLS}^{-1}\bigotimes I)r} \tab
     \eqn{(X(S^{-1}\bigotimes I)X)^{-1}}\cr %\hline
     2SLS \tab yes \tab \eqn{r'(I \bigotimes W)r} \tab
-    \eqn{(X(diag(S)^{-1}\bigotimes I)X)^{-1}}\cr %\hline 
+    \eqn{(X(diag(S)^{-1}\bigotimes I)X)^{-1}}\cr %\hline
     3SLS \tab yes \tab \eqn{r'(S_{2SLS}^{-1} \bigotimes W)r} \tab
     \eqn{(X(diag(S)^{-1}\bigotimes W)X)^{-1}} %\hline
   }
-  
+
   where, r is a column vector for the residuals for each equation, S is
   variance-covariance matrix between the equations
   (\eqn{\hat{\sigma}_{ij} = (\hat{e}_i' \hat{e}_j) /
@@ -80,12 +78,12 @@
   partial derivates with respect to the parameters, W is a matrix of the
   instrument variables \eqn{Z(Z'Z)^{-1}Z}, Z is a matrix of the
   instrument variables, and I is an nxn identity matrix.
-  
+
   The SUR and 3SLS methods requires two solutions. The first solution
   for the SUR is an OLS solution to obtain the variance-covariance
   matrix. The 3SLS uses the variance-covatiance from a 2SLS solution,
-  then fits all the equations simultaneously.  
-  
+  then fits all the equations simultaneously.
+
   The user should be aware that the function is \bold{VERY} sensative to
   the starting values and the nlm function may not converge. The nlm
   function will be called with the \code{typsize} argument set the
@@ -97,7 +95,7 @@
   parameter estimates to shorten the number of iterations. The number of
   iterations reported in the summary are only those used in the last
   call to nlm, thus the number of iterations in the OLS portion of the
-  SUR fit and the 2SLS portion of the 3SLS fit are not included. 
+  SUR fit and the 2SLS portion of the 3SLS fit are not included.
 }
 
 \value{
@@ -127,7 +125,7 @@
   \item{drcov}{determinant of \code{rcov}.}
   \item{rcovest}{residual covariance matrix used for estimation (only SUR and 3SLS).}
   \item{rcor}{estimated residual correlation matrix.}
-  \item{nlmest}{results from the nlm function call} 
+  \item{nlmest}{results from the nlm function call}
   \item{solvetol}{tolerance level when inverting a matrix or calculating a determinant.}
 
   ## elements of the class nlsystemfit.eq
@@ -181,6 +179,13 @@ model <- list( hg.formula, dg.formula )
 
 model.ols <- nlsystemfit( "OLS", model, start.values, data=ppine, eqnlabels=labels )
 print( model.ols )
+
+model.sur <- nlsystemfit( "SUR", model, start.values, data=ppine, eqnlabels=labels )
+print( model.sur )
+
+model.2sls <- nlsystemfit( "2SLS", model, start.values, data=ppine,
+   eqnlabels=labels, inst=inst )
+print( model.2sls )
 
 model.3sls <- nlsystemfit( "3SLS", model, start.values, data=ppine,
                                     eqnlabels=labels, inst=inst )
