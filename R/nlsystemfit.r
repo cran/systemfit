@@ -1,4 +1,4 @@
-###   $Id: nlsystemfit.r,v 1.18 2005/03/23 12:42:20 henningsena Exp $
+###   $Id: nlsystemfit.r,v 1.19 2005/08/24 22:44:47 hamannj Exp $
 ###
 ###            Simultaneous Nonlinear Least Squares for R
 ###
@@ -606,7 +606,9 @@ print.nlsystemfit.system <- function( x, digits=6,... ) {
   rownames(table) <- c( labels )
   colnames(table) <- c("N","DF", "SSR", "MSE", "RMSE", "R2", "Adj R2" )
 
-  print.matrix(table, quote = FALSE, right = TRUE )
+  ##print.matrix(table, quote = FALSE, right = TRUE )
+  ##prmatrix(table, quote = FALSE, right = TRUE )
+  print(table, quote = FALSE, right = TRUE )
   cat("\n")
 
   ## check this code before release...
@@ -698,7 +700,9 @@ print.nlsystemfit.equation <- function( x, digits=6, ... ) {
   rownames(table) <- names(object$b)
   colnames(table) <- c("Estimate","Std. Error","t value","Pr(>|t|)","")
 
-  print.matrix(table, quote = FALSE, right = TRUE )
+  ##print.matrix(table, quote = FALSE, right = TRUE )
+  ##prmatrix(table, quote = FALSE, right = TRUE )
+  print(table, quote = FALSE, right = TRUE )
   cat("---\nSignif. codes: ",attr(Signif,"legend"),"\n")
 
   cat(paste("\nResidual standard error:", round(object$s, digits),  ## s ist the variance, isn't it???

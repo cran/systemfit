@@ -1,11 +1,11 @@
 
-%    $Id: systemfit.Rd,v 1.11 2004/11/26 09:41:59 henningsena Exp $
+%    $Id: systemfit.Rd,v 1.12 2005/08/24 22:44:47 hamannj Exp $
 
 
 \name{systemfit}
 \alias{systemfit}
 
-\title{Equation System Estimation}
+\title{Linear Equation System Estimation}
 
 \description{
   Fits a set of linear structural equations using Ordinary Least
