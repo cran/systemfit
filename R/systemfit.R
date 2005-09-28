@@ -1,4 +1,4 @@
-###   $Id: systemfit.R,v 1.34 2005/08/24 22:44:47 hamannj Exp $
+###   $Id: systemfit.R,v 1.35 2005/09/27 13:13:00 henningsena Exp $
 ###
 ###            Simultaneous Equation Estimation for R
 ###
@@ -627,7 +627,7 @@ systemfit <- function( method,
     # datai <- model.frame(Terms, m)
     # the following lines are substituted for the previous line to
     # allow transformed variables in the formulas (e.g. "log(x1)")
-    # code provided by Mikko Pakkanen 
+    # code provided by Mikko Pakkanen
     resp <- model.extract( m, "response" )
     # using model.matrix instead of model.frame, need to get the output
     # variable separately
@@ -647,8 +647,8 @@ systemfit <- function( method,
       # datai <- cbind( datai, model.frame(Terms, m))
       # the following lines are substituted for the previous line to
       # allow transformed variables in the formulas (e.g. "log(x1)")
-      # code provided by Mikko Pakkanen 
-      datai <- cbind( datai, 
+      # code provided by Mikko Pakkanen
+      datai <- cbind( datai,
          as.data.frame( ( model.matrix( Terms, m ) )[ , -1 ] ) )
     }
 
@@ -1110,60 +1110,36 @@ se.ratio.systemfit <- function( resultsi, resultsj, eqni ) {
 
 
 ## this function returns test statistic for
-## the hausman test which.... i forget, but people want to see it...
-## from the sas docs
-## given 2 estimators, b0 abd b1, where under the null hypothesis,
-## both are consistent, but only b0 is asympt. efficient and
-## under the alter. hypo only b1 is consistent, so the statistic (m) is
-
+## the hausman test
 # The m-statistic is then distributed with k degrees of freedom, where k
 # is the rank of the matrix .A generalized inverse is used, as
 # recommended by Hausman (1982).
 
-# you need to fix this up to return the test statistic, df, and the p value
+hausman.systemfit <- function( results2sls, results3sls ) {
 
-## man is this wrong...
-hausman.systemfit <- function( li.results, fi.results ) {
+   hausman <- list()
 
-  ## build the variance-covariance matrix
-  ## for the full information and the limited information
-  ## matricies
-  ficovb <- NULL
-  licovb <- NULL
-  lib    <- NULL
-  fib    <- NULL
+   hausman$q <- results2sls$b - results3sls$b
+   hausman$qVar <- results2sls$bcov - results3sls$bcov
 
-  ## build the final large matrix...
-  for(i in 1:li.results$g ) {
-    fitr <- NULL
-    litr <- NULL
+#    if( min( eigen( hausman$qVar )$values ) < 0 ) {
+#       warning( "the matrix V is not 'positive definite'" )
+#    }
 
-    ## get the dimensions of the current matrix
-    for(j in 1:li.results$g ) {
-      if( i == j ) {
-        litr <- cbind( litr, li.results$eq[[i]]$bcov )
-      } else {
-        ## bind the zero matrix to the row
-        di   <- dim( li.results$eq[[i]]$bcov )[1]
-        dj   <- dim( li.results$eq[[j]]$bcov )[1]
-        litr <- cbind( litr, matrix( 0, di, dj ) )
-      }
-    }
-    licovb <- rbind( licovb, litr )
+   hausman$m <- t( hausman$q ) %*% solve( hausman$qVar, hausman$q )
+   hausman$df <- nrow( hausman$qVar )
+   hausman$pval <- 1 - pchisq( hausman$m, hausman$df )
 
-    ## now add the rows of the parameter estimates
-    ## to the big_beta matrix to compute the differences
-    lib <- c( lib, li.results$eq[[i]]$b )
-    fib <- c( fib, fi.results$eq[[i]]$b )
-  }
-  vli <- licovb
-  vfi <- fi.results$bcov
-  q   <- fib - lib
-
-  hausman <- t( q ) %*% solve( vli - vfi ) %*% q
-  hausman
+   class( hausman ) <- "hausman.systemfit"
+   return( hausman )
 }
 
+print.hausman.systemfit <- function( x, digits=6, ... ) {
+   save.digits <- unlist( options( digits = digits ) )
+   on.exit( options( digits = save.digits ) )
+   cat( x$m, " (P-value: ", x$pval, ")\n", sep = "" )
+   invisible( x )
+}
 
 ## Likelihood Ratio Test
 lrtest.systemfit <- function( resultc, resultu ) {

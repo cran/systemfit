@@ -1,35 +1,53 @@
 
-% 	$Id: hausman.systemfit.Rd,v 1.5 2004/02/18 17:35:41 henningsena Exp $	
+%  $Id: hausman.systemfit.Rd,v 1.6 2005/09/27 13:13:00 henningsena Exp $
 
 \name{hausman.systemfit}
 \alias{hausman.systemfit}
 
-\title{Hausman's Test}
+\title{Hausman Test}
 
 \description{
-  \code{hausman} returns the Hausman's statistic for specification.
-
-  \deqn{q'(V_1 - V_0)q}
-
-  where $V_1$ and $V_0$ are the covb values from a \code{twostage} or
-  \code{threestage} object and q is the difference in the b vectors from
-  the \code{twostage} or \code{threestage} objects.
-
+  \code{hausman.systemfit} returns the Hausman statistic for a specification test.
 }
 
 \usage{
-hausman.systemfit( li.results, fi.results )
+   hausman.systemfit( results2sls, results3sls )
 }
 
 \arguments{
-  \item{li.results}{the limited information results object
-    (\code{twostage}) }
-  \item{fi.results}{the full information results object
-    (\code{threestage}) }
+  \item{ results2sls }{result of a \emph{2SLS} (limited information) estimation
+     returned by \code{\link{systemfit}}.}
+  \item{ results3sls }{result of a \emph{3SLS} (full information) estimation
+     returned by \code{\link{systemfit}}.}
+}
+
+\details{
+   The null hypotheses of the test is that all exogenous variables are
+   uncorrelated with all disturbance terms.
+   Under this hypothesis both the 2SLS and the 3SLS estimator are consistent
+   but only the 3SLS estimator is (asymptotically) efficient.
+   Under the alternative hypothesis the 2SLS estimator is consistent
+   but the 3SLS estimator is inconsistent.
+
+   The Hausman test statistic is
+
+   \deqn{m = ( b_2 - b_3 )' ( V_2 - V_3 ) ( b_2 - b_3 ) }
+
+   where $b_2$ and $V_2$ are the estimated coefficients and their variance
+   covariance matrix of a \emph{2SLS} estimation and
+   $b_3$ and $V_3$ are the estimated coefficients and their variance
+   covariance matrix of a \emph{3SLS} estimation.
 }
 
 \value{
-  \code{hausman.systemfit} returns the value of the test statistic.
+   \code{hausman.systemfit} returns a list of the class
+    \code{hausman.systemfit} that contains following elements:
+   \item{q}{vector of the differences between the estimated coefficients.}
+   \item{qVar}{variance covariance matrix of \code{q} (difference between the
+     variance covariance matrices of the estimated coefficients).}
+   \item{m}{the Hausman test statistic.}
+   \item{df}{degrees of freedom.}
+   \item{pval}{P-value of the test.}
 }
 
 \references{
@@ -46,7 +64,9 @@ hausman.systemfit( li.results, fi.results )
 
 }
 
-\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
+\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com},\cr
+  Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de} }
+}
 
 \seealso{\code{\link{systemfit}}}
 
@@ -54,25 +74,21 @@ hausman.systemfit( li.results, fi.results )
 \dontrun{library( systemfit )}
 
 data( kmenta )
-attach( kmenta )
 demand <- q ~ p + d
 supply <- q ~ p + f + a
 inst <- ~ d + f + a
 labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
-## perform the estimation and report the results for the whole system
-fit2sls <- systemfit( "2SLS", system, labels, inst)
-fit3sls <- systemfit( "3SLS", system, labels, inst)
+## perform the estimations
+fit2sls <- systemfit( "2SLS", system, labels, inst, data = kmenta )
+fit3sls <- systemfit( "3SLS", system, labels, inst, data = kmenta )
 
-## perform the hausman test on the first equation
+## perform the Hausman test
 h <- hausman.systemfit( fit2sls, fit3sls )
-pval <- 1 - pchisq( h, dim( fit3sls$bcov )[1] )
-
 print( h )
-print( pval )
-
 }
+
 \keyword{models}
 
 
