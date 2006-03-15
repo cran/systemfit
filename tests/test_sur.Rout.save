@@ -1,6 +1,7 @@
 
 R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.0  (2005-04-18), ISBN 3-900051-07-0
+Version 2.2.0  (2005-10-06 r35749)
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -16,13 +17,10 @@ Type 'q()' to quit R.
 
 > 
 > library( systemfit )
-> data( kmenta )
+> data( "Kmenta" )
 > 
-> demand <- q ~ p + d
-> supply <- q ~ p + f + a
-> inst   <- ~ d + f + a
-> inst1  <- ~ d + f
-> instlist <- list( inst1, inst )
+> demand <- consump ~ price + income
+> supply <- consump ~ price + farmPrice + trend
 > labels <- list( "demand", "supply" )
 > system <- list( demand, supply )
 > restrm <- matrix(0,1,7)  # restriction matrix "R"
@@ -51,13 +49,13 @@ Type 'q()' to quit R.
 > 
 > # the standard equations do not converge and lead to a singular weighting matrix
 > # both in R and in EViews, since both equations have the same endogenous variable
-> supply2 <- p ~ d + f + a
+> supply2 <- price ~ income + farmPrice + trend
 > system2 <- list( demand, supply2 )
 > 
 > 
 > ## *************** SUR estimation ************************
-> fitsur1 <- systemfit( "SUR", system, labels, data = kmenta )
-> print( fitsur1 )
+> fitsur1 <- systemfit( "SUR", system, labels, data = Kmenta )
+> print( summary( fitsur1 ) )
 
 systemfit results 
 method: SUR 
@@ -85,13 +83,13 @@ The determinant of the residual covariance matrix: 0.879285
 OLS R-squared value of the system: 0.683453
 McElroy's R-squared value for the system: 0.788722
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.332894   7.514452 13.218913        0 ***
-p           -0.275486   0.088509 -3.112513 0.006332  **
-d             0.29855   0.041945  7.117605    2e-06 ***
+price       -0.275486   0.088509 -3.112513 0.006332  **
+income        0.29855   0.041945  7.117605    2e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -101,14 +99,14 @@ SSR: 65.682902 MSE: 3.8637 Root MSE: 1.96563
 Multiple R-Squared: 0.755019 Adjusted R-Squared: 0.726198 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 61.966166   11.08079 5.592215    4e-05 ***
-p            0.146884   0.094435 1.555397 0.139408    
-f            0.214004   0.039868 5.367761  6.3e-05 ***
-a            0.339304   0.067911 4.996283 0.000132 ***
+price        0.146884   0.094435 1.555397 0.139408    
+farmPrice    0.214004   0.039868 5.367761  6.3e-05 ***
+trend        0.339304   0.067911 4.996283 0.000132 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -118,27 +116,27 @@ SSR: 104.05843 MSE: 6.503652 Root MSE: 2.550226
 Multiple R-Squared: 0.611888 Adjusted R-Squared: 0.539117 
 
 > print( round( fitsur1$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   56.466996 -0.589446  0.027427  58.855792 -0.611341  0.022179
-p             -0.589446  0.007834 -0.001990  -0.375272  0.005563 -0.001609
-d              0.027427 -0.001990  0.001759  -0.216483  0.000563  0.001423
-              58.855792 -0.375272 -0.216483 122.783909 -0.961139 -0.237692
-              -0.611341  0.005563  0.000563  -0.961139  0.008918  0.000629
-               0.022179 -0.001609  0.001423  -0.237692  0.000629  0.001589
-               0.033691 -0.002444  0.002161  -0.323380  0.000799  0.002018
-                     
-(Intercept)  0.033691
-p           -0.002444
-d            0.002161
-            -0.323380
-             0.000799
-             0.002018
-             0.004612
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.466996  -0.589446    0.027427        58.855792
+eq 1 price              -0.589446   0.007834   -0.001990        -0.375272
+eq 1 income              0.027427  -0.001990    0.001759        -0.216483
+eq 2 (Intercept)        58.855792  -0.375272   -0.216483       122.783909
+eq 2 price              -0.611341   0.005563    0.000563        -0.961139
+eq 2 farmPrice           0.022179  -0.001609    0.001423        -0.237692
+eq 2 trend               0.033691  -0.002444    0.002161        -0.323380
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.611341       0.022179   0.033691
+eq 1 price         0.005563      -0.001609  -0.002444
+eq 1 income        0.000563       0.001423   0.002161
+eq 2 (Intercept)  -0.961139      -0.237692  -0.323380
+eq 2 price         0.008918       0.000629   0.000799
+eq 2 farmPrice     0.000629       0.001589   0.002018
+eq 2 trend         0.000799       0.002018   0.004612
 > 
 > ## ********************* SUR (EViews-like) *****************
-> fitsur1e <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 0,
+> fitsur1e <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 0,
 +    probdfsys = TRUE )
-> print( fitsur1e )
+> print( summary( fitsur1e ) )
 
 systemfit results 
 method: SUR 
@@ -166,13 +164,13 @@ The determinant of the residual covariance matrix: 0.59835
 OLS R-squared value of the system: 0.683464
 McElroy's R-squared value for the system: 0.747844
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.275662   6.927983 14.329663        0 ***
-p           -0.271333   0.081601 -3.325108 0.002175  **
-d            0.294879   0.038672   7.62519        0 ***
+price       -0.271333   0.081601 -3.325108 0.002175  **
+income       0.294879   0.038672   7.62519        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -182,14 +180,14 @@ SSR: 66.185679 MSE: 3.893275 Root MSE: 1.973138
 Multiple R-Squared: 0.753144 Adjusted R-Squared: 0.724102 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 62.294214    9.91096 6.285387        0 ***
-p            0.146147   0.084465 1.730257 0.092928   .
-f            0.212143   0.035659 5.949148    1e-06 ***
-a            0.332212   0.060742 5.469253    5e-06 ***
+price        0.146147   0.084465 1.730257 0.092928   .
+farmPrice    0.212143   0.035659 5.949148    1e-06 ***
+trend        0.332212   0.060742 5.469253    5e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -199,26 +197,26 @@ SSR: 103.549894 MSE: 6.471868 Root MSE: 2.543987
 Multiple R-Squared: 0.613785 Adjusted R-Squared: 0.541369 
 
 > print( round( fitsur1e$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   47.996947 -0.501029  0.023313 48.533729 -0.504124  0.018289
-p             -0.501029  0.006659 -0.001691 -0.309457  0.004587 -0.001327
-d              0.023313 -0.001691  0.001496 -0.178516  0.000464  0.001173
-              48.533729 -0.309457 -0.178516 98.227127 -0.768911 -0.190154
-              -0.504124  0.004587  0.000464 -0.768911  0.007134  0.000503
-               0.018289 -0.001327  0.001173 -0.190154  0.000503  0.001272
-               0.027783 -0.002016  0.001782 -0.258704  0.000639  0.001615
-                     
-(Intercept)  0.027783
-p           -0.002016
-d            0.001782
-            -0.258704
-             0.000639
-             0.001615
-             0.003690
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        47.996947  -0.501029    0.023313        48.533729
+eq 1 price              -0.501029   0.006659   -0.001691        -0.309457
+eq 1 income              0.023313  -0.001691    0.001496        -0.178516
+eq 2 (Intercept)        48.533729  -0.309457   -0.178516        98.227127
+eq 2 price              -0.504124   0.004587    0.000464        -0.768911
+eq 2 farmPrice           0.018289  -0.001327    0.001173        -0.190154
+eq 2 trend               0.027783  -0.002016    0.001782        -0.258704
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.504124       0.018289   0.027783
+eq 1 price         0.004587      -0.001327  -0.002016
+eq 1 income        0.000464       0.001173   0.001782
+eq 2 (Intercept)  -0.768911      -0.190154  -0.258704
+eq 2 price         0.007134       0.000503   0.000639
+eq 2 farmPrice     0.000503       0.001272   0.001615
+eq 2 trend         0.000639       0.001615   0.003690
 > 
 > ## ********************* SUR (rcovformula=2) *****************
-> fitsur1c <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 2 )
-> print( fitsur1c )
+> fitsur1c <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 2 )
+> print( summary( fitsur1c ) )
 
 systemfit results 
 method: SUR 
@@ -248,13 +246,13 @@ The determinant of the residual covariance matrix: -0.896033
 OLS R-squared value of the system: 0.67901
 McElroy's R-squared value for the system: 1.00928
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.211993   7.512677 13.205945        0 ***
-p           -0.266714   0.087712 -3.040792 0.007383  **
-d            0.290795   0.040615  7.159724    2e-06 ***
+price       -0.266714   0.087712 -3.040792 0.007383  **
+income       0.290795   0.040615  7.159724    2e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -264,14 +262,14 @@ SSR: 66.802201 MSE: 3.929541 Root MSE: 1.982307
 Multiple R-Squared: 0.750844 Adjusted R-Squared: 0.721532 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 63.076817   10.97351 5.748099    3e-05 ***
-p            0.143864   0.094341 1.524947 0.146794    
-f            0.206372   0.038413 5.372498  6.2e-05 ***
-a             0.33252   0.064028 5.193358  8.9e-05 ***
+price        0.143864   0.094341 1.524947 0.146794    
+farmPrice    0.206372   0.038413 5.372498  6.2e-05 ***
+trend         0.33252   0.064028 5.193358  8.9e-05 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -281,27 +279,27 @@ SSR: 105.322063 MSE: 6.582629 Root MSE: 2.565663
 Multiple R-Squared: 0.607175 Adjusted R-Squared: 0.53352 
 
 > print( round( fitsur1c$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   56.440312 -0.587510  0.025716  61.054961 -0.632489  0.021495
-p             -0.587510  0.007693 -0.001866  -0.403701  0.005792 -0.001559
-d              0.025716 -0.001866  0.001650  -0.209805  0.000546  0.001379
-              61.054961 -0.403701 -0.209805 120.417915 -0.954714 -0.221454
-              -0.632489  0.005792  0.000546  -0.954714  0.008900  0.000584
-               0.021495 -0.001559  0.001379  -0.221454  0.000584  0.001476
-               0.032652 -0.002369  0.002095  -0.308674  0.000772  0.001950
-                     
-(Intercept)  0.032652
-p           -0.002369
-d            0.002095
-            -0.308674
-             0.000772
-             0.001950
-             0.004100
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.440312  -0.587510    0.025716        61.054961
+eq 1 price              -0.587510   0.007693   -0.001866        -0.403701
+eq 1 income              0.025716  -0.001866    0.001650        -0.209805
+eq 2 (Intercept)        61.054961  -0.403701   -0.209805       120.417915
+eq 2 price              -0.632489   0.005792    0.000546        -0.954714
+eq 2 farmPrice           0.021495  -0.001559    0.001379        -0.221454
+eq 2 trend               0.032652  -0.002369    0.002095        -0.308674
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.632489       0.021495   0.032652
+eq 1 price         0.005792      -0.001559  -0.002369
+eq 1 income        0.000546       0.001379   0.002095
+eq 2 (Intercept)  -0.954714      -0.221454  -0.308674
+eq 2 price         0.008900       0.000584   0.000772
+eq 2 farmPrice     0.000584       0.001476   0.001950
+eq 2 trend         0.000772       0.001950   0.004100
 > 
 > ## *************** SUR (rcovformula=2, probdfsys = TRUE ) ***************
-> fitsur1cp <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 2,
+> fitsur1cp <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 2,
 +    probdfsys = TRUE )
-> print( fitsur1cp )
+> print( summary( fitsur1cp ) )
 
 systemfit results 
 method: SUR 
@@ -331,13 +329,13 @@ The determinant of the residual covariance matrix: -0.896033
 OLS R-squared value of the system: 0.67901
 McElroy's R-squared value for the system: 1.00928
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.211993   7.512677 13.205945        0 ***
-p           -0.266714   0.087712 -3.040792 0.004597  **
-d            0.290795   0.040615  7.159724        0 ***
+price       -0.266714   0.087712 -3.040792 0.004597  **
+income       0.290795   0.040615  7.159724        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -347,14 +345,14 @@ SSR: 66.802201 MSE: 3.929541 Root MSE: 1.982307
 Multiple R-Squared: 0.750844 Adjusted R-Squared: 0.721532 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 63.076817   10.97351 5.748099    2e-06 ***
-p            0.143864   0.094341 1.524947   0.1368    
-f            0.206372   0.038413 5.372498    6e-06 ***
-a             0.33252   0.064028 5.193358    1e-05 ***
+price        0.143864   0.094341 1.524947   0.1368    
+farmPrice    0.206372   0.038413 5.372498    6e-06 ***
+trend         0.33252   0.064028 5.193358    1e-05 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -364,26 +362,26 @@ SSR: 105.322063 MSE: 6.582629 Root MSE: 2.565663
 Multiple R-Squared: 0.607175 Adjusted R-Squared: 0.53352 
 
 > print( round( fitsur1cp$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   56.440312 -0.587510  0.025716  61.054961 -0.632489  0.021495
-p             -0.587510  0.007693 -0.001866  -0.403701  0.005792 -0.001559
-d              0.025716 -0.001866  0.001650  -0.209805  0.000546  0.001379
-              61.054961 -0.403701 -0.209805 120.417915 -0.954714 -0.221454
-              -0.632489  0.005792  0.000546  -0.954714  0.008900  0.000584
-               0.021495 -0.001559  0.001379  -0.221454  0.000584  0.001476
-               0.032652 -0.002369  0.002095  -0.308674  0.000772  0.001950
-                     
-(Intercept)  0.032652
-p           -0.002369
-d            0.002095
-            -0.308674
-             0.000772
-             0.001950
-             0.004100
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.440312  -0.587510    0.025716        61.054961
+eq 1 price              -0.587510   0.007693   -0.001866        -0.403701
+eq 1 income              0.025716  -0.001866    0.001650        -0.209805
+eq 2 (Intercept)        61.054961  -0.403701   -0.209805       120.417915
+eq 2 price              -0.632489   0.005792    0.000546        -0.954714
+eq 2 farmPrice           0.021495  -0.001559    0.001379        -0.221454
+eq 2 trend               0.032652  -0.002369    0.002095        -0.308674
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.632489       0.021495   0.032652
+eq 1 price         0.005792      -0.001559  -0.002369
+eq 1 income        0.000546       0.001379   0.002095
+eq 2 (Intercept)  -0.954714      -0.221454  -0.308674
+eq 2 price         0.008900       0.000584   0.000772
+eq 2 farmPrice     0.000584       0.001476   0.001950
+eq 2 trend         0.000772       0.001950   0.004100
 > 
 > ## ********************* SUR (rcovformula=3) *****************
-> fitsur1c <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 3 )
-> print( fitsur1c )
+> fitsur1c <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 3 )
+> print( summary( fitsur1c ) )
 
 systemfit results 
 method: SUR 
@@ -413,13 +411,13 @@ The determinant of the residual covariance matrix: -0.735302
 OLS R-squared value of the system: 0.679506
 McElroy's R-squared value for the system: 0.95731
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.225003   7.512869 13.207338        0 ***
-p           -0.267658   0.087799 -3.048537 0.007262  **
-d            0.291629   0.040762  7.154496    2e-06 ***
+price       -0.267658   0.087799 -3.048537 0.007262  **
+income       0.291629   0.040762  7.154496    2e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -429,14 +427,14 @@ SSR: 66.67132 MSE: 3.921842 Root MSE: 1.980364
 Multiple R-Squared: 0.751332 Adjusted R-Squared: 0.722077 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 62.957541  10.985025 5.731215  3.1e-05 ***
-p            0.144186   0.094351 1.528194 0.145991    
-f            0.207185   0.038568 5.371945  6.2e-05 ***
-a            0.333341   0.064412  5.17516  9.2e-05 ***
+price        0.144186   0.094351 1.528194 0.145991    
+farmPrice    0.207185   0.038568 5.371945  6.2e-05 ***
+trend        0.333341   0.064412  5.17516  9.2e-05 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -446,26 +444,26 @@ SSR: 105.186783 MSE: 6.574174 Root MSE: 2.564015
 Multiple R-Squared: 0.607679 Adjusted R-Squared: 0.534119 
 
 > print( round( fitsur1c$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   56.443206 -0.587720  0.025901  60.860716 -0.630659  0.021589
-p             -0.587720  0.007709 -0.001879  -0.400864  0.005771 -0.001566
-d              0.025901 -0.001879  0.001662  -0.210729  0.000548  0.001385
-              60.860716 -0.400864 -0.210729 120.670780 -0.955395 -0.223176
-              -0.630659  0.005771  0.000548  -0.955395  0.008902  0.000589
-               0.021589 -0.001566  0.001385  -0.223176  0.000589  0.001487
-               0.032796 -0.002379  0.002104  -0.310422  0.000776  0.001959
-                     
-(Intercept)  0.032796
-p           -0.002379
-d            0.002104
-            -0.310422
-             0.000776
-             0.001959
-             0.004149
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.443206  -0.587720    0.025901        60.860716
+eq 1 price              -0.587720   0.007709   -0.001879        -0.400864
+eq 1 income              0.025901  -0.001879    0.001662        -0.210729
+eq 2 (Intercept)        60.860716  -0.400864   -0.210729       120.670780
+eq 2 price              -0.630659   0.005771    0.000548        -0.955395
+eq 2 farmPrice           0.021589  -0.001566    0.001385        -0.223176
+eq 2 trend               0.032796  -0.002379    0.002104        -0.310422
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.630659       0.021589   0.032796
+eq 1 price         0.005771      -0.001566  -0.002379
+eq 1 income        0.000548       0.001385   0.002104
+eq 2 (Intercept)  -0.955395      -0.223176  -0.310422
+eq 2 price         0.008902       0.000589   0.000776
+eq 2 farmPrice     0.000589       0.001487   0.001959
+eq 2 trend         0.000776       0.001959   0.004149
 > 
 > ## *************** SUR with cross-equation restriction **************
-> fitsur2 <- systemfit( "SUR", system, labels, data = kmenta, R.restr = restrm )
-> print( fitsur2 )
+> fitsur2 <- systemfit( "SUR", system, labels, data = Kmenta, R.restr = restrm )
+> print( summary( fitsur2 ) )
 
 systemfit results 
 method: SUR 
@@ -493,13 +491,13 @@ The determinant of the residual covariance matrix: 0.93322
 OLS R-squared value of the system: 0.665436
 McElroy's R-squared value for the system: 0.753405
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 98.840761   7.558137 13.077398        0 ***
-p            -0.23978   0.085993  -2.78835 0.008613  **
-d            0.266981   0.036842   7.24657        0 ***
+price        -0.23978   0.085993  -2.78835 0.008613  **
+income       0.266981   0.036842   7.24657        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -509,14 +507,14 @@ SSR: 71.596524 MSE: 4.21156 Root MSE: 2.052209
 Multiple R-Squared: 0.732963 Adjusted R-Squared: 0.701547 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 67.428338  10.664717 6.322562        0 ***
-p            0.133217    0.09531 1.397721  0.17125    
-f            0.179481   0.033654 5.333128    6e-06 ***
-a            0.266981   0.036842  7.24657        0 ***
+price        0.133217    0.09531 1.397721  0.17125    
+farmPrice    0.179481   0.033654 5.333128    6e-06 ***
+trend        0.266981   0.036842  7.24657        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -526,27 +524,27 @@ SSR: 107.806415 MSE: 6.737901 Root MSE: 2.595747
 Multiple R-Squared: 0.597909 Adjusted R-Squared: 0.522517 
 
 > print( round( fitsur2$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   57.125431 -0.589892  0.021160  64.595187 -0.662552  0.017322
-p             -0.589892  0.007395 -0.001535  -0.482110  0.006195 -0.001257
-d              0.021160 -0.001535  0.001357  -0.165599  0.000440  0.001111
-              64.595187 -0.482110 -0.165599 113.736182 -0.956493 -0.165927
-              -0.662552  0.006195  0.000440  -0.956493  0.009084  0.000448
-               0.017322 -0.001257  0.001111  -0.165927  0.000448  0.001133
-               0.021160 -0.001535  0.001357  -0.165599  0.000440  0.001111
-                     
-(Intercept)  0.021160
-p           -0.001535
-d            0.001357
-            -0.165599
-             0.000440
-             0.001111
-             0.001357
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        57.125431  -0.589892    0.021160        64.595187
+eq 1 price              -0.589892   0.007395   -0.001535        -0.482110
+eq 1 income              0.021160  -0.001535    0.001357        -0.165599
+eq 2 (Intercept)        64.595187  -0.482110   -0.165599       113.736182
+eq 2 price              -0.662552   0.006195    0.000440        -0.956493
+eq 2 farmPrice           0.017322  -0.001257    0.001111        -0.165927
+eq 2 trend               0.021160  -0.001535    0.001357        -0.165599
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.662552       0.017322   0.021160
+eq 1 price         0.006195      -0.001257  -0.001535
+eq 1 income        0.000440       0.001111   0.001357
+eq 2 (Intercept)  -0.956493      -0.165927  -0.165599
+eq 2 price         0.009084       0.000448   0.000440
+eq 2 farmPrice     0.000448       0.001133   0.001111
+eq 2 trend         0.000440       0.001111   0.001357
 > 
 > ## *************** SUR with cross-equation restriction (EViews-like) **
-> fitsur2e <- systemfit( "SUR", system, labels, data = kmenta, R.restr = restrm,
+> fitsur2e <- systemfit( "SUR", system, labels, data = Kmenta, R.restr = restrm,
 +    rcovformula = 0 )
-> print( fitsur2e )
+> print( summary( fitsur2e ) )
 
 systemfit results 
 method: SUR 
@@ -574,13 +572,13 @@ The determinant of the residual covariance matrix: 0.619673
 OLS R-squared value of the system: 0.6634
 McElroy's R-squared value for the system: 0.707287
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 98.779936   6.968721 14.174758        0 ***
-p           -0.235367   0.079496 -2.960727 0.005561  **
-d            0.263079   0.034356  7.657404        0 ***
+price       -0.235367   0.079496 -2.960727 0.005561  **
+income       0.263079   0.034356  7.657404        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -590,14 +588,14 @@ SSR: 72.577327 MSE: 4.269255 Root MSE: 2.066217
 Multiple R-Squared: 0.729305 Adjusted R-Squared: 0.697458 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 67.603913   9.571168 7.063288        0 ***
-p            0.132825    0.08527 1.557696 0.128566    
-f            0.178493   0.030506  5.85111    1e-06 ***
-a            0.263079   0.034356 7.657404        0 ***
+price        0.132825    0.08527 1.557696 0.128566    
+farmPrice    0.178493   0.030506  5.85111    1e-06 ***
+trend        0.263079   0.034356 7.657404        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -607,26 +605,26 @@ SSR: 107.916871 MSE: 6.744804 Root MSE: 2.597076
 Multiple R-Squared: 0.597497 Adjusted R-Squared: 0.522027 
 
 > print( round( fitsur2e$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   48.563078 -0.501877  0.018400 53.201367 -0.546194  0.014689
-p             -0.501877  0.006320 -0.001335 -0.392828  0.005097 -0.001066
-d              0.018400 -0.001335  0.001180 -0.140738  0.000373  0.000942
-              53.201367 -0.392828 -0.140738 91.607253 -0.766739 -0.136644
-              -0.546194  0.005097  0.000373 -0.766739  0.007271  0.000368
-               0.014689 -0.001066  0.000942 -0.136644  0.000368  0.000931
-               0.018400 -0.001335  0.001180 -0.140738  0.000373  0.000942
-                     
-(Intercept)  0.018400
-p           -0.001335
-d            0.001180
-            -0.140738
-             0.000373
-             0.000942
-             0.001180
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.563078  -0.501877    0.018400        53.201367
+eq 1 price              -0.501877   0.006320   -0.001335        -0.392828
+eq 1 income              0.018400  -0.001335    0.001180        -0.140738
+eq 2 (Intercept)        53.201367  -0.392828   -0.140738        91.607253
+eq 2 price              -0.546194   0.005097    0.000373        -0.766739
+eq 2 farmPrice           0.014689  -0.001066    0.000942        -0.136644
+eq 2 trend               0.018400  -0.001335    0.001180        -0.140738
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.546194       0.014689   0.018400
+eq 1 price         0.005097      -0.001066  -0.001335
+eq 1 income        0.000373       0.000942   0.001180
+eq 2 (Intercept)  -0.766739      -0.136644  -0.140738
+eq 2 price         0.007271       0.000368   0.000373
+eq 2 farmPrice     0.000368       0.000931   0.000942
+eq 2 trend         0.000373       0.000942   0.001180
 > 
 > ## *************** SUR with restriction via TX *******************
-> fitsur3 <- systemfit( "SUR", system, labels, data = kmenta, TX = tc )
-> print( fitsur3 )
+> fitsur3 <- systemfit( "SUR", system, labels, data = Kmenta, TX = tc )
+> print( summary( fitsur3 ) )
 
 systemfit results 
 method: SUR 
@@ -654,13 +652,13 @@ The determinant of the residual covariance matrix: 0.93322
 OLS R-squared value of the system: 0.665436
 McElroy's R-squared value for the system: 0.753405
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 98.840761   7.558137 13.077398        0 ***
-p            -0.23978   0.085993  -2.78835 0.008613  **
-d            0.266981   0.036842   7.24657        0 ***
+price        -0.23978   0.085993  -2.78835 0.008613  **
+income       0.266981   0.036842   7.24657        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -670,14 +668,14 @@ SSR: 71.596524 MSE: 4.21156 Root MSE: 2.052209
 Multiple R-Squared: 0.732963 Adjusted R-Squared: 0.701547 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 67.428338  10.664717 6.322562        0 ***
-p            0.133217    0.09531 1.397721  0.17125    
-f            0.179481   0.033654 5.333128    6e-06 ***
-a            0.266981   0.036842  7.24657        0 ***
+price        0.133217    0.09531 1.397721  0.17125    
+farmPrice    0.179481   0.033654 5.333128    6e-06 ***
+trend        0.266981   0.036842  7.24657        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -687,19 +685,27 @@ SSR: 107.806415 MSE: 6.737901 Root MSE: 2.595747
 Multiple R-Squared: 0.597909 Adjusted R-Squared: 0.522517 
 
 > print( round( fitsur3$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]       [,4]      [,5]      [,6]      [,7]
-[1,] 57.125431 -0.589892  0.021160  64.595187 -0.662552  0.017322  0.021160
-[2,] -0.589892  0.007395 -0.001535  -0.482110  0.006195 -0.001257 -0.001535
-[3,]  0.021160 -0.001535  0.001357  -0.165599  0.000440  0.001111  0.001357
-[4,] 64.595187 -0.482110 -0.165599 113.736182 -0.956493 -0.165927 -0.165599
-[5,] -0.662552  0.006195  0.000440  -0.956493  0.009084  0.000448  0.000440
-[6,]  0.017322 -0.001257  0.001111  -0.165927  0.000448  0.001133  0.001111
-[7,]  0.021160 -0.001535  0.001357  -0.165599  0.000440  0.001111  0.001357
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        57.125431  -0.589892    0.021160        64.595187
+eq 1 price              -0.589892   0.007395   -0.001535        -0.482110
+eq 1 income              0.021160  -0.001535    0.001357        -0.165599
+eq 2 (Intercept)        64.595187  -0.482110   -0.165599       113.736182
+eq 2 price              -0.662552   0.006195    0.000440        -0.956493
+eq 2 farmPrice           0.017322  -0.001257    0.001111        -0.165927
+eq 2 trend               0.021160  -0.001535    0.001357        -0.165599
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.662552       0.017322   0.021160
+eq 1 price         0.006195      -0.001257  -0.001535
+eq 1 income        0.000440       0.001111   0.001357
+eq 2 (Intercept)  -0.956493      -0.165927  -0.165599
+eq 2 price         0.009084       0.000448   0.000440
+eq 2 farmPrice     0.000448       0.001133   0.001111
+eq 2 trend         0.000440       0.001111   0.001357
 > 
 > ## *************** SUR with restriction via TX (EViews-like) **************
-> fitsur3e <- systemfit( "SUR", system, labels, data = kmenta, TX = tc,
+> fitsur3e <- systemfit( "SUR", system, labels, data = Kmenta, TX = tc,
 +    rcovformula = 0 )
-> print( fitsur3e )
+> print( summary( fitsur3e ) )
 
 systemfit results 
 method: SUR 
@@ -727,13 +733,13 @@ The determinant of the residual covariance matrix: 0.619673
 OLS R-squared value of the system: 0.6634
 McElroy's R-squared value for the system: 0.707287
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 98.779936   6.968721 14.174758        0 ***
-p           -0.235367   0.079496 -2.960727 0.005561  **
-d            0.263079   0.034356  7.657404        0 ***
+price       -0.235367   0.079496 -2.960727 0.005561  **
+income       0.263079   0.034356  7.657404        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -743,14 +749,14 @@ SSR: 72.577327 MSE: 4.269255 Root MSE: 2.066217
 Multiple R-Squared: 0.729305 Adjusted R-Squared: 0.697458 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 67.603913   9.571168 7.063288        0 ***
-p            0.132825    0.08527 1.557696 0.128566    
-f            0.178493   0.030506  5.85111    1e-06 ***
-a            0.263079   0.034356 7.657404        0 ***
+price        0.132825    0.08527 1.557696 0.128566    
+farmPrice    0.178493   0.030506  5.85111    1e-06 ***
+trend        0.263079   0.034356 7.657404        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -760,19 +766,27 @@ SSR: 107.916871 MSE: 6.744804 Root MSE: 2.597076
 Multiple R-Squared: 0.597497 Adjusted R-Squared: 0.522027 
 
 > print( round( fitsur3e$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 48.563078 -0.501877  0.018400 53.201367 -0.546194  0.014689  0.018400
-[2,] -0.501877  0.006320 -0.001335 -0.392828  0.005097 -0.001066 -0.001335
-[3,]  0.018400 -0.001335  0.001180 -0.140738  0.000373  0.000942  0.001180
-[4,] 53.201367 -0.392828 -0.140738 91.607253 -0.766739 -0.136644 -0.140738
-[5,] -0.546194  0.005097  0.000373 -0.766739  0.007271  0.000368  0.000373
-[6,]  0.014689 -0.001066  0.000942 -0.136644  0.000368  0.000931  0.000942
-[7,]  0.018400 -0.001335  0.001180 -0.140738  0.000373  0.000942  0.001180
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.563078  -0.501877    0.018400        53.201367
+eq 1 price              -0.501877   0.006320   -0.001335        -0.392828
+eq 1 income              0.018400  -0.001335    0.001180        -0.140738
+eq 2 (Intercept)        53.201367  -0.392828   -0.140738        91.607253
+eq 2 price              -0.546194   0.005097    0.000373        -0.766739
+eq 2 farmPrice           0.014689  -0.001066    0.000942        -0.136644
+eq 2 trend               0.018400  -0.001335    0.001180        -0.140738
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.546194       0.014689   0.018400
+eq 1 price         0.005097      -0.001066  -0.001335
+eq 1 income        0.000373       0.000942   0.001180
+eq 2 (Intercept)  -0.766739      -0.136644  -0.140738
+eq 2 price         0.007271       0.000368   0.000373
+eq 2 farmPrice     0.000368       0.000931   0.000942
+eq 2 trend         0.000373       0.000942   0.001180
 > 
 > ## *************** SUR with 2 restrictions ***************************
-> fitsur4 <- systemfit( "SUR", system, labels, data = kmenta, R.restr = restr2m,
+> fitsur4 <- systemfit( "SUR", system, labels, data = Kmenta, R.restr = restr2m,
 +    q.restr = restr2q )
-> print( fitsur4 )
+> print( summary( fitsur4 ) )
 
 systemfit results 
 method: SUR 
@@ -800,13 +814,13 @@ The determinant of the residual covariance matrix: 1.75786
 OLS R-squared value of the system: 0.691438
 McElroy's R-squared value for the system: 0.689596
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 96.827525   7.466548 12.968179        0 ***
-p           -0.279771   0.083971 -3.331764 0.002046  **
-d            0.328631   0.020632 15.928109        0 ***
+price       -0.279771   0.083971 -3.331764 0.002046  **
+income       0.328631   0.020632 15.928109        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -816,14 +830,14 @@ SSR: 63.986801 MSE: 3.763929 Root MSE: 1.940085
 Multiple R-Squared: 0.761345 Adjusted R-Squared: 0.733268 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 52.938648   7.665482  6.906108        0 ***
-p            0.220229   0.083971  2.622692 0.012832   *
-f            0.232671   0.021215 10.967325        0 ***
-a            0.328631   0.020632 15.928109        0 ***
+price        0.220229   0.083971  2.622692 0.012832   *
+farmPrice    0.232671   0.021215 10.967325        0 ***
+trend        0.328631   0.020632 15.928109        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -833,27 +847,27 @@ SSR: 101.473089 MSE: 6.342068 Root MSE: 2.518346
 Multiple R-Squared: 0.62153 Adjusted R-Squared: 0.550567 
 
 > print( round( fitsur4$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   55.749333 -0.610130  0.056016 56.069726 -0.610130  0.047498
-p             -0.610130  0.007051 -0.000975 -0.620551  0.007051 -0.000771
-d              0.056016 -0.000975  0.000426  0.063771 -0.000975  0.000303
-              56.069726 -0.620551  0.063771 58.759619 -0.620551  0.030397
-              -0.610130  0.007051 -0.000975 -0.620551  0.007051 -0.000771
-               0.047498 -0.000771  0.000303  0.030397 -0.000771  0.000450
-               0.056016 -0.000975  0.000426  0.063771 -0.000975  0.000303
-                     
-(Intercept)  0.056016
-p           -0.000975
-d            0.000426
-             0.063771
-            -0.000975
-             0.000303
-             0.000426
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        55.749333  -0.610130    0.056016        56.069726
+eq 1 price              -0.610130   0.007051   -0.000975        -0.620551
+eq 1 income              0.056016  -0.000975    0.000426         0.063771
+eq 2 (Intercept)        56.069726  -0.620551    0.063771        58.759619
+eq 2 price              -0.610130   0.007051   -0.000975        -0.620551
+eq 2 farmPrice           0.047498  -0.000771    0.000303         0.030397
+eq 2 trend               0.056016  -0.000975    0.000426         0.063771
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.610130       0.047498   0.056016
+eq 1 price         0.007051      -0.000771  -0.000975
+eq 1 income       -0.000975       0.000303   0.000426
+eq 2 (Intercept)  -0.620551       0.030397   0.063771
+eq 2 price         0.007051      -0.000771  -0.000975
+eq 2 farmPrice    -0.000771       0.000450   0.000303
+eq 2 trend        -0.000975       0.000303   0.000426
 > 
 > ## *************** SUR with 2 restrictions (EViews-like) **************
-> fitsur4e <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 0,
+> fitsur4e <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 0,
 +    R.restr = restr2m, q.restr = restr2q )
-> print( fitsur4e )
+> print( summary( fitsur4e ) )
 
 systemfit results 
 method: SUR 
@@ -881,13 +895,13 @@ The determinant of the residual covariance matrix: 1.19981
 OLS R-squared value of the system: 0.692955
 McElroy's R-squared value for the system: 0.652956
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept)  97.26781   6.920022 14.055997        0 ***
-p           -0.285096   0.076719  -3.71611 0.000704 ***
-d            0.329579    0.01845 17.863736        0 ***
+price       -0.285096   0.076719  -3.71611 0.000704 ***
+income       0.329579    0.01845 17.863736        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -897,14 +911,14 @@ SSR: 63.811125 MSE: 3.753596 Root MSE: 1.93742
 Multiple R-Squared: 0.762 Adjusted R-Squared: 0.734 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 53.303998   7.104496  7.502855        0 ***
-p            0.214904   0.076719  2.801176 0.008238  **
-f            0.234299   0.018653 12.561069        0 ***
-a            0.329579    0.01845 17.863736        0 ***
+price        0.214904   0.076719  2.801176 0.008238  **
+farmPrice    0.234299   0.018653 12.561069        0 ***
+trend        0.329579    0.01845 17.863736        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -914,27 +928,27 @@ SSR: 100.835103 MSE: 6.302194 Root MSE: 2.510417
 Multiple R-Squared: 0.62391 Adjusted R-Squared: 0.553393 
 
 > print( round( fitsur4e$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   47.886704 -0.516747  0.040579 48.218725 -0.516747  0.033361
-p             -0.516747  0.005886 -0.000738 -0.526670  0.005886 -0.000562
-d              0.040579 -0.000738  0.000340  0.047594 -0.000738  0.000234
-              48.218725 -0.526670  0.047594 50.473858 -0.526670  0.020109
-              -0.516747  0.005886 -0.000738 -0.526670  0.005886 -0.000562
-               0.033361 -0.000562  0.000234  0.020109 -0.000562  0.000348
-               0.040579 -0.000738  0.000340  0.047594 -0.000738  0.000234
-                     
-(Intercept)  0.040579
-p           -0.000738
-d            0.000340
-             0.047594
-            -0.000738
-             0.000234
-             0.000340
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        47.886704  -0.516747    0.040579        48.218725
+eq 1 price              -0.516747   0.005886   -0.000738        -0.526670
+eq 1 income              0.040579  -0.000738    0.000340         0.047594
+eq 2 (Intercept)        48.218725  -0.526670    0.047594        50.473858
+eq 2 price              -0.516747   0.005886   -0.000738        -0.526670
+eq 2 farmPrice           0.033361  -0.000562    0.000234         0.020109
+eq 2 trend               0.040579  -0.000738    0.000340         0.047594
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.516747       0.033361   0.040579
+eq 1 price         0.005886      -0.000562  -0.000738
+eq 1 income       -0.000738       0.000234   0.000340
+eq 2 (Intercept)  -0.526670       0.020109   0.047594
+eq 2 price         0.005886      -0.000562  -0.000738
+eq 2 farmPrice    -0.000562       0.000348   0.000234
+eq 2 trend        -0.000738       0.000234   0.000340
 > 
 > ## *************** SUR with 2 restrictions (rcovformula = 2) **************
-> fitsur4e <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 2,
+> fitsur4e <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 2,
 +    R.restr = restr2m, q.restr = restr2q )
-> print( fitsur4e )
+> print( summary( fitsur4e ) )
 
 systemfit results 
 method: SUR 
@@ -962,13 +976,13 @@ The determinant of the residual covariance matrix: 0.0335271
 OLS R-squared value of the system: 0.673153
 McElroy's R-squared value for the system: 0.707639
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 92.526596   7.289606 12.692949        0 ***
-p           -0.230404   0.082692 -2.786302 0.008552  **
-d            0.322103   0.016626 19.373258        0 ***
+price       -0.230404   0.082692 -2.786302 0.008552  **
+income       0.322103   0.016626 19.373258        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -978,14 +992,14 @@ SSR: 67.047517 MSE: 3.943972 Root MSE: 1.985944
 Multiple R-Squared: 0.749929 Adjusted R-Squared: 0.720509 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 48.701089   7.403429   6.57818        0 ***
-p            0.269596   0.082692  3.260266 0.002483  **
-f            0.226135   0.016607 13.616644        0 ***
-a            0.322103   0.016626 19.373258        0 ***
+price        0.269596   0.082692  3.260266 0.002483  **
+farmPrice    0.226135   0.016607 13.616644        0 ***
+trend        0.322103   0.016626 19.373258        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -995,27 +1009,27 @@ SSR: 108.217072 MSE: 6.763567 Root MSE: 2.600686
 Multiple R-Squared: 0.596377 Adjusted R-Squared: 0.520698 
 
 > print( round( fitsur4e$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   53.138353 -0.593514  0.065746 53.390331 -0.593514  0.057048
-p             -0.593514  0.006838 -0.000927 -0.599312  0.006838 -0.000775
-d              0.065746 -0.000927  0.000276  0.069540 -0.000927  0.000210
-              53.390331 -0.599312  0.069540 54.810757 -0.599312  0.048653
-              -0.593514  0.006838 -0.000927 -0.599312  0.006838 -0.000775
-               0.057048 -0.000775  0.000210  0.048653 -0.000775  0.000276
-               0.065746 -0.000927  0.000276  0.069540 -0.000927  0.000210
-                     
-(Intercept)  0.065746
-p           -0.000927
-d            0.000276
-             0.069540
-            -0.000927
-             0.000210
-             0.000276
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        53.138353  -0.593514    0.065746        53.390331
+eq 1 price              -0.593514   0.006838   -0.000927        -0.599312
+eq 1 income              0.065746  -0.000927    0.000276         0.069540
+eq 2 (Intercept)        53.390331  -0.599312    0.069540        54.810757
+eq 2 price              -0.593514   0.006838   -0.000927        -0.599312
+eq 2 farmPrice           0.057048  -0.000775    0.000210         0.048653
+eq 2 trend               0.065746  -0.000927    0.000276         0.069540
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.593514       0.057048   0.065746
+eq 1 price         0.006838      -0.000775  -0.000927
+eq 1 income       -0.000927       0.000210   0.000276
+eq 2 (Intercept)  -0.599312       0.048653   0.069540
+eq 2 price         0.006838      -0.000775  -0.000927
+eq 2 farmPrice    -0.000775       0.000276   0.000210
+eq 2 trend        -0.000927       0.000210   0.000276
 > 
 > ## *************** SUR with 2 restrictions (rcovformula = 3) **************
-> fitsur4e <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 3,
+> fitsur4e <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 3,
 +    R.restr = restr2m, q.restr = restr2q )
-> print( fitsur4e )
+> print( summary( fitsur4e ) )
 
 systemfit results 
 method: SUR 
@@ -1043,13 +1057,13 @@ The determinant of the residual covariance matrix: 0.217064
 OLS R-squared value of the system: 0.676763
 McElroy's R-squared value for the system: 0.701594
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 93.197751   7.316811 12.737482        0 ***
-p           -0.238111   0.082935 -2.871059   0.0069  **
-d            0.323126   0.017039 18.963348        0 ***
+price       -0.238111   0.082935 -2.871059   0.0069  **
+income       0.323126   0.017039 18.963348        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1059,14 +1073,14 @@ SSR: 66.404772 MSE: 3.906163 Root MSE: 1.976402
 Multiple R-Squared: 0.752327 Adjusted R-Squared: 0.723189 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 49.367559   7.438141  6.637083        0 ***
-p            0.261889   0.082935  3.157772 0.003267  **
-f            0.227104   0.017083  13.29439        0 ***
-a            0.323126   0.017039 18.963348        0 ***
+price        0.261889   0.082935  3.157772 0.003267  **
+farmPrice    0.227104   0.017083  13.29439        0 ***
+trend        0.323126   0.017039 18.963348        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1076,27 +1090,27 @@ SSR: 106.923958 MSE: 6.682747 Root MSE: 2.585101
 Multiple R-Squared: 0.6012 Adjusted R-Squared: 0.526425 
 
 > print( round( fitsur4e$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   53.535723 -0.596854  0.065097 53.794733 -0.596854  0.056384
-p             -0.596854  0.006878 -0.000934 -0.603055  0.006878 -0.000777
-d              0.065097 -0.000934  0.000290  0.069226 -0.000934  0.000219
-              53.794733 -0.603055  0.069226 55.325936 -0.603055  0.047230
-              -0.596854  0.006878 -0.000934 -0.603055  0.006878 -0.000777
-               0.056384 -0.000777  0.000219  0.047230 -0.000777  0.000292
-               0.065097 -0.000934  0.000290  0.069226 -0.000934  0.000219
-                     
-(Intercept)  0.065097
-p           -0.000934
-d            0.000290
-             0.069226
-            -0.000934
-             0.000219
-             0.000290
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        53.535723  -0.596854    0.065097        53.794733
+eq 1 price              -0.596854   0.006878   -0.000934        -0.603055
+eq 1 income              0.065097  -0.000934    0.000290         0.069226
+eq 2 (Intercept)        53.794733  -0.603055    0.069226        55.325936
+eq 2 price              -0.596854   0.006878   -0.000934        -0.603055
+eq 2 farmPrice           0.056384  -0.000777    0.000219         0.047230
+eq 2 trend               0.065097  -0.000934    0.000290         0.069226
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.596854       0.056384   0.065097
+eq 1 price         0.006878      -0.000777  -0.000934
+eq 1 income       -0.000934       0.000219   0.000290
+eq 2 (Intercept)  -0.603055       0.047230   0.069226
+eq 2 price         0.006878      -0.000777  -0.000934
+eq 2 farmPrice    -0.000777       0.000292   0.000219
+eq 2 trend        -0.000934       0.000219   0.000290
 > 
 > ## *************** SUR with 2 restrictions via R and TX ****************
-> fitsur5 <- systemfit( "SUR", system, labels, data = kmenta, R.restr = restr3m,
+> fitsur5 <- systemfit( "SUR", system, labels, data = Kmenta, R.restr = restr3m,
 +    q.restr = restr3q, TX = tc )
-> print( fitsur5 )
+> print( summary( fitsur5 ) )
 
 systemfit results 
 method: SUR 
@@ -1124,13 +1138,13 @@ The determinant of the residual covariance matrix: 1.75786
 OLS R-squared value of the system: 0.691438
 McElroy's R-squared value for the system: 0.689596
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 96.827525   7.466548 12.968179        0 ***
-p           -0.279771   0.083971 -3.331764 0.002046  **
-d            0.328631   0.020632 15.928109        0 ***
+price       -0.279771   0.083971 -3.331764 0.002046  **
+income       0.328631   0.020632 15.928109        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1140,14 +1154,14 @@ SSR: 63.986801 MSE: 3.763929 Root MSE: 1.940085
 Multiple R-Squared: 0.761345 Adjusted R-Squared: 0.733268 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 52.938648   7.665482  6.906108        0 ***
-p            0.220229   0.083971  2.622692 0.012832   *
-f            0.232671   0.021215 10.967325        0 ***
-a            0.328631   0.020632 15.928109        0 ***
+price        0.220229   0.083971  2.622692 0.012832   *
+farmPrice    0.232671   0.021215 10.967325        0 ***
+trend        0.328631   0.020632 15.928109        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1157,19 +1171,27 @@ SSR: 101.473089 MSE: 6.342068 Root MSE: 2.518346
 Multiple R-Squared: 0.62153 Adjusted R-Squared: 0.550567 
 
 > print( round( fitsur5$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 55.749333 -0.610130  0.056016 56.069726 -0.610130  0.047498  0.056016
-[2,] -0.610130  0.007051 -0.000975 -0.620551  0.007051 -0.000771 -0.000975
-[3,]  0.056016 -0.000975  0.000426  0.063771 -0.000975  0.000303  0.000426
-[4,] 56.069726 -0.620551  0.063771 58.759619 -0.620551  0.030397  0.063771
-[5,] -0.610130  0.007051 -0.000975 -0.620551  0.007051 -0.000771 -0.000975
-[6,]  0.047498 -0.000771  0.000303  0.030397 -0.000771  0.000450  0.000303
-[7,]  0.056016 -0.000975  0.000426  0.063771 -0.000975  0.000303  0.000426
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        55.749333  -0.610130    0.056016        56.069726
+eq 1 price              -0.610130   0.007051   -0.000975        -0.620551
+eq 1 income              0.056016  -0.000975    0.000426         0.063771
+eq 2 (Intercept)        56.069726  -0.620551    0.063771        58.759619
+eq 2 price              -0.610130   0.007051   -0.000975        -0.620551
+eq 2 farmPrice           0.047498  -0.000771    0.000303         0.030397
+eq 2 trend               0.056016  -0.000975    0.000426         0.063771
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.610130       0.047498   0.056016
+eq 1 price         0.007051      -0.000771  -0.000975
+eq 1 income       -0.000975       0.000303   0.000426
+eq 2 (Intercept)  -0.620551       0.030397   0.063771
+eq 2 price         0.007051      -0.000771  -0.000975
+eq 2 farmPrice    -0.000771       0.000450   0.000303
+eq 2 trend        -0.000975       0.000303   0.000426
 > 
 > ## *************** SUR with 2 restrictions via R and TX (EViews-like) **************
-> fitsur5e <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 0,
+> fitsur5e <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 0,
 +    R.restr = restr3m, q.restr = restr3q, TX = tc )
-> print( fitsur5e )
+> print( summary( fitsur5e ) )
 
 systemfit results 
 method: SUR 
@@ -1197,13 +1219,13 @@ The determinant of the residual covariance matrix: 1.19981
 OLS R-squared value of the system: 0.692955
 McElroy's R-squared value for the system: 0.652956
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept)  97.26781   6.920022 14.055997        0 ***
-p           -0.285096   0.076719  -3.71611 0.000704 ***
-d            0.329579    0.01845 17.863736        0 ***
+price       -0.285096   0.076719  -3.71611 0.000704 ***
+income       0.329579    0.01845 17.863736        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1213,14 +1235,14 @@ SSR: 63.811125 MSE: 3.753596 Root MSE: 1.93742
 Multiple R-Squared: 0.762 Adjusted R-Squared: 0.734 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 53.303998   7.104496  7.502855        0 ***
-p            0.214904   0.076719  2.801176 0.008238  **
-f            0.234299   0.018653 12.561069        0 ***
-a            0.329579    0.01845 17.863736        0 ***
+price        0.214904   0.076719  2.801176 0.008238  **
+farmPrice    0.234299   0.018653 12.561069        0 ***
+trend        0.329579    0.01845 17.863736        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1230,18 +1252,26 @@ SSR: 100.835103 MSE: 6.302194 Root MSE: 2.510417
 Multiple R-Squared: 0.62391 Adjusted R-Squared: 0.553393 
 
 > print( round( fitsur5e$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 47.886704 -0.516747  0.040579 48.218725 -0.516747  0.033361  0.040579
-[2,] -0.516747  0.005886 -0.000738 -0.526670  0.005886 -0.000562 -0.000738
-[3,]  0.040579 -0.000738  0.000340  0.047594 -0.000738  0.000234  0.000340
-[4,] 48.218725 -0.526670  0.047594 50.473858 -0.526670  0.020109  0.047594
-[5,] -0.516747  0.005886 -0.000738 -0.526670  0.005886 -0.000562 -0.000738
-[6,]  0.033361 -0.000562  0.000234  0.020109 -0.000562  0.000348  0.000234
-[7,]  0.040579 -0.000738  0.000340  0.047594 -0.000738  0.000234  0.000340
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        47.886704  -0.516747    0.040579        48.218725
+eq 1 price              -0.516747   0.005886   -0.000738        -0.526670
+eq 1 income              0.040579  -0.000738    0.000340         0.047594
+eq 2 (Intercept)        48.218725  -0.526670    0.047594        50.473858
+eq 2 price              -0.516747   0.005886   -0.000738        -0.526670
+eq 2 farmPrice           0.033361  -0.000562    0.000234         0.020109
+eq 2 trend               0.040579  -0.000738    0.000340         0.047594
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.516747       0.033361   0.040579
+eq 1 price         0.005886      -0.000562  -0.000738
+eq 1 income       -0.000738       0.000234   0.000340
+eq 2 (Intercept)  -0.526670       0.020109   0.047594
+eq 2 price         0.005886      -0.000562  -0.000738
+eq 2 farmPrice    -0.000562       0.000348   0.000234
+eq 2 trend        -0.000738       0.000234   0.000340
 > 
 > ## ************** iterated SUR ****************************
-> fitsuri1 <- systemfit( "SUR", system2, labels, data = kmenta, maxit = 100 )
-> print( fitsuri1 )
+> fitsuri1 <- systemfit( "SUR", system2, labels, data = Kmenta, maxit = 100 )
+> print( summary( fitsuri1 ) )
 
 systemfit results 
 method: iterated SUR 
@@ -1271,13 +1301,13 @@ The determinant of the residual covariance matrix: 4.42447
 OLS R-squared value of the system: 0.88486
 McElroy's R-squared value for the system: 0.958178
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 94.053729   7.405122 12.701172        0 ***
-p           -0.235545   0.088182 -2.671109 0.016117   *
-d            0.311718   0.045744   6.81435    3e-06 ***
+price       -0.235545   0.088182 -2.671109 0.016117   *
+income       0.311718   0.045744   6.81435    3e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1287,14 +1317,14 @@ SSR: 66.286284 MSE: 3.899193 Root MSE: 1.974637
 Multiple R-Squared: 0.752769 Adjusted R-Squared: 0.723683 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: p ~ d + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: price ~ income + farmPrice + trend
 
              Estimate Std. Error    t value Pr(>|t|)    
 (Intercept) 89.298175   3.382237  26.402106        0 ***
-d            0.665484   0.042298  15.733148        0 ***
-f           -0.474229    0.03724 -12.734343        0 ***
-a           -0.796644    0.06557 -12.149612        0 ***
+income       0.665484   0.042298  15.733148        0 ***
+farmPrice   -0.474229    0.03724 -12.734343        0 ***
+trend       -0.796644    0.06557 -12.149612        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1304,27 +1334,27 @@ SSR: 41.411056 MSE: 2.588191 Root MSE: 1.608786
 Multiple R-Squared: 0.937938 Adjusted R-Squared: 0.926301 
 
 > print( round( fitsuri1$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   54.835829 -0.562519  0.016627 -2.477865  0.217621 -0.167752
-p             -0.562519  0.007776 -0.002207 -0.085118 -0.001801  0.002319
-d              0.016627 -0.002207  0.002093  0.111470 -0.000384 -0.000658
-              -2.477865 -0.085118  0.111470 11.439526 -0.057755 -0.052548
-               0.217621 -0.001801 -0.000384 -0.057755  0.001789 -0.001028
-              -0.167752  0.002319 -0.000658 -0.052548 -0.001028  0.001387
-              -0.253127  0.003499 -0.000993 -0.057095 -0.001656  0.001795
-                     
-(Intercept) -0.253127
-p            0.003499
-d           -0.000993
-            -0.057095
-            -0.001656
-             0.001795
-             0.004299
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        54.835829  -0.562519    0.016627        -2.477865
+eq 1 price              -0.562519   0.007776   -0.002207        -0.085118
+eq 1 income              0.016627  -0.002207    0.002093         0.111470
+eq 2 (Intercept)        -2.477865  -0.085118    0.111470        11.439526
+eq 2 income              0.217621  -0.001801   -0.000384        -0.057755
+eq 2 farmPrice          -0.167752   0.002319   -0.000658        -0.052548
+eq 2 trend              -0.253127   0.003499   -0.000993        -0.057095
+                 eq 2 income eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)    0.217621      -0.167752  -0.253127
+eq 1 price         -0.001801       0.002319   0.003499
+eq 1 income        -0.000384      -0.000658  -0.000993
+eq 2 (Intercept)   -0.057755      -0.052548  -0.057095
+eq 2 income         0.001789      -0.001028  -0.001656
+eq 2 farmPrice     -0.001028       0.001387   0.001795
+eq 2 trend         -0.001656       0.001795   0.004299
 > 
 > ## ************** iterated SUR (EViews-like) *****************
-> fitsuri1e <- systemfit( "SUR", system2, labels, data = kmenta, rcovformula = 0,
+> fitsuri1e <- systemfit( "SUR", system2, labels, data = Kmenta, rcovformula = 0,
 +    probdfsys = TRUE, maxit = 100 )
-> print( fitsuri1e )
+> print( summary( fitsuri1e ) )
 
 systemfit results 
 method: iterated SUR 
@@ -1354,13 +1384,13 @@ The determinant of the residual covariance matrix: 3.00734
 OLS R-squared value of the system: 0.884625
 McElroy's R-squared value for the system: 0.959109
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 93.619279   6.849931 13.667186        0 ***
-p           -0.229539   0.081568 -2.814078 0.008182  **
-d            0.310014   0.042317  7.325931        0 ***
+price       -0.229539   0.081568 -2.814078 0.008182  **
+income       0.310014   0.042317  7.325931        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1370,14 +1400,14 @@ SSR: 66.742101 MSE: 3.926006 Root MSE: 1.981415
 Multiple R-Squared: 0.751068 Adjusted R-Squared: 0.721782 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: p ~ d + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: price ~ income + farmPrice + trend
 
              Estimate Std. Error    t value Pr(>|t|)    
 (Intercept)    89.269   3.016465  29.593913        0 ***
-d            0.664062   0.037723  17.603683        0 ***
-f           -0.473003   0.033209 -14.243301        0 ***
-a           -0.791932   0.058461 -13.546225        0 ***
+income       0.664062   0.037723  17.603683        0 ***
+farmPrice   -0.473003   0.033209 -14.243301        0 ***
+trend       -0.791932   0.058461 -13.546225        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1387,27 +1417,27 @@ SSR: 41.175862 MSE: 2.573491 Root MSE: 1.604211
 Multiple R-Squared: 0.93829 Adjusted R-Squared: 0.92672 
 
 > print( round( fitsuri1e$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   46.921550 -0.481298  0.014193 -2.047187  0.179643 -0.138461
-p             -0.481298  0.006653 -0.001888 -0.070256 -0.001487  0.001914
-d              0.014193 -0.001888  0.001791  0.092027 -0.000317 -0.000543
-              -2.047187 -0.070256  0.092027  9.099060 -0.045949 -0.041785
-               0.179643 -0.001487 -0.000317 -0.045949  0.001423 -0.000818
-              -0.138461  0.001914 -0.000543 -0.041785 -0.000818  0.001103
-              -0.208930  0.002888 -0.000820 -0.045423 -0.001317  0.001428
-                     
-(Intercept) -0.208930
-p            0.002888
-d           -0.000820
-            -0.045423
-            -0.001317
-             0.001428
-             0.003418
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        46.921550  -0.481298    0.014193        -2.047187
+eq 1 price              -0.481298   0.006653   -0.001888        -0.070256
+eq 1 income              0.014193  -0.001888    0.001791         0.092027
+eq 2 (Intercept)        -2.047187  -0.070256    0.092027         9.099060
+eq 2 income              0.179643  -0.001487   -0.000317        -0.045949
+eq 2 farmPrice          -0.138461   0.001914   -0.000543        -0.041785
+eq 2 trend              -0.208930   0.002888   -0.000820        -0.045423
+                 eq 2 income eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)    0.179643      -0.138461  -0.208930
+eq 1 price         -0.001487       0.001914   0.002888
+eq 1 income        -0.000317      -0.000543  -0.000820
+eq 2 (Intercept)   -0.045949      -0.041785  -0.045423
+eq 2 income         0.001423      -0.000818  -0.001317
+eq 2 farmPrice     -0.000818       0.001103   0.001428
+eq 2 trend         -0.001317       0.001428   0.003418
 > 
 > ## ************** iterated SUR (rcovformula = 2) ****************************
-> fitsuri1c <- systemfit( "SUR", system2, labels, data = kmenta, maxit = 100,
+> fitsuri1c <- systemfit( "SUR", system2, labels, data = Kmenta, maxit = 100,
 +    rcovformula = 2 )
-> print( fitsuri1c )
+> print( summary( fitsuri1c ) )
 
 systemfit results 
 method: iterated SUR 
@@ -1437,13 +1467,13 @@ The determinant of the residual covariance matrix: 3.99651
 OLS R-squared value of the system: 0.883785
 McElroy's R-squared value for the system: 0.96062
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 93.440458   7.382104 12.657699        0 ***
-p           -0.227067   0.087661 -2.590284 0.019059   *
-d            0.309312   0.045821  6.750372    3e-06 ***
+price       -0.227067   0.087661 -2.590284 0.019059   *
+income       0.309312   0.045821  6.750372    3e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1453,14 +1483,14 @@ SSR: 66.939212 MSE: 3.937601 Root MSE: 1.984339
 Multiple R-Squared: 0.750333 Adjusted R-Squared: 0.720961 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: p ~ d + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: price ~ income + farmPrice + trend
 
              Estimate Std. Error    t value Pr(>|t|)    
 (Intercept) 89.160176   3.386831  26.325546        0 ***
-d            0.663534   0.042265  15.699458        0 ***
-f           -0.470988   0.036942 -12.749498        0 ***
-a           -0.795203   0.064253 -12.376104        0 ***
+income       0.663534   0.042265  15.699458        0 ***
+farmPrice   -0.470988   0.036942 -12.749498        0 ***
+trend       -0.795203   0.064253 -12.376104        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1470,27 +1500,27 @@ SSR: 41.764463 MSE: 2.610279 Root MSE: 1.615636
 Multiple R-Squared: 0.937408 Adjusted R-Squared: 0.925672 
 
 > print( round( fitsuri1c$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   54.495465 -0.555887  0.013336 -2.747666  0.226176 -0.172827
-p             -0.555887  0.007684 -0.002181 -0.087693 -0.001856  0.002389
-d              0.013336 -0.002181  0.002100  0.116813 -0.000416 -0.000678
-              -2.747666 -0.087693  0.116813 11.470625 -0.058948 -0.051562
-               0.226176 -0.001856 -0.000416 -0.058948  0.001786 -0.001016
-              -0.172827  0.002389 -0.000678 -0.051562 -0.001016  0.001365
-              -0.260786  0.003605 -0.001023 -0.057950 -0.001626  0.001793
-                     
-(Intercept) -0.260786
-p            0.003605
-d           -0.001023
-            -0.057950
-            -0.001626
-             0.001793
-             0.004128
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        54.495465  -0.555887    0.013336        -2.747666
+eq 1 price              -0.555887   0.007684   -0.002181        -0.087693
+eq 1 income              0.013336  -0.002181    0.002100         0.116813
+eq 2 (Intercept)        -2.747666  -0.087693    0.116813        11.470625
+eq 2 income              0.226176  -0.001856   -0.000416        -0.058948
+eq 2 farmPrice          -0.172827   0.002389   -0.000678        -0.051562
+eq 2 trend              -0.260786   0.003605   -0.001023        -0.057950
+                 eq 2 income eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)    0.226176      -0.172827  -0.260786
+eq 1 price         -0.001856       0.002389   0.003605
+eq 1 income        -0.000416      -0.000678  -0.001023
+eq 2 (Intercept)   -0.058948      -0.051562  -0.057950
+eq 2 income         0.001786      -0.001016  -0.001626
+eq 2 farmPrice     -0.001016       0.001365   0.001793
+eq 2 trend         -0.001626       0.001793   0.004128
 > 
 > ## ************** iterated SUR (rcovformula=2, probdfsys=TRUE) *****************
-> fitsuri1cp <- systemfit( "SUR", system2, labels, data = kmenta, rcovformula = 2,
+> fitsuri1cp <- systemfit( "SUR", system2, labels, data = Kmenta, rcovformula = 2,
 +    probdfsys = TRUE, maxit = 100 )
-> print( fitsuri1cp )
+> print( summary( fitsuri1cp ) )
 
 systemfit results 
 method: iterated SUR 
@@ -1520,13 +1550,13 @@ The determinant of the residual covariance matrix: 3.99651
 OLS R-squared value of the system: 0.883785
 McElroy's R-squared value for the system: 0.96062
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 93.440458   7.382104 12.657699        0 ***
-p           -0.227067   0.087661 -2.590284 0.014166   *
-d            0.309312   0.045821  6.750372        0 ***
+price       -0.227067   0.087661 -2.590284 0.014166   *
+income       0.309312   0.045821  6.750372        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1536,14 +1566,14 @@ SSR: 66.939212 MSE: 3.937601 Root MSE: 1.984339
 Multiple R-Squared: 0.750333 Adjusted R-Squared: 0.720961 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: p ~ d + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: price ~ income + farmPrice + trend
 
              Estimate Std. Error    t value Pr(>|t|)    
 (Intercept) 89.160176   3.386831  26.325546        0 ***
-d            0.663534   0.042265  15.699458        0 ***
-f           -0.470988   0.036942 -12.749498        0 ***
-a           -0.795203   0.064253 -12.376104        0 ***
+income       0.663534   0.042265  15.699458        0 ***
+farmPrice   -0.470988   0.036942 -12.749498        0 ***
+trend       -0.795203   0.064253 -12.376104        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1553,27 +1583,27 @@ SSR: 41.764463 MSE: 2.610279 Root MSE: 1.615636
 Multiple R-Squared: 0.937408 Adjusted R-Squared: 0.925672 
 
 > print( round( fitsuri1cp$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   54.495465 -0.555887  0.013336 -2.747666  0.226176 -0.172827
-p             -0.555887  0.007684 -0.002181 -0.087693 -0.001856  0.002389
-d              0.013336 -0.002181  0.002100  0.116813 -0.000416 -0.000678
-              -2.747666 -0.087693  0.116813 11.470625 -0.058948 -0.051562
-               0.226176 -0.001856 -0.000416 -0.058948  0.001786 -0.001016
-              -0.172827  0.002389 -0.000678 -0.051562 -0.001016  0.001365
-              -0.260786  0.003605 -0.001023 -0.057950 -0.001626  0.001793
-                     
-(Intercept) -0.260786
-p            0.003605
-d           -0.001023
-            -0.057950
-            -0.001626
-             0.001793
-             0.004128
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        54.495465  -0.555887    0.013336        -2.747666
+eq 1 price              -0.555887   0.007684   -0.002181        -0.087693
+eq 1 income              0.013336  -0.002181    0.002100         0.116813
+eq 2 (Intercept)        -2.747666  -0.087693    0.116813        11.470625
+eq 2 income              0.226176  -0.001856   -0.000416        -0.058948
+eq 2 farmPrice          -0.172827   0.002389   -0.000678        -0.051562
+eq 2 trend              -0.260786   0.003605   -0.001023        -0.057950
+                 eq 2 income eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)    0.226176      -0.172827  -0.260786
+eq 1 price         -0.001856       0.002389   0.003605
+eq 1 income        -0.000416      -0.000678  -0.001023
+eq 2 (Intercept)   -0.058948      -0.051562  -0.057950
+eq 2 income         0.001786      -0.001016  -0.001626
+eq 2 farmPrice     -0.001016       0.001365   0.001793
+eq 2 trend         -0.001626       0.001793   0.004128
 > 
 > ## ************** iterated SUR (rcovformula = 3) ****************************
-> fitsuri1c <- systemfit( "SUR", system2, labels, data = kmenta, maxit = 100,
+> fitsuri1c <- systemfit( "SUR", system2, labels, data = Kmenta, maxit = 100,
 +    rcovformula = 3 )
-> print( fitsuri1c )
+> print( summary( fitsuri1c ) )
 
 systemfit results 
 method: iterated SUR 
@@ -1603,13 +1633,13 @@ The determinant of the residual covariance matrix: 4.06276
 OLS R-squared value of the system: 0.883966
 McElroy's R-squared value for the system: 0.960247
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 93.542723   7.385832 12.665157        0 ***
-p           -0.228481   0.087747 -2.603847 0.018532   *
-d            0.309713   0.045807  6.761201    3e-06 ***
+price       -0.228481   0.087747 -2.603847 0.018532   *
+income       0.309713   0.045807  6.761201    3e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1619,14 +1649,14 @@ SSR: 66.825809 MSE: 3.93093 Root MSE: 1.982657
 Multiple R-Squared: 0.750756 Adjusted R-Squared: 0.721433 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: p ~ d + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: price ~ income + farmPrice + trend
 
              Estimate Std. Error    t value Pr(>|t|)    
 (Intercept) 89.182975    3.38614  26.337655        0 ***
-d            0.663871   0.042272  15.704739        0 ***
-f           -0.471532   0.036993 -12.746565        0 ***
-a           -0.795507   0.064465 -12.340106        0 ***
+income       0.663871   0.042272  15.704739        0 ***
+farmPrice   -0.471532   0.036993 -12.746565        0 ***
+trend       -0.795507   0.064465 -12.340106        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1636,27 +1666,27 @@ SSR: 41.708116 MSE: 2.606757 Root MSE: 1.614546
 Multiple R-Squared: 0.937493 Adjusted R-Squared: 0.925773 
 
 > print( round( fitsuri1c$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   54.550512 -0.556983  0.013891 -2.703167  0.224902 -0.172110
-p             -0.556983  0.007700 -0.002185 -0.087329 -0.001848  0.002379
-d              0.013891 -0.002185  0.002098  0.115993 -0.000411 -0.000675
-              -2.703167 -0.087329  0.115993 11.465941 -0.058750 -0.051728
-               0.224902 -0.001848 -0.000411 -0.058750  0.001787 -0.001018
-              -0.172110  0.002379 -0.000675 -0.051728 -0.001018  0.001368
-              -0.259704  0.003590 -0.001019 -0.057836 -0.001631  0.001794
-                     
-(Intercept) -0.259704
-p            0.003590
-d           -0.001019
-            -0.057836
-            -0.001631
-             0.001794
-             0.004156
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        54.550512  -0.556983    0.013891        -2.703167
+eq 1 price              -0.556983   0.007700   -0.002185        -0.087329
+eq 1 income              0.013891  -0.002185    0.002098         0.115993
+eq 2 (Intercept)        -2.703167  -0.087329    0.115993        11.465941
+eq 2 income              0.224902  -0.001848   -0.000411        -0.058750
+eq 2 farmPrice          -0.172110   0.002379   -0.000675        -0.051728
+eq 2 trend              -0.259704   0.003590   -0.001019        -0.057836
+                 eq 2 income eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)    0.224902      -0.172110  -0.259704
+eq 1 price         -0.001848       0.002379   0.003590
+eq 1 income        -0.000411      -0.000675  -0.001019
+eq 2 (Intercept)   -0.058750      -0.051728  -0.057836
+eq 2 income         0.001787      -0.001018  -0.001631
+eq 2 farmPrice     -0.001018       0.001368   0.001794
+eq 2 trend         -0.001631       0.001794   0.004156
 > 
 > ## *********** iterated SUR with restriction *******************
-> fitsuri2 <- systemfit( "SUR", system2, labels, data = kmenta, R.restr = restrm,
+> fitsuri2 <- systemfit( "SUR", system2, labels, data = Kmenta, R.restr = restrm,
 +    maxit = 100 )
-> print( fitsuri2 )
+> print( summary( fitsuri2 ) )
 
 systemfit results 
 method: iterated SUR 
@@ -1686,13 +1716,13 @@ The determinant of the residual covariance matrix: 110.225
 OLS R-squared value of the system: 0.372061
 McElroy's R-squared value for the system: 0.66924
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 107.367833   7.498581 14.318419        0 ***
-p            -0.394459   0.091188 -4.325773 0.000126 ***
-d             0.338174   0.046617  7.254284        0 ***
+price        -0.394459   0.091188 -4.325773 0.000126 ***
+income        0.338174   0.046617  7.254284        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1702,14 +1732,14 @@ SSR: 67.023783 MSE: 3.942575 Root MSE: 1.985592
 Multiple R-Squared: 0.750018 Adjusted R-Squared: 0.720608 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: p ~ d + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: price ~ income + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 85.044826  12.106893  7.024496        0 ***
-d            0.312488   0.123346  2.533433 0.016074   *
-f           -0.197207   0.115708 -1.704352 0.097439   .
-a            0.338174   0.046617  7.254284        0 ***
+income       0.312488   0.123346  2.533433 0.016074   *
+farmPrice   -0.197207   0.115708 -1.704352 0.097439   .
+trend        0.338174   0.046617  7.254284        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1719,27 +1749,27 @@ SSR: 520.328675 MSE: 32.520542 Root MSE: 5.702679
 Multiple R-Squared: 0.220191 Adjusted R-Squared: 0.073977 
 
 > print( round( fitsuri2$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   56.228722 -0.592601  0.033216   5.954773 -0.251647  0.190974
-p             -0.592601  0.008315 -0.002451   0.141405  0.002011 -0.003227
-d              0.033216 -0.002451  0.002173  -0.203885  0.000518  0.001351
-               5.954773  0.141405 -0.203885 146.576864 -0.828954 -0.641222
-              -0.251647  0.002011  0.000518  -0.828954  0.015214 -0.006835
-               0.190974 -0.003227  0.001351  -0.641222 -0.006835  0.013388
-               0.033216 -0.002451  0.002173  -0.203885  0.000518  0.001351
-                     
-(Intercept)  0.033216
-p           -0.002451
-d            0.002173
-            -0.203885
-             0.000518
-             0.001351
-             0.002173
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.228722  -0.592601    0.033216         5.954773
+eq 1 price              -0.592601   0.008315   -0.002451         0.141405
+eq 1 income              0.033216  -0.002451    0.002173        -0.203885
+eq 2 (Intercept)         5.954773   0.141405   -0.203885       146.576864
+eq 2 income             -0.251647   0.002011    0.000518        -0.828954
+eq 2 farmPrice           0.190974  -0.003227    0.001351        -0.641222
+eq 2 trend               0.033216  -0.002451    0.002173        -0.203885
+                 eq 2 income eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   -0.251647       0.190974   0.033216
+eq 1 price          0.002011      -0.003227  -0.002451
+eq 1 income         0.000518       0.001351   0.002173
+eq 2 (Intercept)   -0.828954      -0.641222  -0.203885
+eq 2 income         0.015214      -0.006835   0.000518
+eq 2 farmPrice     -0.006835       0.013388   0.001351
+eq 2 trend          0.000518       0.001351   0.002173
 > 
 > ## *********** iterated SUR with restriction (EViews-like) ***************
-> fitsuri2e <- systemfit( "SUR", system2, labels, data = kmenta, R.restr = restrm,
+> fitsuri2e <- systemfit( "SUR", system2, labels, data = Kmenta, R.restr = restrm,
 +    rcovformula = 0, maxit = 100 )
-> print( fitsuri2e )
+> print( summary( fitsuri2e ) )
 
 systemfit results 
 method: iterated SUR 
@@ -1769,13 +1799,13 @@ The determinant of the residual covariance matrix: 74.9437
 OLS R-squared value of the system: 0.371716
 McElroy's R-squared value for the system: 0.664223
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 107.805111   6.927003 15.563024        0 ***
-p             -0.39858   0.084288 -4.728796  3.8e-05 ***
-d             0.337917   0.043115  7.837628        0 ***
+price         -0.39858   0.084288 -4.728796  3.8e-05 ***
+income        0.337917   0.043115  7.837628        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1785,14 +1815,14 @@ SSR: 67.470241 MSE: 3.968838 Root MSE: 1.992194
 Multiple R-Squared: 0.748353 Adjusted R-Squared: 0.718747 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: p ~ d + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: price ~ income + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 85.107081  10.828732  7.859377        0 ***
-d             0.31064   0.110145  2.820283  0.00795  **
-f           -0.195958   0.103427 -1.894652 0.066669   .
-a            0.337917   0.043115  7.837628        0 ***
+income        0.31064   0.110145  2.820283  0.00795  **
+farmPrice   -0.195958   0.103427 -1.894652 0.066669   .
+trend        0.337917   0.043115  7.837628        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1802,27 +1832,27 @@ SSR: 520.204913 MSE: 32.512807 Root MSE: 5.702
 Multiple R-Squared: 0.220377 Adjusted R-Squared: 0.074197 
 
 > print( round( fitsuri2e$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   47.983367 -0.505917  0.028570   4.986011 -0.211763  0.160903
-p             -0.505917  0.007104 -0.002098   0.119753  0.001700 -0.002728
-d              0.028570 -0.002098  0.001859  -0.172089  0.000428  0.001147
-               4.986011  0.119753 -0.172089 117.261427 -0.661134 -0.514052
-              -0.211763  0.001700  0.000428  -0.661134  0.012132 -0.005450
-               0.160903 -0.002728  0.001147  -0.514052 -0.005450  0.010697
-               0.028570 -0.002098  0.001859  -0.172089  0.000428  0.001147
-                     
-(Intercept)  0.028570
-p           -0.002098
-d            0.001859
-            -0.172089
-             0.000428
-             0.001147
-             0.001859
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        47.983367  -0.505917    0.028570         4.986011
+eq 1 price              -0.505917   0.007104   -0.002098         0.119753
+eq 1 income              0.028570  -0.002098    0.001859        -0.172089
+eq 2 (Intercept)         4.986011   0.119753   -0.172089       117.261427
+eq 2 income             -0.211763   0.001700    0.000428        -0.661134
+eq 2 farmPrice           0.160903  -0.002728    0.001147        -0.514052
+eq 2 trend               0.028570  -0.002098    0.001859        -0.172089
+                 eq 2 income eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   -0.211763       0.160903   0.028570
+eq 1 price          0.001700      -0.002728  -0.002098
+eq 1 income         0.000428       0.001147   0.001859
+eq 2 (Intercept)   -0.661134      -0.514052  -0.172089
+eq 2 income         0.012132      -0.005450   0.000428
+eq 2 farmPrice     -0.005450       0.010697   0.001147
+eq 2 trend          0.000428       0.001147   0.001859
 > 
 > ## *********** iterated SUR with restriction via TX ********************
-> fitsuri3 <- systemfit( "SUR", system2, labels, data = kmenta, TX = tc,
+> fitsuri3 <- systemfit( "SUR", system2, labels, data = Kmenta, TX = tc,
 +    maxit = 100 )
-> print( fitsuri3 )
+> print( summary( fitsuri3 ) )
 
 systemfit results 
 method: iterated SUR 
@@ -1852,13 +1882,13 @@ The determinant of the residual covariance matrix: 110.225
 OLS R-squared value of the system: 0.372061
 McElroy's R-squared value for the system: 0.66924
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 107.367833   7.498581 14.318419        0 ***
-p            -0.394459   0.091188 -4.325773 0.000126 ***
-d             0.338174   0.046617  7.254284        0 ***
+price        -0.394459   0.091188 -4.325773 0.000126 ***
+income        0.338174   0.046617  7.254284        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1868,14 +1898,14 @@ SSR: 67.023783 MSE: 3.942575 Root MSE: 1.985592
 Multiple R-Squared: 0.750018 Adjusted R-Squared: 0.720608 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: p ~ d + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: price ~ income + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 85.044826  12.106893  7.024496        0 ***
-d            0.312488   0.123346  2.533433 0.016074   *
-f           -0.197207   0.115708 -1.704352 0.097439   .
-a            0.338174   0.046617  7.254284        0 ***
+income       0.312488   0.123346  2.533433 0.016074   *
+farmPrice   -0.197207   0.115708 -1.704352 0.097439   .
+trend        0.338174   0.046617  7.254284        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1885,19 +1915,27 @@ SSR: 520.328675 MSE: 32.520542 Root MSE: 5.702679
 Multiple R-Squared: 0.220191 Adjusted R-Squared: 0.073977 
 
 > print( round( fitsuri3$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]       [,4]      [,5]      [,6]      [,7]
-[1,] 56.228722 -0.592601  0.033216   5.954773 -0.251647  0.190974  0.033216
-[2,] -0.592601  0.008315 -0.002451   0.141405  0.002011 -0.003227 -0.002451
-[3,]  0.033216 -0.002451  0.002173  -0.203885  0.000518  0.001351  0.002173
-[4,]  5.954773  0.141405 -0.203885 146.576864 -0.828954 -0.641222 -0.203885
-[5,] -0.251647  0.002011  0.000518  -0.828954  0.015214 -0.006835  0.000518
-[6,]  0.190974 -0.003227  0.001351  -0.641222 -0.006835  0.013388  0.001351
-[7,]  0.033216 -0.002451  0.002173  -0.203885  0.000518  0.001351  0.002173
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.228722  -0.592601    0.033216         5.954773
+eq 1 price              -0.592601   0.008315   -0.002451         0.141405
+eq 1 income              0.033216  -0.002451    0.002173        -0.203885
+eq 2 (Intercept)         5.954773   0.141405   -0.203885       146.576864
+eq 2 income             -0.251647   0.002011    0.000518        -0.828954
+eq 2 farmPrice           0.190974  -0.003227    0.001351        -0.641222
+eq 2 trend               0.033216  -0.002451    0.002173        -0.203885
+                 eq 2 income eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   -0.251647       0.190974   0.033216
+eq 1 price          0.002011      -0.003227  -0.002451
+eq 1 income         0.000518       0.001351   0.002173
+eq 2 (Intercept)   -0.828954      -0.641222  -0.203885
+eq 2 income         0.015214      -0.006835   0.000518
+eq 2 farmPrice     -0.006835       0.013388   0.001351
+eq 2 trend          0.000518       0.001351   0.002173
 > 
 > ## *********** iterated SUR with restriction via TX (EViews-like) ***************
-> fitsuri3e <- systemfit( "SUR", system2, labels, data = kmenta, TX = tc,
+> fitsuri3e <- systemfit( "SUR", system2, labels, data = Kmenta, TX = tc,
 +    rcovformula = 0, maxit = 100 )
-> print( fitsuri3e )
+> print( summary( fitsuri3e ) )
 
 systemfit results 
 method: iterated SUR 
@@ -1927,13 +1965,13 @@ The determinant of the residual covariance matrix: 74.9437
 OLS R-squared value of the system: 0.371716
 McElroy's R-squared value for the system: 0.664223
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 107.805111   6.927003 15.563024        0 ***
-p             -0.39858   0.084288 -4.728796  3.8e-05 ***
-d             0.337917   0.043115  7.837628        0 ***
+price         -0.39858   0.084288 -4.728796  3.8e-05 ***
+income        0.337917   0.043115  7.837628        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1943,14 +1981,14 @@ SSR: 67.470241 MSE: 3.968838 Root MSE: 1.992194
 Multiple R-Squared: 0.748353 Adjusted R-Squared: 0.718747 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: p ~ d + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: price ~ income + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 85.107081  10.828732  7.859377        0 ***
-d             0.31064   0.110145  2.820283  0.00795  **
-f           -0.195958   0.103427 -1.894652 0.066669   .
-a            0.337917   0.043115  7.837628        0 ***
+income        0.31064   0.110145  2.820283  0.00795  **
+farmPrice   -0.195958   0.103427 -1.894652 0.066669   .
+trend        0.337917   0.043115  7.837628        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1960,19 +1998,27 @@ SSR: 520.204913 MSE: 32.512807 Root MSE: 5.702
 Multiple R-Squared: 0.220377 Adjusted R-Squared: 0.074197 
 
 > print( round( fitsuri3e$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]       [,4]      [,5]      [,6]      [,7]
-[1,] 47.983367 -0.505917  0.028570   4.986011 -0.211763  0.160903  0.028570
-[2,] -0.505917  0.007104 -0.002098   0.119753  0.001700 -0.002728 -0.002098
-[3,]  0.028570 -0.002098  0.001859  -0.172089  0.000428  0.001147  0.001859
-[4,]  4.986011  0.119753 -0.172089 117.261427 -0.661134 -0.514052 -0.172089
-[5,] -0.211763  0.001700  0.000428  -0.661134  0.012132 -0.005450  0.000428
-[6,]  0.160903 -0.002728  0.001147  -0.514052 -0.005450  0.010697  0.001147
-[7,]  0.028570 -0.002098  0.001859  -0.172089  0.000428  0.001147  0.001859
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        47.983367  -0.505917    0.028570         4.986011
+eq 1 price              -0.505917   0.007104   -0.002098         0.119753
+eq 1 income              0.028570  -0.002098    0.001859        -0.172089
+eq 2 (Intercept)         4.986011   0.119753   -0.172089       117.261427
+eq 2 income             -0.211763   0.001700    0.000428        -0.661134
+eq 2 farmPrice           0.160903  -0.002728    0.001147        -0.514052
+eq 2 trend               0.028570  -0.002098    0.001859        -0.172089
+                 eq 2 income eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   -0.211763       0.160903   0.028570
+eq 1 price          0.001700      -0.002728  -0.002098
+eq 1 income         0.000428       0.001147   0.001859
+eq 2 (Intercept)   -0.661134      -0.514052  -0.172089
+eq 2 income         0.012132      -0.005450   0.000428
+eq 2 farmPrice     -0.005450       0.010697   0.001147
+eq 2 trend          0.000428       0.001147   0.001859
 > 
 > ## *************** iterated SUR with 2 restrictions ***************************
-> fitsuri4 <- systemfit( "SUR", system, labels, data = kmenta, R.restr = restr2m,
+> fitsuri4 <- systemfit( "SUR", system, labels, data = Kmenta, R.restr = restr2m,
 +    q.restr = restr2q, maxit = 100 )
-> print( fitsuri4 )
+> print( summary( fitsuri4 ) )
 
 systemfit results 
 method: iterated SUR 
@@ -2002,13 +2048,13 @@ The determinant of the residual covariance matrix: 1.74340
 OLS R-squared value of the system: 0.670962
 McElroy's R-squared value for the system: 0.704623
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 92.426174   7.354296 12.567644        0 ***
-p           -0.227612   0.085013 -2.677361  0.01122   *
-d             0.32027   0.018494 17.317867        0 ***
+price       -0.227612   0.085013 -2.677361  0.01122   *
+income        0.32027   0.018494 17.317867        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2018,14 +2064,14 @@ SSR: 67.205652 MSE: 3.953274 Root MSE: 1.988284
 Multiple R-Squared: 0.74934 Adjusted R-Squared: 0.71985 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 48.729451    7.45869  6.533246        0 ***
-p            0.272388   0.085013  3.204058 0.002887  **
-f             0.22315   0.018976 11.759398        0 ***
-a             0.32027   0.018494 17.317867        0 ***
+price        0.272388   0.085013  3.204058 0.002887  **
+farmPrice     0.22315   0.018976 11.759398        0 ***
+trend         0.32027   0.018494 17.317867        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2035,27 +2081,27 @@ SSR: 109.233669 MSE: 6.827104 Root MSE: 2.612873
 Multiple R-Squared: 0.592585 Adjusted R-Squared: 0.516195 
 
 > print( round( fitsuri4$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   54.085671 -0.614557  0.077710 54.141593 -0.614557  0.069973
-p             -0.614557  0.007227 -0.001110 -0.618092  0.007227 -0.000964
-d              0.077710 -0.001110  0.000342  0.081310 -0.001110  0.000271
-              54.141593 -0.618092  0.081310 55.632050 -0.618092  0.058748
-              -0.614557  0.007227 -0.001110 -0.618092  0.007227 -0.000964
-               0.069973 -0.000964  0.000271  0.058748 -0.000964  0.000360
-               0.077710 -0.001110  0.000342  0.081310 -0.001110  0.000271
-                     
-(Intercept)  0.077710
-p           -0.001110
-d            0.000342
-             0.081310
-            -0.001110
-             0.000271
-             0.000342
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        54.085671  -0.614557    0.077710        54.141593
+eq 1 price              -0.614557   0.007227   -0.001110        -0.618092
+eq 1 income              0.077710  -0.001110    0.000342         0.081310
+eq 2 (Intercept)        54.141593  -0.618092    0.081310        55.632050
+eq 2 price              -0.614557   0.007227   -0.001110        -0.618092
+eq 2 farmPrice           0.069973  -0.000964    0.000271         0.058748
+eq 2 trend               0.077710  -0.001110    0.000342         0.081310
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.614557       0.069973   0.077710
+eq 1 price         0.007227      -0.000964  -0.001110
+eq 1 income       -0.001110       0.000271   0.000342
+eq 2 (Intercept)  -0.618092       0.058748   0.081310
+eq 2 price         0.007227      -0.000964  -0.001110
+eq 2 farmPrice    -0.000964       0.000360   0.000271
+eq 2 trend        -0.001110       0.000271   0.000342
 > 
 > ## *************** iterated SUR with 2 restrictions (EViews-like) **************
-> fitsuri4e <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 0,
+> fitsuri4e <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 0,
 +    R.restr = restr2m, q.restr = restr2q, maxit = 100 )
-> print( fitsuri4e )
+> print( summary( fitsuri4e ) )
 
 systemfit results 
 method: iterated SUR 
@@ -2085,13 +2131,13 @@ The determinant of the residual covariance matrix: 1.18302
 OLS R-squared value of the system: 0.6774
 McElroy's R-squared value for the system: 0.664522
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept)  93.35957    6.85761  13.61401        0 ***
-p           -0.239757   0.077937 -3.076298 0.004053  **
-d            0.323155   0.016311 19.811891        0 ***
+price       -0.239757   0.077937 -3.076298 0.004053  **
+income       0.323155   0.016311 19.811891        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2101,14 +2147,14 @@ SSR: 66.264982 MSE: 3.89794 Root MSE: 1.97432
 Multiple R-Squared: 0.752848 Adjusted R-Squared: 0.723771 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 49.545591   6.972681  7.105673        0 ***
-p            0.260243   0.077937  3.339147 0.002005  **
-f            0.226962   0.016434 13.810256        0 ***
-a            0.323155   0.016311 19.811891        0 ***
+price        0.260243   0.077937  3.339147 0.002005  **
+farmPrice    0.226962   0.016434 13.810256        0 ***
+trend        0.323155   0.016311 19.811891        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2118,27 +2164,27 @@ SSR: 106.722321 MSE: 6.670145 Root MSE: 2.582662
 Multiple R-Squared: 0.601952 Adjusted R-Squared: 0.527318 
 
 > print( round( fitsuri4e$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   47.026816 -0.525375  0.058300 47.234560 -0.525375  0.050751
-p             -0.525375  0.006074 -0.000842 -0.530682  0.006074 -0.000704
-d              0.058300 -0.000842  0.000266  0.061997 -0.000842  0.000201
-              47.234560 -0.530682  0.061997 48.618283 -0.530682  0.042182
-              -0.525375  0.006074 -0.000842 -0.530682  0.006074 -0.000704
-               0.050751 -0.000704  0.000201  0.042182 -0.000704  0.000270
-               0.058300 -0.000842  0.000266  0.061997 -0.000842  0.000201
-                     
-(Intercept)  0.058300
-p           -0.000842
-d            0.000266
-             0.061997
-            -0.000842
-             0.000201
-             0.000266
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        47.026816  -0.525375    0.058300        47.234560
+eq 1 price              -0.525375   0.006074   -0.000842        -0.530682
+eq 1 income              0.058300  -0.000842    0.000266         0.061997
+eq 2 (Intercept)        47.234560  -0.530682    0.061997        48.618283
+eq 2 price              -0.525375   0.006074   -0.000842        -0.530682
+eq 2 farmPrice           0.050751  -0.000704    0.000201         0.042182
+eq 2 trend               0.058300  -0.000842    0.000266         0.061997
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.525375       0.050751   0.058300
+eq 1 price         0.006074      -0.000704  -0.000842
+eq 1 income       -0.000842       0.000201   0.000266
+eq 2 (Intercept)  -0.530682       0.042182   0.061997
+eq 2 price         0.006074      -0.000704  -0.000842
+eq 2 farmPrice    -0.000704       0.000270   0.000201
+eq 2 trend        -0.000842       0.000201   0.000266
 > 
 > ## *************** iterated SUR with 2 restrictions via R and TX ****************
-> fitsuri5 <- systemfit( "SUR", system, labels, data = kmenta, R.restr = restr3m,
+> fitsuri5 <- systemfit( "SUR", system, labels, data = Kmenta, R.restr = restr3m,
 +    q.restr = restr3q, TX = tc, maxit = 100 )
-> print( fitsuri5 )
+> print( summary( fitsuri5 ) )
 
 systemfit results 
 method: iterated SUR 
@@ -2168,13 +2214,13 @@ The determinant of the residual covariance matrix: 1.74340
 OLS R-squared value of the system: 0.670962
 McElroy's R-squared value for the system: 0.704623
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 92.426174   7.354296 12.567644        0 ***
-p           -0.227612   0.085013 -2.677361  0.01122   *
-d             0.32027   0.018494 17.317867        0 ***
+price       -0.227612   0.085013 -2.677361  0.01122   *
+income        0.32027   0.018494 17.317867        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2184,14 +2230,14 @@ SSR: 67.205652 MSE: 3.953274 Root MSE: 1.988284
 Multiple R-Squared: 0.74934 Adjusted R-Squared: 0.71985 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 48.729451    7.45869  6.533246        0 ***
-p            0.272388   0.085013  3.204058 0.002887  **
-f             0.22315   0.018976 11.759398        0 ***
-a             0.32027   0.018494 17.317867        0 ***
+price        0.272388   0.085013  3.204058 0.002887  **
+farmPrice     0.22315   0.018976 11.759398        0 ***
+trend         0.32027   0.018494 17.317867        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2201,19 +2247,27 @@ SSR: 109.233669 MSE: 6.827104 Root MSE: 2.612873
 Multiple R-Squared: 0.592585 Adjusted R-Squared: 0.516195 
 
 > print( round( fitsuri5$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 54.085671 -0.614557  0.077710 54.141593 -0.614557  0.069973  0.077710
-[2,] -0.614557  0.007227 -0.001110 -0.618092  0.007227 -0.000964 -0.001110
-[3,]  0.077710 -0.001110  0.000342  0.081310 -0.001110  0.000271  0.000342
-[4,] 54.141593 -0.618092  0.081310 55.632050 -0.618092  0.058748  0.081310
-[5,] -0.614557  0.007227 -0.001110 -0.618092  0.007227 -0.000964 -0.001110
-[6,]  0.069973 -0.000964  0.000271  0.058748 -0.000964  0.000360  0.000271
-[7,]  0.077710 -0.001110  0.000342  0.081310 -0.001110  0.000271  0.000342
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        54.085671  -0.614557    0.077710        54.141593
+eq 1 price              -0.614557   0.007227   -0.001110        -0.618092
+eq 1 income              0.077710  -0.001110    0.000342         0.081310
+eq 2 (Intercept)        54.141593  -0.618092    0.081310        55.632050
+eq 2 price              -0.614557   0.007227   -0.001110        -0.618092
+eq 2 farmPrice           0.069973  -0.000964    0.000271         0.058748
+eq 2 trend               0.077710  -0.001110    0.000342         0.081310
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.614557       0.069973   0.077710
+eq 1 price         0.007227      -0.000964  -0.001110
+eq 1 income       -0.001110       0.000271   0.000342
+eq 2 (Intercept)  -0.618092       0.058748   0.081310
+eq 2 price         0.007227      -0.000964  -0.001110
+eq 2 farmPrice    -0.000964       0.000360   0.000271
+eq 2 trend        -0.001110       0.000271   0.000342
 > 
 > ## ********* iterated SUR with 2 restrictions via R and TX (EViews-like) **********
-> fitsuri5e <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 0,
+> fitsuri5e <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 0,
 +    R.restr = restr3m, q.restr = restr3q, TX = tc, maxit = 100 )
-> print( fitsuri5e )
+> print( summary( fitsuri5e ) )
 
 systemfit results 
 method: iterated SUR 
@@ -2243,13 +2297,13 @@ The determinant of the residual covariance matrix: 1.18302
 OLS R-squared value of the system: 0.6774
 McElroy's R-squared value for the system: 0.664522
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept)  93.35957    6.85761  13.61401        0 ***
-p           -0.239757   0.077937 -3.076298 0.004053  **
-d            0.323155   0.016311 19.811891        0 ***
+price       -0.239757   0.077937 -3.076298 0.004053  **
+income       0.323155   0.016311 19.811891        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2259,14 +2313,14 @@ SSR: 66.264982 MSE: 3.89794 Root MSE: 1.97432
 Multiple R-Squared: 0.752848 Adjusted R-Squared: 0.723771 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 49.545591   6.972681  7.105673        0 ***
-p            0.260243   0.077937  3.339147 0.002005  **
-f            0.226962   0.016434 13.810256        0 ***
-a            0.323155   0.016311 19.811891        0 ***
+price        0.260243   0.077937  3.339147 0.002005  **
+farmPrice    0.226962   0.016434 13.810256        0 ***
+trend        0.323155   0.016311 19.811891        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2276,19 +2330,27 @@ SSR: 106.722321 MSE: 6.670145 Root MSE: 2.582662
 Multiple R-Squared: 0.601952 Adjusted R-Squared: 0.527318 
 
 > print( round( fitsuri5e$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 47.026816 -0.525375  0.058300 47.234560 -0.525375  0.050751  0.058300
-[2,] -0.525375  0.006074 -0.000842 -0.530682  0.006074 -0.000704 -0.000842
-[3,]  0.058300 -0.000842  0.000266  0.061997 -0.000842  0.000201  0.000266
-[4,] 47.234560 -0.530682  0.061997 48.618283 -0.530682  0.042182  0.061997
-[5,] -0.525375  0.006074 -0.000842 -0.530682  0.006074 -0.000704 -0.000842
-[6,]  0.050751 -0.000704  0.000201  0.042182 -0.000704  0.000270  0.000201
-[7,]  0.058300 -0.000842  0.000266  0.061997 -0.000842  0.000201  0.000266
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        47.026816  -0.525375    0.058300        47.234560
+eq 1 price              -0.525375   0.006074   -0.000842        -0.530682
+eq 1 income              0.058300  -0.000842    0.000266         0.061997
+eq 2 (Intercept)        47.234560  -0.530682    0.061997        48.618283
+eq 2 price              -0.525375   0.006074   -0.000842        -0.530682
+eq 2 farmPrice           0.050751  -0.000704    0.000201         0.042182
+eq 2 trend               0.058300  -0.000842    0.000266         0.061997
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.525375       0.050751   0.058300
+eq 1 price         0.006074      -0.000704  -0.000842
+eq 1 income       -0.000842       0.000201   0.000266
+eq 2 (Intercept)  -0.530682       0.042182   0.061997
+eq 2 price         0.006074      -0.000704  -0.000842
+eq 2 farmPrice    -0.000704       0.000270   0.000201
+eq 2 trend        -0.000842       0.000201   0.000266
 > 
 > ## ********* iterated SUR with 2 restrictions via R and TX (rcovformula=2) **********
-> fitsuri5e <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 2,
+> fitsuri5e <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 2,
 +    R.restr = restr3m, q.restr = restr3q, TX = tc, maxit = 100 )
-> print( fitsuri5e )
+> print( summary( fitsuri5e ) )
 
 systemfit results 
 method: iterated SUR 
@@ -2320,13 +2382,13 @@ The determinant of the residual covariance matrix: -1.67203
 OLS R-squared value of the system: 0.527259
 McElroy's R-squared value for the system: 0.926927
 
-SUR estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+SUR estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept)  78.03416    7.16377 10.892891        0 ***
-p           -0.064681   0.081525 -0.793381 0.432902    
-d            0.300747   0.013068 23.013486        0 ***
+price       -0.064681   0.081525 -0.793381 0.432902    
+income       0.300747   0.013068 23.013486        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2336,14 +2398,14 @@ SSR: 95.760152 MSE: 5.63295 Root MSE: 2.373384
 Multiple R-Squared: 0.642838 Adjusted R-Squared: 0.600819 
 
 
-SUR estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+SUR estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 34.195763   7.225714   4.73251  3.6e-05 ***
-p            0.435319   0.081525  5.339674    6e-06 ***
-f            0.207031   0.012415 16.675571        0 ***
-a            0.300747   0.013068 23.013486        0 ***
+price        0.435319   0.081525  5.339674    6e-06 ***
+farmPrice    0.207031   0.012415 16.675571        0 ***
+trend        0.300747   0.013068 23.013486        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -2353,19 +2415,27 @@ SSR: 157.737286 MSE: 9.85858 Root MSE: 3.139838
 Multiple R-Squared: 0.411679 Adjusted R-Squared: 0.301369 
 
 > print( round( fitsuri5e$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 51.319595 -0.579747  0.070528 51.551829 -0.579747  0.061658  0.070528
-[2,] -0.579747  0.006646 -0.000872 -0.583025  0.006646 -0.000751 -0.000872
-[3,]  0.070528 -0.000872  0.000171  0.072036 -0.000872  0.000138  0.000171
-[4,] 51.551829 -0.583025  0.072036 52.210946 -0.583025  0.058794  0.072036
-[5,] -0.579747  0.006646 -0.000872 -0.583025  0.006646 -0.000751 -0.000872
-[6,]  0.061658 -0.000751  0.000138  0.058794 -0.000751  0.000154  0.000138
-[7,]  0.070528 -0.000872  0.000171  0.072036 -0.000872  0.000138  0.000171
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        51.319595  -0.579747    0.070528        51.551829
+eq 1 price              -0.579747   0.006646   -0.000872        -0.583025
+eq 1 income              0.070528  -0.000872    0.000171         0.072036
+eq 2 (Intercept)        51.551829  -0.583025    0.072036        52.210946
+eq 2 price              -0.579747   0.006646   -0.000872        -0.583025
+eq 2 farmPrice           0.061658  -0.000751    0.000138         0.058794
+eq 2 trend               0.070528  -0.000872    0.000171         0.072036
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.579747       0.061658   0.070528
+eq 1 price         0.006646      -0.000751  -0.000872
+eq 1 income       -0.000872       0.000138   0.000171
+eq 2 (Intercept)  -0.583025       0.058794   0.072036
+eq 2 price         0.006646      -0.000751  -0.000872
+eq 2 farmPrice    -0.000751       0.000154   0.000138
+eq 2 trend        -0.000872       0.000138   0.000171
 > 
 > ## ********* iterated SUR with 2 restrictions via R and TX (rcovformula=3) **********
-> # fitsuri5e <- systemfit( "SUR", system, labels, data = kmenta, rcovformula = 3,
+> # fitsuri5e <- systemfit( "SUR", system, labels, data = Kmenta, rcovformula = 3,
 > #    R.restr = restr3m, q.restr = restr3q, TX = tc, maxit = 100 )
-> # print( fitsuri5e )
+> # print( summary( fitsuri5e ) )
 > # print( round( fitsuri5e$bcov, digits = 6 ) )
 > # disabled, because the estimation does not converge
 > 

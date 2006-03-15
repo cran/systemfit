@@ -1,46 +1,59 @@
 \name{summary.systemfit}
 \alias{summary.systemfit}
-\title{Print output of systemfit estimation}
+\alias{summary.systemfit.equation}
+\alias{print.summary.systemfit}
+\alias{print.summary.systemfit.equation}
+\title{Summary of systemfit estimation}
 
 \description{
-  This function returns a summary of the system of equations.
+   These functions create and print summary results
+   of the estimated equation system.
 }
 
 \usage{
    \method{summary}{systemfit}( object, ... )
+
+   \method{summary}{systemfit.equation}( object, ... )
+
+   \method{print}{summary.systemfit}( x, digits = 6, ... )
+
+   \method{print}{summary.systemfit.equation}( x, digits = 6, ... )
 }
 
 \arguments{
-  \item{object}{an object of type \code{systemfit}.}
-  \item{...}{not used by user.}
+   \item{object}{an object of class \code{systemfit} or
+      \code{systemfit.equation}.}
+   \item{x}{an object of class \code{summary.systemfit} or
+      \code{summary.systemfit.equation}.}
+   \item{digits}{number of digits to print.}
+   \item{...}{not used by user.}
 }
 
-\value{
-  \code{summary.systemfit} returns an object of type \code{systemfit}.
-}
+\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com},\cr
+   Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de} }
 
-\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
-
-\seealso{\code{\link{systemfit}}, \code{\link{print.systemfit}} and
-  \code{\link{print.systemfit}}}
+\seealso{\code{\link{systemfit}}, \code{\link{print.systemfit}}}
 
 
 \examples{
-\dontrun{library( systemfit )}
-
-data( kmenta )
-attach( kmenta )
-demand <- q ~ p + d
-supply <- q ~ p + f + a
-inst <- ~ d + f + a
+data( "Kmenta" )
+demand <- consump ~ price + income
+supply <- consump ~ price + farmPrice + trend
+inst <- ~ income + farmPrice + trend
 labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
 ## perform OLS on each of the equations in the system
-fitols <- systemfit( "OLS", system, labels )
+fitols <- systemfit( "OLS", system, labels, data = Kmenta )
 
-## print the results
-summary.systemfit( fitols )
+## results of the whole system
+summary( fitols )
+
+## results of the first equation
+summary( fitols$eq[[1]] )
+
+## results of the second equation
+summary( fitols$eq[[2]] )
 }
 
 \keyword{models}

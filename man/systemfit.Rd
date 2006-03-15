@@ -1,9 +1,10 @@
 
-%    $Id: systemfit.Rd,v 1.12 2005/08/24 22:44:47 hamannj Exp $
+%    $Id: systemfit.Rd 189 2006-03-01 16:58:31Z henningsena $
 
 
 \name{systemfit}
 \alias{systemfit}
+\alias{systemfitClassic}
 
 \title{Linear Equation System Estimation}
 
@@ -15,21 +16,26 @@
 }
 
 \usage{
-systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
+systemfit( method, eqns, eqnlabels=names(eqns),
            inst=NULL, data=list(), R.restr=NULL,
            q.restr=matrix(0,max(nrow(R.restr),0),1),
            TX=NULL, maxiter=1, tol=1e-5,
-           rcovformula=1, formula3sls="GLS",
+           rcovformula=1, centerResiduals = FALSE, formula3sls="GLS",
            probdfsys=!(is.null(R.restr) & is.null(TX)),
            single.eq.sigma=(is.null(R.restr) & is.null(TX)),
            solvetol=.Machine$double.eps,
            saveMemory=( nrow(data) * length(eqns) > 1000 &&
               length(data) > 0 ) )
+
+systemfitClassic( method, formula, eqnVar, timeVar, data,
+                  pooled = FALSE, ... )
 }
 
 \arguments{
-   \item{method}{the estimation method, one of "OLS", "WLS", "SUR",
-      "2SLS", "W2SLS" or "3SLS".}
+   \item{method}{the estimation method, one of "OLS", "WLS", "SUR", "WSUR",
+      "2SLS", "W2SLS", "3SLS", or "W3SLS" (see details);
+      iterated estimation methods can be specified by setting argument
+      \code{maxiter} larger than 1 (e.g. 500).}
    \item{eqns}{a list of structural equations to be estimated; a regression
       constant is implied if not explicitly omitted.}
    \item{eqnlabels}{an optional list of character vectors of names
@@ -56,6 +62,8 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
       WLS, SUR, W2SLS and 3SLS estimations).}
    \item{rcovformula}{formula to calculate the estimated residual covariance
       matrix (see details).}
+   \item{centerResiduals}{logical. Subtract the means from the residuals
+      of each equation before calculating the estimated residual covariance matrix.}
    \item{formula3sls}{formula for calculating the 3SLS estimator,
       one of "GLS", "IV", "GMM", "Schmidt" or "EViews" (see details).}
    \item{probdfsys}{use the degrees of freedom of the whole system
@@ -70,9 +78,31 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
    \item{saveMemory}{logical. Save memory by omitting some calculation that
       are not crucial for the basic estimation (e.g McElroy's
       \eqn{R^2})?}
+   \item{formula}{formula to be estimated (for each equation).}
+   \item{eqnVar}{variable name indicating the equation to which the
+      observation belongs.}
+   \item{timeVar}{variable name indicating the time.}
+   \item{pooled}{logical, restrict coefficients to be equal in all equations.}
+   \item{...}{arguments passed to \code{\link{systemfit}}.}
 }
 
 \details{
+   \code{systemfitClassic} is a wrapper function for \code{systemfit}
+   that can be applied to panel-like data in long format
+   if the regressors are the same for all equations.
+
+   If argument \code{method} is "WSUR" or "W3SLS",
+   the "SUR" or "3SLS" estimation uses a residual variance covariance matrix
+   that is calculated from a "WLS" or "W2SLS" estimation, respectively
+   (and not from an "OLS" or "2SLS" estimation as for a standard "SUR" or "3SLS"
+   estimation).
+   The "WSUR" method is the default method of command "TSCS"
+   in the software LIMDEP that carries out "SUR" estimations
+   in which all coefficient vectors are constrained to be equal
+   (personal information from W.H. Greene, 2006/02/16).
+   If no cross-equation restrictions are imposed, "WSUR" and "W3SLS"
+   generate identical results compared to "SUR" and "3SLS", respectively.
+
    The matrix \code{TX} transforms the regressor matrix (\eqn{X}) by
    \eqn{X^{*} = X *} \code{TX}. Thus, the vector of coefficients is now
    \eqn{b =} \code{TX} \eqn{\cdot b^{*}} , where \eqn{b} is the original (stacked) vector
@@ -153,7 +183,6 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
   \item{rcov}{estimated residual covariance matrix.}
   \item{drcov}{determinant of \code{rcov}.}
   \item{rcovest}{residual covariance matrix used for estimation (only SUR and 3SLS).}
-  \item{rcor}{estimated residual correlation matrix.}
   \item{olsr2}{System OLS R-squared value.}
   \item{mcelr2}{McElroys R-squared value for the system (only SUR and 3SLS).}
   \item{y}{vector of all (stacked) endogenous variables}
@@ -171,6 +200,7 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
   \item{probdfsys}{system degrees of freedom to calculate prob values?.}
   \item{single.eq.sigma}{different \eqn{\sigma^2}s for each single equation?.}
   \item{solvetol}{tolerance level when inverting a matrix or calculating a determinant.}
+  \item{data.name}{name of the data.frame used for estimation.}
 
   ## elements of the class systemfit.eq
   \item{eq}{a list that contains the results that belong to the individual equations.}
@@ -208,10 +238,7 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
 
 \references{
 
-  Greene, W. H. (1993)
-  \emph{Econometric Analysis, Second Edition}, Macmillan.
-
-  Greene, W. H. (2002)
+  Greene, W. H. (2003)
   \emph{Econometric Analysis, Fifth Edition}, Prentice Hall.
 
   Judge, George G.; W. E. Griffiths; R. Carter Hill; Helmut Lütkepohl and Tsoung-Chao Lee (1985)
@@ -236,15 +263,13 @@ systemfit( method, eqns, eqnlabels=c(as.character(1:length(eqns))),
 \seealso{\code{\link{lm}} and \code{\link{nlsystemfit}}}
 
 \examples{
-\dontrun{library( systemfit )}
-data( kmenta )
-demand <- q ~ p + d
-supply <- q ~ p + f + a
-labels <- list( "demand", "supply" )
-system <- list( demand, supply )
+data( "Kmenta" )
+eqDemand <- consump ~ price + income
+eqSupply <- consump ~ price + farmPrice + trend
+system <- list( demand = eqDemand, supply = eqSupply )
 
 ## OLS estimation
-fitols <- systemfit("OLS", system, labels, data=kmenta )
+fitols <- systemfit("OLS", system, data=Kmenta )
 print( fitols )
 
 ## OLS estimation with 2 restrictions
@@ -255,30 +280,49 @@ Rrestr[1,7] <- -1
 Rrestr[2,2] <- -1
 Rrestr[2,5] <-  1
 qrestr[2,1] <-  0.5
-fitols2 <- systemfit("OLS", system, labels, data=kmenta,
-                      R.restr=Rrestr, q.restr=qrestr )
+fitols2 <- systemfit("OLS", system, data = Kmenta,
+                      R.restr = Rrestr, q.restr = qrestr )
 print( fitols2 )
 
 ## iterated SUR estimation
-fitsur <- systemfit("SUR", system, labels, data=kmenta, maxit=100 )
+fitsur <- systemfit("SUR", system, data = Kmenta, maxit = 100 )
 print( fitsur )
 
 ## 2SLS estimation
-inst <- ~ d + f + a
-fit2sls <- systemfit( "2SLS", system, labels, inst, kmenta )
+inst <- ~ income + farmPrice + trend
+fit2sls <- systemfit( "2SLS", system, inst = inst, data = Kmenta )
 print( fit2sls )
 
 ## 2SLS estimation with different instruments in each equation
-inst1 <- ~ d + f
-inst2 <- ~ d + f + a
+inst1 <- ~ income + farmPrice
+inst2 <- ~ income + farmPrice + trend
 instlist <- list( inst1, inst2 )
-fit2sls2 <- systemfit( "2SLS", system, labels, instlist, kmenta )
+fit2sls2 <- systemfit( "2SLS", system, inst = instlist, data = Kmenta )
 print( fit2sls2 )
 
 ## 3SLS estimation with GMM-3SLS formula
-inst <- ~ d + f + a
-fit3sls <- systemfit( "3SLS", system, labels, inst, kmenta, formula3sls="GMM" )
+inst <- ~ income + farmPrice + trend
+fit3sls <- systemfit( "3SLS", system, inst = inst, data = Kmenta,
+   formula3sls = "GMM" )
 print( fit3sls )
+
+
+## Examples how to use systemfitClassic()
+## Repeating the OLS and SUR estimations in Theil (1971, pp. 295, 300)
+data( "GrunfeldTheil" )
+formulaGrunfeld <- invest ~ value + capital
+# OLS
+theilOls <- systemfitClassic( "OLS", formulaGrunfeld, "firm", "year",
+   data = GrunfeldTheil )
+summary( theilOls )
+# SUR
+theilSur <- systemfitClassic( "SUR", formulaGrunfeld, "firm", "year",
+   data = GrunfeldTheil, rcovformula = 0 )
+summary( theilSur )
+
+
+## Further examples are in the documentation to the data sets
+## 'KleinI' and 'GrunfeldGreene'.
 }
 
 \keyword{models}

@@ -1,5 +1,5 @@
 
-% 	$Id: se.ratio.systemfit.Rd,v 1.4 2004/02/23 13:06:56 henningsena Exp $	
+%  $Id: se.ratio.systemfit.Rd 171 2006-02-20 07:45:38Z henningsena $
 
 
 \name{se.ratio.systemfit}
@@ -29,7 +29,7 @@ se.ratio.systemfit( resultsi, resultsj, eqni )
 
 }
 
-\references{    
+\references{
 
   Hasenauer, H; Monserud, R and T. Gregoire. (1998)
   Using Simultaneous Regression Techniques with Individual-Tree Growth Models.
@@ -43,19 +43,16 @@ se.ratio.systemfit( resultsi, resultsj, eqni )
 
 
 \examples{
-\dontrun{library( systemfit )}
-
-data( kmenta )
-attach( kmenta )
-demand <- q ~ p + d
-supply <- q ~ p + f + a
-inst <- ~ d + f + a
+data( "Kmenta" )
+demand <- consump ~ price + income
+supply <- consump ~ price + farmPrice + trend
+inst <- ~ income + farmPrice + trend
 labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
 ## perform 2SLS on each of the equations in the system
-fit2sls <- systemfit( "2SLS", system, labels, inst )
-fit3sls <- systemfit( "3SLS", system, labels, inst )
+fit2sls <- systemfit( "2SLS", system, labels, inst, data = Kmenta )
+fit3sls <- systemfit( "3SLS", system, labels, inst, data = Kmenta )
 
 ## print the results from the fits
 print( fit2sls )

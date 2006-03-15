@@ -1,0 +1,41 @@
+"invest" "value" "capital" "firm" "year"
+"1" 33.1 1170.6 97.8 "General Electric" 1935
+"2" 45 2015.8 104.4 "General Electric" 1936
+"3" 77.2 2803.3 118 "General Electric" 1937
+"4" 44.6 2039.7 156.2 "General Electric" 1938
+"5" 48.1 2256.2 172.6 "General Electric" 1939
+"6" 74.4 2132.2 186.6 "General Electric" 1940
+"7" 113 1834.1 220.9 "General Electric" 1941
+"8" 91.9 1588 287.8 "General Electric" 1942
+"9" 61.3 1749.4 319.9 "General Electric" 1943
+"10" 56.8 1687.2 321.3 "General Electric" 1944
+"11" 93.6 2007.7 319.6 "General Electric" 1945
+"12" 159.9 2208.3 346 "General Electric" 1946
+"13" 147.2 1656.7 456.4 "General Electric" 1947
+"14" 146.3 1604.4 543.4 "General Electric" 1948
+"15" 98.3 1431.8 618.3 "General Electric" 1949
+"16" 93.5 1610.5 647.4 "General Electric" 1950
+"17" 135.2 1819.4 671.3 "General Electric" 1951
+"18" 157.3 2079.7 726.1 "General Electric" 1952
+"19" 179.5 2371.6 800.3 "General Electric" 1953
+"20" 189.6 2759.9 888.9 "General Electric" 1954
+"21" 12.93 191.5 1.8 "Westinghouse" 1935
+"22" 25.9 516 0.8 "Westinghouse" 1936
+"23" 35.05 729 7.4 "Westinghouse" 1937
+"24" 22.89 560.4 18.1 "Westinghouse" 1938
+"25" 18.84 519.9 23.5 "Westinghouse" 1939
+"26" 28.57 628.5 26.5 "Westinghouse" 1940
+"27" 48.51 537.1 36.2 "Westinghouse" 1941
+"28" 43.34 561.2 60.8 "Westinghouse" 1942
+"29" 37.02 617.2 84.4 "Westinghouse" 1943
+"30" 37.81 626.7 91.2 "Westinghouse" 1944
+"31" 39.27 737.2 92.4 "Westinghouse" 1945
+"32" 53.46 760.5 86 "Westinghouse" 1946
+"33" 55.56 581.4 111.1 "Westinghouse" 1947
+"34" 49.56 662.3 130.6 "Westinghouse" 1948
+"35" 32.04 583.8 141.8 "Westinghouse" 1949
+"36" 32.24 635.2 136.7 "Westinghouse" 1950
+"37" 54.38 723.8 129.7 "Westinghouse" 1951
+"38" 71.78 864.1 145.5 "Westinghouse" 1952
+"39" 90.08 1193.5 174.8 "Westinghouse" 1953
+"40" 68.6 1188.9 213.5 "Westinghouse" 1954

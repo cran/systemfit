@@ -1,31 +1,30 @@
 
-% 	$Id: summary.nlsystemfit.system.Rd,v 1.3 2004/02/05 19:12:56 hamannj Exp $	
+%  $Id: summary.nlsystemfit.system.Rd,v 1.4 2006/02/14 14:15:11 henningsena Exp $
 
-\name{summary.nlsystemfit.system}
+\name{summary.nlsystemfit}
 \alias{summary.nlsystemfit.system}
-\title{summary.nlsystemfit.system}
+\alias{summary.nlsystemfit.equation}
+\title{Summary of nlsystemfit estimation}
 
 \description{
-  This function returns a summary of the system of equations.
+   These functions print a summary of the estimated equation system.
 }
 
 \usage{
-summary.nlsystemfit.system(object,...)
+   \method{summary}{nlsystemfit.system}( object, ... )
+
+   \method{summary}{nlsystemfit.equation}( object, ... )
 }
 
 \arguments{
-  \item{object}{an object of type \code{nlsystemfit.system}.}
-  \item{...}{not used by user.}
-}
-
-\value{
-  \code{summary.nlsystemfit.system} returns an object of type \code{nlsystemfit.system}.
+   \item{object}{an object of class \code{nlsystemfit.system} or
+      \code{nlsystemfit.equation}.}
+   \item{...}{not used by user.}
 }
 
 \author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
 
-\seealso{\code{\link{nlsystemfit}}, \code{\link{print.nlsystemfit.system}} and
-  \code{\link{print.nlsystemfit.system}}}
+\seealso{\code{\link{nlsystemfit}}, \code{\link{print.nlsystemfit.system}}}
 
 \examples{
 library( systemfit )

@@ -1,6 +1,7 @@
 
 R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.0  (2005-04-18), ISBN 3-900051-07-0
+Version 2.2.0  (2005-10-06 r35749)
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -16,13 +17,10 @@ Type 'q()' to quit R.
 
 > 
 > library( systemfit )
-> data( kmenta )
+> data( "Kmenta" )
 > 
-> demand <- q ~ p + d
-> supply <- q ~ p + f + a
-> inst   <- ~ d + f + a
-> inst1  <- ~ d + f
-> instlist <- list( inst1, inst )
+> demand <- consump ~ price + income
+> supply <- consump ~ price + farmPrice + trend
 > labels <- list( "demand", "supply" )
 > system <- list( demand, supply )
 > restrm <- matrix(0,1,7)  # restriction matrix "R"
@@ -51,8 +49,8 @@ Type 'q()' to quit R.
 > 
 > 
 > ## *************** WLS estimation ************************
-> fitwls1 <- systemfit( "WLS", system, labels, data = kmenta )
-> print( fitwls1 )
+> fitwls1 <- systemfit( "WLS", system, labels, data = Kmenta )
+> print( summary( fitwls1 ) )
 
 systemfit results 
 method: WLS 
@@ -74,13 +72,13 @@ supply 0.891179 1.000000
 The determinant of the residual covariance matrix: 4.43485
 OLS R-squared value of the system: 0.709298
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.895423   7.519362 13.285093        0 ***
-p           -0.316299   0.090677 -3.488177 0.002815  **
-d            0.334636   0.045422  7.367285    1e-06 ***
+price       -0.316299   0.090677 -3.488177 0.002815  **
+income       0.334636   0.045422  7.367285    1e-06 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -90,14 +88,14 @@ SSR: 63.33165 MSE: 3.725391 Root MSE: 1.930127
 Multiple R-Squared: 0.763789 Adjusted R-Squared: 0.735999 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 58.275431   11.46291 5.083825 0.000111 ***
-p            0.160367   0.094884 1.690134 0.110388    
-f            0.248133   0.046188 5.372263  6.2e-05 ***
-a            0.248302   0.097518 2.546227 0.021567   *
+price        0.160367   0.094884 1.690134 0.110388    
+farmPrice    0.248133   0.046188 5.372263  6.2e-05 ***
+trend        0.248302   0.097518 2.546227 0.021567   *
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -107,27 +105,27 @@ SSR: 92.551058 MSE: 5.784441 Root MSE: 2.405087
 Multiple R-Squared: 0.654807 Adjusted R-Squared: 0.590084 
 
 > print( round( fitwls1$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   56.540807 -0.594801  0.032162   0.000000  0.000000  0.000000
-p             -0.594801  0.008222 -0.002333   0.000000  0.000000  0.000000
-d              0.032162 -0.002333  0.002063   0.000000  0.000000  0.000000
-               0.000000  0.000000  0.000000 131.398303 -0.987500 -0.304361
-               0.000000  0.000000  0.000000  -0.987500  0.009003  0.000844
-               0.000000  0.000000  0.000000  -0.304361  0.000844  0.002133
-               0.000000  0.000000  0.000000  -0.279183  0.000522  0.001316
-                     
-(Intercept)  0.000000
-p            0.000000
-d            0.000000
-            -0.279183
-             0.000522
-             0.001316
-             0.009510
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.540807  -0.594801    0.032162         0.000000
+eq 1 price              -0.594801   0.008222   -0.002333         0.000000
+eq 1 income              0.032162  -0.002333    0.002063         0.000000
+eq 2 (Intercept)         0.000000   0.000000    0.000000       131.398303
+eq 2 price               0.000000   0.000000    0.000000        -0.987500
+eq 2 farmPrice           0.000000   0.000000    0.000000        -0.304361
+eq 2 trend               0.000000   0.000000    0.000000        -0.279183
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.000000       0.000000   0.000000
+eq 1 price         0.000000       0.000000   0.000000
+eq 1 income        0.000000       0.000000   0.000000
+eq 2 (Intercept)  -0.987500      -0.304361  -0.279183
+eq 2 price         0.009003       0.000844   0.000522
+eq 2 farmPrice     0.000844       0.002133   0.001316
+eq 2 trend         0.000522       0.001316   0.009510
 > 
 > ## *************** WLS estimation (EViews-like) ************************
-> fitwls1e <- systemfit( "WLS", system, labels, data = kmenta, rcovformula = 0,
+> fitwls1e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
 +    probdfsys = TRUE )
-> print( fitwls1e )
+> print( summary( fitwls1e ) )
 
 systemfit results 
 method: WLS 
@@ -149,13 +147,13 @@ supply 0.891179 1.000000
 The determinant of the residual covariance matrix: 3.01569
 OLS R-squared value of the system: 0.709298
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.895423   6.932509 14.409706        0 ***
-p           -0.316299     0.0836 -3.783459 0.000619 ***
-d            0.334636   0.041877  7.990943        0 ***
+price       -0.316299     0.0836 -3.783459 0.000619 ***
+income       0.334636   0.041877  7.990943        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -165,14 +163,14 @@ SSR: 63.33165 MSE: 3.725391 Root MSE: 1.930127
 Multiple R-Squared: 0.763789 Adjusted R-Squared: 0.735999 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 58.275431  10.252738 5.683889    2e-06 ***
-p            0.160367   0.084867 1.889628  0.06762   .
-f            0.248133   0.041312 6.006373    1e-06 ***
-a            0.248302   0.087223 2.846768 0.007539  **
+price        0.160367   0.084867 1.889628  0.06762   .
+farmPrice    0.248133   0.041312 6.006373    1e-06 ***
+trend        0.248302   0.087223 2.846768 0.007539  **
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -182,26 +180,26 @@ SSR: 92.551058 MSE: 5.784441 Root MSE: 2.405087
 Multiple R-Squared: 0.654807 Adjusted R-Squared: 0.590084 
 
 > print( round( fitwls1e$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   48.059686 -0.505581  0.027338   0.000000  0.000000  0.000000
-p             -0.505581  0.006989 -0.001983   0.000000  0.000000  0.000000
-d              0.027338 -0.001983  0.001754   0.000000  0.000000  0.000000
-               0.000000  0.000000  0.000000 105.118642 -0.790000 -0.243489
-               0.000000  0.000000  0.000000  -0.790000  0.007202  0.000675
-               0.000000  0.000000  0.000000  -0.243489  0.000675  0.001707
-               0.000000  0.000000  0.000000  -0.223347  0.000418  0.001052
-                     
-(Intercept)  0.000000
-p            0.000000
-d            0.000000
-            -0.223347
-             0.000418
-             0.001052
-             0.007608
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.059686  -0.505581    0.027338         0.000000
+eq 1 price              -0.505581   0.006989   -0.001983         0.000000
+eq 1 income              0.027338  -0.001983    0.001754         0.000000
+eq 2 (Intercept)         0.000000   0.000000    0.000000       105.118642
+eq 2 price               0.000000   0.000000    0.000000        -0.790000
+eq 2 farmPrice           0.000000   0.000000    0.000000        -0.243489
+eq 2 trend               0.000000   0.000000    0.000000        -0.223347
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.000000       0.000000   0.000000
+eq 1 price         0.000000       0.000000   0.000000
+eq 1 income        0.000000       0.000000   0.000000
+eq 2 (Intercept)  -0.790000      -0.243489  -0.223347
+eq 2 price         0.007202       0.000675   0.000418
+eq 2 farmPrice     0.000675       0.001707   0.001052
+eq 2 trend         0.000418       0.001052   0.007608
 > 
 > ## ************** WLS with cross-equation restriction ***************
-> fitwls2 <- systemfit( "WLS", system, labels, data = kmenta, R.restr = restrm )
-> print( fitwls2 )
+> fitwls2 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restrm )
+> print( summary( fitwls2 ) )
 
 systemfit results 
 method: WLS 
@@ -223,13 +221,13 @@ supply 0.946203 1.000000
 The determinant of the residual covariance matrix: 2.34661
 OLS R-squared value of the system: 0.702781
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.658171   7.564002 13.175322        0 ***
-p           -0.299085   0.088667 -3.373138 0.001868  **
-d            0.319416   0.041501  7.696507        0 ***
+price       -0.299085   0.088667 -3.373138 0.001868  **
+income       0.319416   0.041501  7.696507        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -239,14 +237,14 @@ SSR: 63.749895 MSE: 3.749994 Root MSE: 1.93649
 Multiple R-Squared: 0.762229 Adjusted R-Squared: 0.734256 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
             Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 56.18769  11.316513 4.965106  1.9e-05 ***
-p            0.16427   0.096049  1.71027 0.096328   .
-f           0.257971   0.045142 5.714713    2e-06 ***
-a           0.319416   0.041501 7.696507        0 ***
+price        0.16427   0.096049  1.71027 0.096328   .
+farmPrice   0.257971   0.045142 5.714713    2e-06 ***
+trend       0.319416   0.041501 7.696507        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -256,27 +254,27 @@ SSR: 95.627182 MSE: 5.976699 Root MSE: 2.444729
 Multiple R-Squared: 0.643334 Adjusted R-Squared: 0.576459 
 
 > print( round( fitwls2$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   57.214133 -0.596328  0.026850  -0.788252  0.001474  0.003714
-p             -0.596328  0.007862 -0.001948   0.057190 -0.000107 -0.000269
-d              0.026850 -0.001948  0.001722  -0.050565  0.000095  0.000238
-              -0.788252  0.057190 -0.050565 128.063465 -1.001596 -0.280017
-               0.001474 -0.000107  0.000095  -1.001596  0.009225  0.000806
-               0.003714 -0.000269  0.000238  -0.280017  0.000806  0.002038
-               0.026850 -0.001948  0.001722  -0.050565  0.000095  0.000238
-                     
-(Intercept)  0.026850
-p           -0.001948
-d            0.001722
-            -0.050565
-             0.000095
-             0.000238
-             0.001722
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        57.214133  -0.596328    0.026850        -0.788252
+eq 1 price              -0.596328   0.007862   -0.001948         0.057190
+eq 1 income              0.026850  -0.001948    0.001722        -0.050565
+eq 2 (Intercept)        -0.788252   0.057190   -0.050565       128.063465
+eq 2 price               0.001474  -0.000107    0.000095        -1.001596
+eq 2 farmPrice           0.003714  -0.000269    0.000238        -0.280017
+eq 2 trend               0.026850  -0.001948    0.001722        -0.050565
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001474       0.003714   0.026850
+eq 1 price        -0.000107      -0.000269  -0.001948
+eq 1 income        0.000095       0.000238   0.001722
+eq 2 (Intercept)  -1.001596      -0.280017  -0.050565
+eq 2 price         0.009225       0.000806   0.000095
+eq 2 farmPrice     0.000806       0.002038   0.000238
+eq 2 trend         0.000095       0.000238   0.001722
 > 
 > ## ************** WLS with cross-equation restriction (EViews-like) *******
-> fitwls2e <- systemfit( "WLS", system, labels, data = kmenta, R.restr = restrm,
+> fitwls2e <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restrm,
 +    rcovformula = 0 )
-> print( fitwls2e )
+> print( summary( fitwls2e ) )
 
 systemfit results 
 method: WLS 
@@ -298,13 +296,13 @@ supply 0.945826 1.000000
 The determinant of the residual covariance matrix: 1.60653
 OLS R-squared value of the system: 0.702824
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.646089   6.973388 14.289481        0 ***
-p           -0.298209   0.081622 -3.653543 0.000863 ***
-d            0.318641   0.038053  8.373531        0 ***
+price       -0.298209   0.081622 -3.653543 0.000863 ***
+income       0.318641   0.038053  8.373531        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -314,14 +312,14 @@ SSR: 63.793574 MSE: 3.752563 Root MSE: 1.937153
 Multiple R-Squared: 0.762066 Adjusted R-Squared: 0.734073 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 56.210441  10.124784 5.551767    3e-06 ***
-p            0.164228    0.08591 1.911618 0.064384   .
-f            0.257864   0.040393 6.383959        0 ***
-a            0.318641   0.038053 8.373531        0 ***
+price        0.164228    0.08591 1.911618 0.064384   .
+farmPrice    0.257864   0.040393 6.383959        0 ***
+trend        0.318641   0.038053 8.373531        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -331,26 +329,26 @@ SSR: 95.560501 MSE: 5.972531 Root MSE: 2.443876
 Multiple R-Squared: 0.643583 Adjusted R-Squared: 0.576755 
 
 > print( round( fitwls2e$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   48.628136 -0.506597  0.022574  -0.662713  0.001239  0.003123
-p             -0.506597  0.006662 -0.001638   0.048082 -0.000090 -0.000227
-d              0.022574 -0.001638  0.001448  -0.042512  0.000079  0.000200
-              -0.662713  0.048082 -0.042512 102.511245 -0.801390 -0.224299
-               0.001239 -0.000090  0.000079  -0.801390  0.007381  0.000645
-               0.003123 -0.000227  0.000200  -0.224299  0.000645  0.001632
-               0.022574 -0.001638  0.001448  -0.042512  0.000079  0.000200
-                     
-(Intercept)  0.022574
-p           -0.001638
-d            0.001448
-            -0.042512
-             0.000079
-             0.000200
-             0.001448
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.628136  -0.506597    0.022574        -0.662713
+eq 1 price              -0.506597   0.006662   -0.001638         0.048082
+eq 1 income              0.022574  -0.001638    0.001448        -0.042512
+eq 2 (Intercept)        -0.662713   0.048082   -0.042512       102.511245
+eq 2 price               0.001239  -0.000090    0.000079        -0.801390
+eq 2 farmPrice           0.003123  -0.000227    0.000200        -0.224299
+eq 2 trend               0.022574  -0.001638    0.001448        -0.042512
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001239       0.003123   0.022574
+eq 1 price        -0.000090      -0.000227  -0.001638
+eq 1 income        0.000079       0.000200   0.001448
+eq 2 (Intercept)  -0.801390      -0.224299  -0.042512
+eq 2 price         0.007381       0.000645   0.000079
+eq 2 farmPrice     0.000645       0.001632   0.000200
+eq 2 trend         0.000079       0.000200   0.001448
 > 
 > ## ******* WLS with cross-equation restriction via TX **********
-> fitwls3 <- systemfit("WLS", system, labels, data = kmenta, TX = tc,)
-> print( fitwls3 )
+> fitwls3 <- systemfit("WLS", system, labels, data = Kmenta, TX = tc,)
+> print( summary( fitwls3 ) )
 
 systemfit results 
 method: WLS 
@@ -372,13 +370,13 @@ supply 0.946203 1.000000
 The determinant of the residual covariance matrix: 2.34661
 OLS R-squared value of the system: 0.702781
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.658171   7.564002 13.175322        0 ***
-p           -0.299085   0.088667 -3.373138 0.001868  **
-d            0.319416   0.041501  7.696507        0 ***
+price       -0.299085   0.088667 -3.373138 0.001868  **
+income       0.319416   0.041501  7.696507        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -388,14 +386,14 @@ SSR: 63.749895 MSE: 3.749994 Root MSE: 1.93649
 Multiple R-Squared: 0.762229 Adjusted R-Squared: 0.734256 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
             Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 56.18769  11.316513 4.965106  1.9e-05 ***
-p            0.16427   0.096049  1.71027 0.096328   .
-f           0.257971   0.045142 5.714713    2e-06 ***
-a           0.319416   0.041501 7.696507        0 ***
+price        0.16427   0.096049  1.71027 0.096328   .
+farmPrice   0.257971   0.045142 5.714713    2e-06 ***
+trend       0.319416   0.041501 7.696507        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -405,19 +403,27 @@ SSR: 95.627182 MSE: 5.976699 Root MSE: 2.444729
 Multiple R-Squared: 0.643334 Adjusted R-Squared: 0.576459 
 
 > print( round( fitwls3$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]       [,4]      [,5]      [,6]      [,7]
-[1,] 57.214133 -0.596328  0.026850  -0.788252  0.001474  0.003714  0.026850
-[2,] -0.596328  0.007862 -0.001948   0.057190 -0.000107 -0.000269 -0.001948
-[3,]  0.026850 -0.001948  0.001722  -0.050565  0.000095  0.000238  0.001722
-[4,] -0.788252  0.057190 -0.050565 128.063465 -1.001596 -0.280017 -0.050565
-[5,]  0.001474 -0.000107  0.000095  -1.001596  0.009225  0.000806  0.000095
-[6,]  0.003714 -0.000269  0.000238  -0.280017  0.000806  0.002038  0.000238
-[7,]  0.026850 -0.001948  0.001722  -0.050565  0.000095  0.000238  0.001722
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        57.214133  -0.596328    0.026850        -0.788252
+eq 1 price              -0.596328   0.007862   -0.001948         0.057190
+eq 1 income              0.026850  -0.001948    0.001722        -0.050565
+eq 2 (Intercept)        -0.788252   0.057190   -0.050565       128.063465
+eq 2 price               0.001474  -0.000107    0.000095        -1.001596
+eq 2 farmPrice           0.003714  -0.000269    0.000238        -0.280017
+eq 2 trend               0.026850  -0.001948    0.001722        -0.050565
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001474       0.003714   0.026850
+eq 1 price        -0.000107      -0.000269  -0.001948
+eq 1 income        0.000095       0.000238   0.001722
+eq 2 (Intercept)  -1.001596      -0.280017  -0.050565
+eq 2 price         0.009225       0.000806   0.000095
+eq 2 farmPrice     0.000806       0.002038   0.000238
+eq 2 trend         0.000095       0.000238   0.001722
 > 
 > ## ******* WLS with cross-equation restriction via TX (EViews-like) *****
-> fitwls3e <- systemfit("WLS", system, labels, data = kmenta, TX = tc,
+> fitwls3e <- systemfit("WLS", system, labels, data = Kmenta, TX = tc,
 +    rcovformula = 0 )
-> print( fitwls3e )
+> print( summary( fitwls3e ) )
 
 systemfit results 
 method: WLS 
@@ -439,13 +445,13 @@ supply 0.945826 1.000000
 The determinant of the residual covariance matrix: 1.60653
 OLS R-squared value of the system: 0.702824
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.646089   6.973388 14.289481        0 ***
-p           -0.298209   0.081622 -3.653543 0.000863 ***
-d            0.318641   0.038053  8.373531        0 ***
+price       -0.298209   0.081622 -3.653543 0.000863 ***
+income       0.318641   0.038053  8.373531        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -455,14 +461,14 @@ SSR: 63.793574 MSE: 3.752563 Root MSE: 1.937153
 Multiple R-Squared: 0.762066 Adjusted R-Squared: 0.734073 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 56.210441  10.124784 5.551767    3e-06 ***
-p            0.164228    0.08591 1.911618 0.064384   .
-f            0.257864   0.040393 6.383959        0 ***
-a            0.318641   0.038053 8.373531        0 ***
+price        0.164228    0.08591 1.911618 0.064384   .
+farmPrice    0.257864   0.040393 6.383959        0 ***
+trend        0.318641   0.038053 8.373531        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -472,19 +478,27 @@ SSR: 95.560501 MSE: 5.972531 Root MSE: 2.443876
 Multiple R-Squared: 0.643583 Adjusted R-Squared: 0.576755 
 
 > print( round( fitwls3e$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]       [,4]      [,5]      [,6]      [,7]
-[1,] 48.628136 -0.506597  0.022574  -0.662713  0.001239  0.003123  0.022574
-[2,] -0.506597  0.006662 -0.001638   0.048082 -0.000090 -0.000227 -0.001638
-[3,]  0.022574 -0.001638  0.001448  -0.042512  0.000079  0.000200  0.001448
-[4,] -0.662713  0.048082 -0.042512 102.511245 -0.801390 -0.224299 -0.042512
-[5,]  0.001239 -0.000090  0.000079  -0.801390  0.007381  0.000645  0.000079
-[6,]  0.003123 -0.000227  0.000200  -0.224299  0.000645  0.001632  0.000200
-[7,]  0.022574 -0.001638  0.001448  -0.042512  0.000079  0.000200  0.001448
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.628136  -0.506597    0.022574        -0.662713
+eq 1 price              -0.506597   0.006662   -0.001638         0.048082
+eq 1 income              0.022574  -0.001638    0.001448        -0.042512
+eq 2 (Intercept)        -0.662713   0.048082   -0.042512       102.511245
+eq 2 price               0.001239  -0.000090    0.000079        -0.801390
+eq 2 farmPrice           0.003123  -0.000227    0.000200        -0.224299
+eq 2 trend               0.022574  -0.001638    0.001448        -0.042512
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001239       0.003123   0.022574
+eq 1 price        -0.000090      -0.000227  -0.001638
+eq 1 income        0.000079       0.000200   0.001448
+eq 2 (Intercept)  -0.801390      -0.224299  -0.042512
+eq 2 price         0.007381       0.000645   0.000079
+eq 2 farmPrice     0.000645       0.001632   0.000200
+eq 2 trend         0.000079       0.000200   0.001448
 > 
 > ## ***** WLS with 2 cross-equation restrictions ***************
-> fitwls4 <- systemfit("WLS", system, labels, data = kmenta, R.restr = restr2m,
+> fitwls4 <- systemfit("WLS", system, labels, data = Kmenta, R.restr = restr2m,
 +    q.restr = restr2q )
-> print( fitwls4 )
+> print( summary( fitwls4 ) )
 
 systemfit results 
 method: WLS 
@@ -506,13 +520,13 @@ supply 0.942607 1.000000
 The determinant of the residual covariance matrix: 2.51108
 OLS R-squared value of the system: 0.7018
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 100.913798   6.047397 16.687145        0 ***
-p            -0.315951   0.064815  -4.87464  2.3e-05 ***
-d             0.323838    0.03848  8.415831        0 ***
+price        -0.315951   0.064815  -4.87464  2.3e-05 ***
+income        0.323838    0.03848  8.415831        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -522,14 +536,14 @@ SSR: 63.636116 MSE: 3.743301 Root MSE: 1.934761
 Multiple R-Squared: 0.762653 Adjusted R-Squared: 0.73473 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 53.941565   7.968695 6.769185        0 ***
-p            0.184049   0.064815 2.839599 0.007475  **
-f            0.260263   0.044561 5.840652    1e-06 ***
-a            0.323838    0.03848 8.415831        0 ***
+price        0.184049   0.064815 2.839599 0.007475  **
+farmPrice    0.260263   0.044561 5.840652    1e-06 ***
+trend        0.323838    0.03848 8.415831        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -539,27 +553,27 @@ SSR: 96.267574 MSE: 6.016723 Root MSE: 2.452901
 Multiple R-Squared: 0.640946 Adjusted R-Squared: 0.573623 
 
 > print( round( fitwls4$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   36.571016 -0.321554 -0.043279 35.846737 -0.321554 -0.033436
-p             -0.321554  0.004201 -0.001011 -0.431417  0.004201  0.000226
-d             -0.043279 -0.001011  0.001481  0.074877 -0.001011  0.000111
-              35.846737 -0.431417  0.074877 63.500095 -0.431417 -0.215648
-              -0.321554  0.004201 -0.001011 -0.431417  0.004201  0.000226
-              -0.033436  0.000226  0.000111 -0.215648  0.000226  0.001986
-              -0.043279 -0.001011  0.001481  0.074877 -0.001011  0.000111
-                     
-(Intercept) -0.043279
-p           -0.001011
-d            0.001481
-             0.074877
-            -0.001011
-             0.000111
-             0.001481
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        36.571016  -0.321554   -0.043279        35.846737
+eq 1 price              -0.321554   0.004201   -0.001011        -0.431417
+eq 1 income             -0.043279  -0.001011    0.001481         0.074877
+eq 2 (Intercept)        35.846737  -0.431417    0.074877        63.500095
+eq 2 price              -0.321554   0.004201   -0.001011        -0.431417
+eq 2 farmPrice          -0.033436   0.000226    0.000111        -0.215648
+eq 2 trend              -0.043279  -0.001011    0.001481         0.074877
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.321554      -0.033436  -0.043279
+eq 1 price         0.004201       0.000226  -0.001011
+eq 1 income       -0.001011       0.000111   0.001481
+eq 2 (Intercept)  -0.431417      -0.215648   0.074877
+eq 2 price         0.004201       0.000226  -0.001011
+eq 2 farmPrice     0.000226       0.001986   0.000111
+eq 2 trend        -0.001011       0.000111   0.001481
 > 
 > ## ***** WLS with 2 cross-equation restrictions (EViews-like) **********
-> fitwls4e <- systemfit("WLS", system, labels, data = kmenta, rcovformula = 0,
+> fitwls4e <- systemfit("WLS", system, labels, data = Kmenta, rcovformula = 0,
 +    R.restr = restr2m, q.restr = restr2q )
-> print( fitwls4e )
+> print( summary( fitwls4e ) )
 
 systemfit results 
 method: WLS 
@@ -581,13 +595,13 @@ supply 0.942165 1.000000
 The determinant of the residual covariance matrix: 1.72025
 OLS R-squared value of the system: 0.701834
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 100.976246    5.52342 18.281471        0 ***
-p            -0.316028   0.058865 -5.368723    5e-06 ***
-d             0.323276   0.035219  9.179142        0 ***
+price        -0.316028   0.058865 -5.368723    5e-06 ***
+income        0.323276   0.035219  9.179142        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -597,14 +611,14 @@ SSR: 63.670192 MSE: 3.745305 Root MSE: 1.935279
 Multiple R-Squared: 0.762526 Adjusted R-Squared: 0.734588 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
             Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 53.96303   7.208856 7.485658        0 ***
-p           0.183972   0.058865 3.125349 0.003561  **
-f           0.260181   0.039873 6.525172        0 ***
-a           0.323276   0.035219 9.179142        0 ***
+price       0.183972   0.058865 3.125349 0.003561  **
+farmPrice   0.260181   0.039873 6.525172        0 ***
+trend       0.323276   0.035219 9.179142        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -614,27 +628,27 @@ SSR: 96.215011 MSE: 6.013438 Root MSE: 2.452231
 Multiple R-Squared: 0.641142 Adjusted R-Squared: 0.573856 
 
 > print( round( fitwls4e$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   30.508171 -0.266011 -0.038366 29.714754 -0.266011 -0.028003
-p             -0.266011  0.003465 -0.000826 -0.356026  0.003465  0.000188
-d             -0.038366 -0.000826  0.001240  0.060437 -0.000826  0.000095
-              29.714754 -0.356026  0.060437 51.967601 -0.356026 -0.173384
-              -0.266011  0.003465 -0.000826 -0.356026  0.003465  0.000188
-              -0.028003  0.000188  0.000095 -0.173384  0.000188  0.001590
-              -0.038366 -0.000826  0.001240  0.060437 -0.000826  0.000095
-                     
-(Intercept) -0.038366
-p           -0.000826
-d            0.001240
-             0.060437
-            -0.000826
-             0.000095
-             0.001240
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        30.508171  -0.266011   -0.038366        29.714754
+eq 1 price              -0.266011   0.003465   -0.000826        -0.356026
+eq 1 income             -0.038366  -0.000826    0.001240         0.060437
+eq 2 (Intercept)        29.714754  -0.356026    0.060437        51.967601
+eq 2 price              -0.266011   0.003465   -0.000826        -0.356026
+eq 2 farmPrice          -0.028003   0.000188    0.000095        -0.173384
+eq 2 trend              -0.038366  -0.000826    0.001240         0.060437
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.266011      -0.028003  -0.038366
+eq 1 price         0.003465       0.000188  -0.000826
+eq 1 income       -0.000826       0.000095   0.001240
+eq 2 (Intercept)  -0.356026      -0.173384   0.060437
+eq 2 price         0.003465       0.000188  -0.000826
+eq 2 farmPrice     0.000188       0.001590   0.000095
+eq 2 trend        -0.000826       0.000095   0.001240
 > 
 > ## *********** WLS with 2 cross-equation restrictions via R and TX ******
-> fitwls5 <- systemfit( "WLS", system, labels, data = kmenta, R.restr = restr3m,
+> fitwls5 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restr3m,
 +    q.restr = restr3q, TX = tc )
-> print( fitwls5 )
+> print( summary( fitwls5 ) )
 
 systemfit results 
 method: WLS 
@@ -656,13 +670,13 @@ supply 0.942607 1.000000
 The determinant of the residual covariance matrix: 2.51108
 OLS R-squared value of the system: 0.7018
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 100.913798   6.047397 16.687145        0 ***
-p            -0.315951   0.064815  -4.87464  2.3e-05 ***
-d             0.323838    0.03848  8.415831        0 ***
+price        -0.315951   0.064815  -4.87464  2.3e-05 ***
+income        0.323838    0.03848  8.415831        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -672,14 +686,14 @@ SSR: 63.636116 MSE: 3.743301 Root MSE: 1.934761
 Multiple R-Squared: 0.762653 Adjusted R-Squared: 0.73473 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 53.941565   7.968695 6.769185        0 ***
-p            0.184049   0.064815 2.839599 0.007475  **
-f            0.260263   0.044561 5.840652    1e-06 ***
-a            0.323838    0.03848 8.415831        0 ***
+price        0.184049   0.064815 2.839599 0.007475  **
+farmPrice    0.260263   0.044561 5.840652    1e-06 ***
+trend        0.323838    0.03848 8.415831        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -689,19 +703,27 @@ SSR: 96.267574 MSE: 6.016723 Root MSE: 2.452901
 Multiple R-Squared: 0.640946 Adjusted R-Squared: 0.573623 
 
 > print( round( fitwls5$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 36.571016 -0.321554 -0.043279 35.846737 -0.321554 -0.033436 -0.043279
-[2,] -0.321554  0.004201 -0.001011 -0.431417  0.004201  0.000226 -0.001011
-[3,] -0.043279 -0.001011  0.001481  0.074877 -0.001011  0.000111  0.001481
-[4,] 35.846737 -0.431417  0.074877 63.500095 -0.431417 -0.215648  0.074877
-[5,] -0.321554  0.004201 -0.001011 -0.431417  0.004201  0.000226 -0.001011
-[6,] -0.033436  0.000226  0.000111 -0.215648  0.000226  0.001986  0.000111
-[7,] -0.043279 -0.001011  0.001481  0.074877 -0.001011  0.000111  0.001481
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        36.571016  -0.321554   -0.043279        35.846737
+eq 1 price              -0.321554   0.004201   -0.001011        -0.431417
+eq 1 income             -0.043279  -0.001011    0.001481         0.074877
+eq 2 (Intercept)        35.846737  -0.431417    0.074877        63.500095
+eq 2 price              -0.321554   0.004201   -0.001011        -0.431417
+eq 2 farmPrice          -0.033436   0.000226    0.000111        -0.215648
+eq 2 trend              -0.043279  -0.001011    0.001481         0.074877
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.321554      -0.033436  -0.043279
+eq 1 price         0.004201       0.000226  -0.001011
+eq 1 income       -0.001011       0.000111   0.001481
+eq 2 (Intercept)  -0.431417      -0.215648   0.074877
+eq 2 price         0.004201       0.000226  -0.001011
+eq 2 farmPrice     0.000226       0.001986   0.000111
+eq 2 trend        -0.001011       0.000111   0.001481
 > 
 > ## *********** WLS with 2 cross-equation restrictions via R and TX (EViews-like)
-> fitwls5e <- systemfit( "WLS", system, labels, data = kmenta, rcovformula = 0,
+> fitwls5e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
 +    R.restr = restr3m, q.restr = restr3q, TX = tc )
-> print( fitwls5e )
+> print( summary( fitwls5e ) )
 
 systemfit results 
 method: WLS 
@@ -723,13 +745,13 @@ supply 0.942165 1.000000
 The determinant of the residual covariance matrix: 1.72025
 OLS R-squared value of the system: 0.701834
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 100.976246    5.52342 18.281471        0 ***
-p            -0.316028   0.058865 -5.368723    5e-06 ***
-d             0.323276   0.035219  9.179142        0 ***
+price        -0.316028   0.058865 -5.368723    5e-06 ***
+income        0.323276   0.035219  9.179142        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -739,14 +761,14 @@ SSR: 63.670192 MSE: 3.745305 Root MSE: 1.935279
 Multiple R-Squared: 0.762526 Adjusted R-Squared: 0.734588 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
             Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 53.96303   7.208856 7.485658        0 ***
-p           0.183972   0.058865 3.125349 0.003561  **
-f           0.260181   0.039873 6.525172        0 ***
-a           0.323276   0.035219 9.179142        0 ***
+price       0.183972   0.058865 3.125349 0.003561  **
+farmPrice   0.260181   0.039873 6.525172        0 ***
+trend       0.323276   0.035219 9.179142        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -756,19 +778,27 @@ SSR: 96.215011 MSE: 6.013438 Root MSE: 2.452231
 Multiple R-Squared: 0.641142 Adjusted R-Squared: 0.573856 
 
 > print( round( fitwls5e$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 30.508171 -0.266011 -0.038366 29.714754 -0.266011 -0.028003 -0.038366
-[2,] -0.266011  0.003465 -0.000826 -0.356026  0.003465  0.000188 -0.000826
-[3,] -0.038366 -0.000826  0.001240  0.060437 -0.000826  0.000095  0.001240
-[4,] 29.714754 -0.356026  0.060437 51.967601 -0.356026 -0.173384  0.060437
-[5,] -0.266011  0.003465 -0.000826 -0.356026  0.003465  0.000188 -0.000826
-[6,] -0.028003  0.000188  0.000095 -0.173384  0.000188  0.001590  0.000095
-[7,] -0.038366 -0.000826  0.001240  0.060437 -0.000826  0.000095  0.001240
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        30.508171  -0.266011   -0.038366        29.714754
+eq 1 price              -0.266011   0.003465   -0.000826        -0.356026
+eq 1 income             -0.038366  -0.000826    0.001240         0.060437
+eq 2 (Intercept)        29.714754  -0.356026    0.060437        51.967601
+eq 2 price              -0.266011   0.003465   -0.000826        -0.356026
+eq 2 farmPrice          -0.028003   0.000188    0.000095        -0.173384
+eq 2 trend              -0.038366  -0.000826    0.001240         0.060437
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.266011      -0.028003  -0.038366
+eq 1 price         0.003465       0.000188  -0.000826
+eq 1 income       -0.000826       0.000095   0.001240
+eq 2 (Intercept)  -0.356026      -0.173384   0.060437
+eq 2 price         0.003465       0.000188  -0.000826
+eq 2 farmPrice     0.000188       0.001590   0.000095
+eq 2 trend        -0.000826       0.000095   0.001240
 > 
 > ## *************** iterated WLS estimation *********************
-> fitwlsi1 <- systemfit( "WLS", system, labels, data = kmenta, probdfsys = TRUE,
+> fitwlsi1 <- systemfit( "WLS", system, labels, data = Kmenta, probdfsys = TRUE,
 +    maxit = 100 )
-> print( fitwlsi1 )
+> print( summary( fitwlsi1 ) )
 
 systemfit results 
 method: WLS 
@@ -790,13 +820,13 @@ supply 0.891179 1.000000
 The determinant of the residual covariance matrix: 4.43485
 OLS R-squared value of the system: 0.709298
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.895423   7.519362 13.285093        0 ***
-p           -0.316299   0.090677 -3.488177   0.0014  **
-d            0.334636   0.045422  7.367285        0 ***
+price       -0.316299   0.090677 -3.488177   0.0014  **
+income       0.334636   0.045422  7.367285        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -806,14 +836,14 @@ SSR: 63.33165 MSE: 3.725391 Root MSE: 1.930127
 Multiple R-Squared: 0.763789 Adjusted R-Squared: 0.735999 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 58.275431   11.46291 5.083825  1.4e-05 ***
-p            0.160367   0.094884 1.690134 0.100429    
-f            0.248133   0.046188 5.372263    6e-06 ***
-a            0.248302   0.097518 2.546227 0.015741   *
+price        0.160367   0.094884 1.690134 0.100429    
+farmPrice    0.248133   0.046188 5.372263    6e-06 ***
+trend        0.248302   0.097518 2.546227 0.015741   *
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -823,27 +853,27 @@ SSR: 92.551058 MSE: 5.784441 Root MSE: 2.405087
 Multiple R-Squared: 0.654807 Adjusted R-Squared: 0.590084 
 
 > print( round( fitwlsi1$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   56.540807 -0.594801  0.032162   0.000000  0.000000  0.000000
-p             -0.594801  0.008222 -0.002333   0.000000  0.000000  0.000000
-d              0.032162 -0.002333  0.002063   0.000000  0.000000  0.000000
-               0.000000  0.000000  0.000000 131.398303 -0.987500 -0.304361
-               0.000000  0.000000  0.000000  -0.987500  0.009003  0.000844
-               0.000000  0.000000  0.000000  -0.304361  0.000844  0.002133
-               0.000000  0.000000  0.000000  -0.279183  0.000522  0.001316
-                     
-(Intercept)  0.000000
-p            0.000000
-d            0.000000
-            -0.279183
-             0.000522
-             0.001316
-             0.009510
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.540807  -0.594801    0.032162         0.000000
+eq 1 price              -0.594801   0.008222   -0.002333         0.000000
+eq 1 income              0.032162  -0.002333    0.002063         0.000000
+eq 2 (Intercept)         0.000000   0.000000    0.000000       131.398303
+eq 2 price               0.000000   0.000000    0.000000        -0.987500
+eq 2 farmPrice           0.000000   0.000000    0.000000        -0.304361
+eq 2 trend               0.000000   0.000000    0.000000        -0.279183
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.000000       0.000000   0.000000
+eq 1 price         0.000000       0.000000   0.000000
+eq 1 income        0.000000       0.000000   0.000000
+eq 2 (Intercept)  -0.987500      -0.304361  -0.279183
+eq 2 price         0.009003       0.000844   0.000522
+eq 2 farmPrice     0.000844       0.002133   0.001316
+eq 2 trend         0.000522       0.001316   0.009510
 > 
 > ## *************** iterated WLS estimation (EViews-like) ************
-> fitwlsi1e <- systemfit( "WLS", system, labels, data = kmenta, rcovformula = 0,
+> fitwlsi1e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
 +    probdfsys = TRUE, maxit = 100 )
-> print( fitwlsi1e )
+> print( summary( fitwlsi1e ) )
 
 systemfit results 
 method: WLS 
@@ -865,13 +895,13 @@ supply 0.891179 1.000000
 The determinant of the residual covariance matrix: 3.01569
 OLS R-squared value of the system: 0.709298
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.895423   6.932509 14.409706        0 ***
-p           -0.316299     0.0836 -3.783459 0.000619 ***
-d            0.334636   0.041877  7.990943        0 ***
+price       -0.316299     0.0836 -3.783459 0.000619 ***
+income       0.334636   0.041877  7.990943        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -881,14 +911,14 @@ SSR: 63.33165 MSE: 3.725391 Root MSE: 1.930127
 Multiple R-Squared: 0.763789 Adjusted R-Squared: 0.735999 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 58.275431  10.252738 5.683889    2e-06 ***
-p            0.160367   0.084867 1.889628  0.06762   .
-f            0.248133   0.041312 6.006373    1e-06 ***
-a            0.248302   0.087223 2.846768 0.007539  **
+price        0.160367   0.084867 1.889628  0.06762   .
+farmPrice    0.248133   0.041312 6.006373    1e-06 ***
+trend        0.248302   0.087223 2.846768 0.007539  **
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -898,27 +928,27 @@ SSR: 92.551058 MSE: 5.784441 Root MSE: 2.405087
 Multiple R-Squared: 0.654807 Adjusted R-Squared: 0.590084 
 
 > print( round( fitwlsi1e$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   48.059686 -0.505581  0.027338   0.000000  0.000000  0.000000
-p             -0.505581  0.006989 -0.001983   0.000000  0.000000  0.000000
-d              0.027338 -0.001983  0.001754   0.000000  0.000000  0.000000
-               0.000000  0.000000  0.000000 105.118642 -0.790000 -0.243489
-               0.000000  0.000000  0.000000  -0.790000  0.007202  0.000675
-               0.000000  0.000000  0.000000  -0.243489  0.000675  0.001707
-               0.000000  0.000000  0.000000  -0.223347  0.000418  0.001052
-                     
-(Intercept)  0.000000
-p            0.000000
-d            0.000000
-            -0.223347
-             0.000418
-             0.001052
-             0.007608
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.059686  -0.505581    0.027338         0.000000
+eq 1 price              -0.505581   0.006989   -0.001983         0.000000
+eq 1 income              0.027338  -0.001983    0.001754         0.000000
+eq 2 (Intercept)         0.000000   0.000000    0.000000       105.118642
+eq 2 price               0.000000   0.000000    0.000000        -0.790000
+eq 2 farmPrice           0.000000   0.000000    0.000000        -0.243489
+eq 2 trend               0.000000   0.000000    0.000000        -0.223347
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.000000       0.000000   0.000000
+eq 1 price         0.000000       0.000000   0.000000
+eq 1 income        0.000000       0.000000   0.000000
+eq 2 (Intercept)  -0.790000      -0.243489  -0.223347
+eq 2 price         0.007202       0.000675   0.000418
+eq 2 farmPrice     0.000675       0.001707   0.001052
+eq 2 trend         0.000418       0.001052   0.007608
 > 
 > ## ****** iterated WLS with cross-equation restriction ***************
-> fitwlsi2 <- systemfit( "WLS", system, labels, data = kmenta, R.restr = restrm,
+> fitwlsi2 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restrm,
 +    maxit = 100 )
-> print( fitwlsi2 )
+> print( summary( fitwlsi2 ) )
 
 systemfit results 
 method: iterated WLS 
@@ -942,13 +972,13 @@ supply 0.946279 1.000000
 The determinant of the residual covariance matrix: 2.34339
 OLS R-squared value of the system: 0.702772
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.660652    7.53781 13.221434        0 ***
-p           -0.299265   0.088387 -3.385863 0.001805  **
-d            0.319576   0.041404  7.718529        0 ***
+price       -0.299265   0.088387 -3.385863 0.001805  **
+income       0.319576   0.041404  7.718529        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -958,14 +988,14 @@ SSR: 63.741191 MSE: 3.749482 Root MSE: 1.936358
 Multiple R-Squared: 0.762261 Adjusted R-Squared: 0.734292 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 56.183016  11.348676 4.950623    2e-05 ***
-p            0.164279   0.096328 1.705416 0.097239   .
-f            0.257993   0.045269  5.69914    2e-06 ***
-a            0.319576   0.041404 7.718529        0 ***
+price        0.164279   0.096328 1.705416 0.097239   .
+farmPrice    0.257993   0.045269  5.69914    2e-06 ***
+trend        0.319576   0.041404 7.718529        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -975,27 +1005,27 @@ SSR: 95.64097 MSE: 5.977561 Root MSE: 2.444905
 Multiple R-Squared: 0.643283 Adjusted R-Squared: 0.576398 
 
 > print( round( fitwlsi2$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   56.818574 -0.592263  0.026724  -0.784542  0.001467  0.003697
-p             -0.592263  0.007812 -0.001939   0.056921 -0.000106 -0.000268
-d              0.026724 -0.001939  0.001714  -0.050327  0.000094  0.000237
-              -0.784542  0.056921 -0.050327 128.792445 -1.007391 -0.281572
-               0.001467 -0.000106  0.000094  -1.007391  0.009279  0.000811
-               0.003697 -0.000268  0.000237  -0.281572  0.000811  0.002049
-               0.026724 -0.001939  0.001714  -0.050327  0.000094  0.000237
-                     
-(Intercept)  0.026724
-p           -0.001939
-d            0.001714
-            -0.050327
-             0.000094
-             0.000237
-             0.001714
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.818574  -0.592263    0.026724        -0.784542
+eq 1 price              -0.592263   0.007812   -0.001939         0.056921
+eq 1 income              0.026724  -0.001939    0.001714        -0.050327
+eq 2 (Intercept)        -0.784542   0.056921   -0.050327       128.792445
+eq 2 price               0.001467  -0.000106    0.000094        -1.007391
+eq 2 farmPrice           0.003697  -0.000268    0.000237        -0.281572
+eq 2 trend               0.026724  -0.001939    0.001714        -0.050327
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001467       0.003697   0.026724
+eq 1 price        -0.000106      -0.000268  -0.001939
+eq 1 income        0.000094       0.000237   0.001714
+eq 2 (Intercept)  -1.007391      -0.281572  -0.050327
+eq 2 price         0.009279       0.000811   0.000094
+eq 2 farmPrice     0.000811       0.002049   0.000237
+eq 2 trend         0.000094       0.000237   0.001714
 > 
 > ## ****** iterated WLS with cross-equation restriction (EViews-like) ********
-> fitwlsi2e <- systemfit( "WLS", system, labels, data = kmenta, R.restr = restrm,
+> fitwlsi2e <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restrm,
 +    rcovformula = 0, maxit = 100 )
-> print( fitwlsi2e )
+> print( summary( fitwlsi2e ) )
 
 systemfit results 
 method: iterated WLS 
@@ -1019,13 +1049,13 @@ supply 0.945899 1.000000
 The determinant of the residual covariance matrix: 1.60444
 OLS R-squared value of the system: 0.702817
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.648388   6.951629 14.334537        0 ***
-p           -0.298376    0.08139 -3.665987 0.000834 ***
-d            0.318789   0.037974  8.394897        0 ***
+price       -0.298376    0.08139 -3.665987 0.000834 ***
+income       0.318789   0.037974  8.394897        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1035,14 +1065,14 @@ SSR: 63.785099 MSE: 3.752065 Root MSE: 1.937025
 Multiple R-Squared: 0.762097 Adjusted R-Squared: 0.734109 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 56.206113  10.150004 5.537546    3e-06 ***
-p            0.164236   0.086129  1.90686 0.065018   .
-f            0.257884   0.040492 6.368741        0 ***
-a            0.318789   0.037974 8.394897        0 ***
+price        0.164236   0.086129  1.90686 0.065018   .
+farmPrice    0.257884   0.040492 6.368741        0 ***
+trend        0.318789   0.037974 8.394897        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1052,27 +1082,27 @@ SSR: 95.573129 MSE: 5.973321 Root MSE: 2.444038
 Multiple R-Squared: 0.643536 Adjusted R-Squared: 0.576699 
 
 > print( round( fitwlsi2e$bcov, digits = 6 ) )
-            (Intercept)         p         d                               
-(Intercept)   48.325149 -0.503487  0.022480  -0.659954  0.001234  0.003110
-p             -0.503487  0.006624 -0.001631   0.047882 -0.000090 -0.000226
-d              0.022480 -0.001631  0.001442  -0.042335  0.000079  0.000199
-              -0.659954  0.047882 -0.042335 103.022585 -0.805456 -0.225388
-               0.001234 -0.000090  0.000079  -0.805456  0.007418  0.000649
-               0.003110 -0.000226  0.000199  -0.225388  0.000649  0.001640
-               0.022480 -0.001631  0.001442  -0.042335  0.000079  0.000199
-                     
-(Intercept)  0.022480
-p           -0.001631
-d            0.001442
-            -0.042335
-             0.000079
-             0.000199
-             0.001442
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.325149  -0.503487    0.022480        -0.659954
+eq 1 price              -0.503487   0.006624   -0.001631         0.047882
+eq 1 income              0.022480  -0.001631    0.001442        -0.042335
+eq 2 (Intercept)        -0.659954   0.047882   -0.042335       103.022585
+eq 2 price               0.001234  -0.000090    0.000079        -0.805456
+eq 2 farmPrice           0.003110  -0.000226    0.000199        -0.225388
+eq 2 trend               0.022480  -0.001631    0.001442        -0.042335
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001234       0.003110   0.022480
+eq 1 price        -0.000090      -0.000226  -0.001631
+eq 1 income        0.000079       0.000199   0.001442
+eq 2 (Intercept)  -0.805456      -0.225388  -0.042335
+eq 2 price         0.007418       0.000649   0.000079
+eq 2 farmPrice     0.000649       0.001640   0.000199
+eq 2 trend         0.000079       0.000199   0.001442
 > 
 > ## ******* iterated WLS with cross-equation restriction via TX **********
-> fitwlsi3 <- systemfit( "WLS", system, labels, data = kmenta, TX = tc,
+> fitwlsi3 <- systemfit( "WLS", system, labels, data = Kmenta, TX = tc,
 +    maxit = 100 )
-> print( fitwlsi3 )
+> print( summary( fitwlsi3 ) )
 
 systemfit results 
 method: iterated WLS 
@@ -1096,13 +1126,13 @@ supply 0.946279 1.000000
 The determinant of the residual covariance matrix: 2.34339
 OLS R-squared value of the system: 0.702772
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.660652    7.53781 13.221434        0 ***
-p           -0.299265   0.088387 -3.385863 0.001805  **
-d            0.319576   0.041404  7.718529        0 ***
+price       -0.299265   0.088387 -3.385863 0.001805  **
+income       0.319576   0.041404  7.718529        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1112,14 +1142,14 @@ SSR: 63.741191 MSE: 3.749482 Root MSE: 1.936358
 Multiple R-Squared: 0.762261 Adjusted R-Squared: 0.734292 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 56.183016  11.348676 4.950623    2e-05 ***
-p            0.164279   0.096328 1.705416 0.097239   .
-f            0.257993   0.045269  5.69914    2e-06 ***
-a            0.319576   0.041404 7.718529        0 ***
+price        0.164279   0.096328 1.705416 0.097239   .
+farmPrice    0.257993   0.045269  5.69914    2e-06 ***
+trend        0.319576   0.041404 7.718529        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1129,19 +1159,27 @@ SSR: 95.64097 MSE: 5.977561 Root MSE: 2.444905
 Multiple R-Squared: 0.643283 Adjusted R-Squared: 0.576398 
 
 > print( round( fitwlsi3$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]       [,4]      [,5]      [,6]      [,7]
-[1,] 56.818574 -0.592263  0.026724  -0.784542  0.001467  0.003697  0.026724
-[2,] -0.592263  0.007812 -0.001939   0.056921 -0.000106 -0.000268 -0.001939
-[3,]  0.026724 -0.001939  0.001714  -0.050327  0.000094  0.000237  0.001714
-[4,] -0.784542  0.056921 -0.050327 128.792445 -1.007391 -0.281572 -0.050327
-[5,]  0.001467 -0.000106  0.000094  -1.007391  0.009279  0.000811  0.000094
-[6,]  0.003697 -0.000268  0.000237  -0.281572  0.000811  0.002049  0.000237
-[7,]  0.026724 -0.001939  0.001714  -0.050327  0.000094  0.000237  0.001714
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.818574  -0.592263    0.026724        -0.784542
+eq 1 price              -0.592263   0.007812   -0.001939         0.056921
+eq 1 income              0.026724  -0.001939    0.001714        -0.050327
+eq 2 (Intercept)        -0.784542   0.056921   -0.050327       128.792445
+eq 2 price               0.001467  -0.000106    0.000094        -1.007391
+eq 2 farmPrice           0.003697  -0.000268    0.000237        -0.281572
+eq 2 trend               0.026724  -0.001939    0.001714        -0.050327
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001467       0.003697   0.026724
+eq 1 price        -0.000106      -0.000268  -0.001939
+eq 1 income        0.000094       0.000237   0.001714
+eq 2 (Intercept)  -1.007391      -0.281572  -0.050327
+eq 2 price         0.009279       0.000811   0.000094
+eq 2 farmPrice     0.000811       0.002049   0.000237
+eq 2 trend         0.000094       0.000237   0.001714
 > 
 > ## ******* iterated WLS with cross-equation restriction via TX (EViews-like) ***
-> fitwlsi3e <- systemfit( "WLS", system, labels, data = kmenta, TX = tc,
+> fitwlsi3e <- systemfit( "WLS", system, labels, data = Kmenta, TX = tc,
 +    rcovformula = 0, maxit = 100 )
-> print( fitwlsi3e )
+> print( summary( fitwlsi3e ) )
 
 systemfit results 
 method: iterated WLS 
@@ -1165,13 +1203,13 @@ supply 0.945899 1.000000
 The determinant of the residual covariance matrix: 1.60444
 OLS R-squared value of the system: 0.702817
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 99.648388   6.951629 14.334537        0 ***
-p           -0.298376    0.08139 -3.665987 0.000834 ***
-d            0.318789   0.037974  8.394897        0 ***
+price       -0.298376    0.08139 -3.665987 0.000834 ***
+income       0.318789   0.037974  8.394897        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1181,14 +1219,14 @@ SSR: 63.785099 MSE: 3.752065 Root MSE: 1.937025
 Multiple R-Squared: 0.762097 Adjusted R-Squared: 0.734109 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 56.206113  10.150004 5.537546    3e-06 ***
-p            0.164236   0.086129  1.90686 0.065018   .
-f            0.257884   0.040492 6.368741        0 ***
-a            0.318789   0.037974 8.394897        0 ***
+price        0.164236   0.086129  1.90686 0.065018   .
+farmPrice    0.257884   0.040492 6.368741        0 ***
+trend        0.318789   0.037974 8.394897        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1198,19 +1236,27 @@ SSR: 95.573129 MSE: 5.973321 Root MSE: 2.444038
 Multiple R-Squared: 0.643536 Adjusted R-Squared: 0.576699 
 
 > print( round( fitwlsi3e$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]       [,4]      [,5]      [,6]      [,7]
-[1,] 48.325149 -0.503487  0.022480  -0.659954  0.001234  0.003110  0.022480
-[2,] -0.503487  0.006624 -0.001631   0.047882 -0.000090 -0.000226 -0.001631
-[3,]  0.022480 -0.001631  0.001442  -0.042335  0.000079  0.000199  0.001442
-[4,] -0.659954  0.047882 -0.042335 103.022585 -0.805456 -0.225388 -0.042335
-[5,]  0.001234 -0.000090  0.000079  -0.805456  0.007418  0.000649  0.000079
-[6,]  0.003110 -0.000226  0.000199  -0.225388  0.000649  0.001640  0.000199
-[7,]  0.022480 -0.001631  0.001442  -0.042335  0.000079  0.000199  0.001442
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.325149  -0.503487    0.022480        -0.659954
+eq 1 price              -0.503487   0.006624   -0.001631         0.047882
+eq 1 income              0.022480  -0.001631    0.001442        -0.042335
+eq 2 (Intercept)        -0.659954   0.047882   -0.042335       103.022585
+eq 2 price               0.001234  -0.000090    0.000079        -0.805456
+eq 2 farmPrice           0.003110  -0.000226    0.000199        -0.225388
+eq 2 trend               0.022480  -0.001631    0.001442        -0.042335
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001234       0.003110   0.022480
+eq 1 price        -0.000090      -0.000226  -0.001631
+eq 1 income        0.000079       0.000199   0.001442
+eq 2 (Intercept)  -0.805456      -0.225388  -0.042335
+eq 2 price         0.007418       0.000649   0.000079
+eq 2 farmPrice     0.000649       0.001640   0.000199
+eq 2 trend         0.000079       0.000199   0.001442
 > 
 > ## ******* iterated WLS with 2 cross-equation restrictions ***********
-> fitwlsi4 <- systemfit( "WLS", system, labels, data = kmenta, R.restr = restr2m,
+> fitwlsi4 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restr2m,
 +    q.restr = restr2q, maxit = 100 )
-> print( fitwlsi4 )
+> print( summary( fitwlsi4 ) )
 
 systemfit results 
 method: iterated WLS 
@@ -1234,13 +1280,13 @@ supply 0.942681 1.000000
 The determinant of the residual covariance matrix: 2.50792
 OLS R-squared value of the system: 0.701793
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 100.903146   6.039552 16.707059        0 ***
-p            -0.315938   0.064794 -4.876008  2.3e-05 ***
-d             0.323934   0.038416  8.432317        0 ***
+price        -0.315938   0.064794 -4.876008  2.3e-05 ***
+income        0.323934   0.038416  8.432317        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1250,14 +1296,14 @@ SSR: 63.630463 MSE: 3.742968 Root MSE: 1.934675
 Multiple R-Squared: 0.762674 Adjusted R-Squared: 0.734753 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 53.937948   7.971835 6.766064        0 ***
-p            0.184062   0.064794 2.840703 0.007454  **
-f            0.260277   0.044665 5.827325    1e-06 ***
-a            0.323934   0.038416 8.432317        0 ***
+price        0.184062   0.064794 2.840703 0.007454  **
+farmPrice    0.260277   0.044665 5.827325    1e-06 ***
+trend        0.323934   0.038416 8.432317        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1267,27 +1313,27 @@ SSR: 96.276614 MSE: 6.017288 Root MSE: 2.453016
 Multiple R-Squared: 0.640912 Adjusted R-Squared: 0.573583 
 
 > print( round( fitwlsi4$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   36.476183 -0.321184 -0.042697 35.793053 -0.321184 -0.033327
-p             -0.321184  0.004198 -0.001012 -0.431101  0.004198  0.000226
-d             -0.042697 -0.001012  0.001476  0.075104 -0.001012  0.000110
-              35.793053 -0.431101  0.075104 63.550148 -0.431101 -0.216503
-              -0.321184  0.004198 -0.001012 -0.431101  0.004198  0.000226
-              -0.033327  0.000226  0.000110 -0.216503  0.000226  0.001995
-              -0.042697 -0.001012  0.001476  0.075104 -0.001012  0.000110
-                     
-(Intercept) -0.042697
-p           -0.001012
-d            0.001476
-             0.075104
-            -0.001012
-             0.000110
-             0.001476
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        36.476183  -0.321184   -0.042697        35.793053
+eq 1 price              -0.321184   0.004198   -0.001012        -0.431101
+eq 1 income             -0.042697  -0.001012    0.001476         0.075104
+eq 2 (Intercept)        35.793053  -0.431101    0.075104        63.550148
+eq 2 price              -0.321184   0.004198   -0.001012        -0.431101
+eq 2 farmPrice          -0.033327   0.000226    0.000110        -0.216503
+eq 2 trend              -0.042697  -0.001012    0.001476         0.075104
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.321184      -0.033327  -0.042697
+eq 1 price         0.004198       0.000226  -0.001012
+eq 1 income       -0.001012       0.000110   0.001476
+eq 2 (Intercept)  -0.431101      -0.216503   0.075104
+eq 2 price         0.004198       0.000226  -0.001012
+eq 2 farmPrice     0.000226       0.001995   0.000110
+eq 2 trend        -0.001012       0.000110   0.001476
 > 
 > ## ******* iterated WLS with 2 cross-equation restrictions (EViews-like) *****
-> fitwlsi4e <- systemfit( "WLS", system, labels, data = kmenta, rcovformula = 0,
+> fitwlsi4e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
 +    R.restr = restr2m, q.restr = restr2q, maxit = 100 )
-> print( fitwlsi4e )
+> print( summary( fitwlsi4e ) )
 
 systemfit results 
 method: iterated WLS 
@@ -1311,13 +1357,13 @@ supply 0.942237 1.000000
 The determinant of the residual covariance matrix: 1.71819
 OLS R-squared value of the system: 0.701829
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 100.96616   5.517039 18.300789        0 ***
-p           -0.316015    0.05885 -5.369835    5e-06 ***
-d            0.323366   0.035166  9.195366        0 ***
+price       -0.316015    0.05885 -5.369835    5e-06 ***
+income       0.323366   0.035166  9.195366        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1327,14 +1373,14 @@ SSR: 63.664581 MSE: 3.744975 Root MSE: 1.935194
 Multiple R-Squared: 0.762547 Adjusted R-Squared: 0.734611 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 53.959534   7.211405 7.482527        0 ***
-p            0.183985    0.05885 3.126339 0.003551  **
-f            0.260195   0.039956 6.512031        0 ***
-a            0.323366   0.035166 9.195366        0 ***
+price        0.183985    0.05885 3.126339 0.003551  **
+farmPrice    0.260195   0.039956 6.512031        0 ***
+trend        0.323366   0.035166 9.195366        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1344,27 +1390,27 @@ SSR: 96.223451 MSE: 6.013966 Root MSE: 2.452339
 Multiple R-Squared: 0.64111 Adjusted R-Squared: 0.573819 
 
 > print( round( fitwlsi4e$bcov, digits = 6 ) )
-            (Intercept)         p         d                              
-(Intercept)   30.437717 -0.265752 -0.037918 29.676241 -0.265752 -0.027921
-p             -0.265752  0.003463 -0.000827 -0.355820  0.003463  0.000187
-d             -0.037918 -0.000827  0.001237  0.060620 -0.000827  0.000094
-              29.676241 -0.355820  0.060620 52.004362 -0.355820 -0.173988
-              -0.265752  0.003463 -0.000827 -0.355820  0.003463  0.000187
-              -0.027921  0.000187  0.000094 -0.173988  0.000187  0.001596
-              -0.037918 -0.000827  0.001237  0.060620 -0.000827  0.000094
-                     
-(Intercept) -0.037918
-p           -0.000827
-d            0.001237
-             0.060620
-            -0.000827
-             0.000094
-             0.001237
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        30.437717  -0.265752   -0.037918        29.676241
+eq 1 price              -0.265752   0.003463   -0.000827        -0.355820
+eq 1 income             -0.037918  -0.000827    0.001237         0.060620
+eq 2 (Intercept)        29.676241  -0.355820    0.060620        52.004362
+eq 2 price              -0.265752   0.003463   -0.000827        -0.355820
+eq 2 farmPrice          -0.027921   0.000187    0.000094        -0.173988
+eq 2 trend              -0.037918  -0.000827    0.001237         0.060620
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.265752      -0.027921  -0.037918
+eq 1 price         0.003463       0.000187  -0.000827
+eq 1 income       -0.000827       0.000094   0.001237
+eq 2 (Intercept)  -0.355820      -0.173988   0.060620
+eq 2 price         0.003463       0.000187  -0.000827
+eq 2 farmPrice     0.000187       0.001596   0.000094
+eq 2 trend        -0.000827       0.000094   0.001237
 > 
 > ## ***** iterated WLS with 2 cross-equation restrictions via R and TX ******
-> fitwlsi5 <- systemfit( "WLS", system, labels, data = kmenta, R.restr = restr3m,
+> fitwlsi5 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restr3m,
 +    q.restr = restr3q, TX = tc, maxit = 100 )
-> print( fitwlsi5 )
+> print( summary( fitwlsi5 ) )
 
 systemfit results 
 method: iterated WLS 
@@ -1388,13 +1434,13 @@ supply 0.942681 1.000000
 The determinant of the residual covariance matrix: 2.50792
 OLS R-squared value of the system: 0.701793
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
               Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 100.903146   6.039552 16.707059        0 ***
-p            -0.315938   0.064794 -4.876008  2.3e-05 ***
-d             0.323934   0.038416  8.432317        0 ***
+price        -0.315938   0.064794 -4.876008  2.3e-05 ***
+income        0.323934   0.038416  8.432317        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1404,14 +1450,14 @@ SSR: 63.630463 MSE: 3.742968 Root MSE: 1.934675
 Multiple R-Squared: 0.762674 Adjusted R-Squared: 0.734753 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 53.937948   7.971835 6.766064        0 ***
-p            0.184062   0.064794 2.840703 0.007454  **
-f            0.260277   0.044665 5.827325    1e-06 ***
-a            0.323934   0.038416 8.432317        0 ***
+price        0.184062   0.064794 2.840703 0.007454  **
+farmPrice    0.260277   0.044665 5.827325    1e-06 ***
+trend        0.323934   0.038416 8.432317        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1421,19 +1467,27 @@ SSR: 96.276614 MSE: 6.017288 Root MSE: 2.453016
 Multiple R-Squared: 0.640912 Adjusted R-Squared: 0.573583 
 
 > print( round( fitwlsi5$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 36.476183 -0.321184 -0.042697 35.793053 -0.321184 -0.033327 -0.042697
-[2,] -0.321184  0.004198 -0.001012 -0.431101  0.004198  0.000226 -0.001012
-[3,] -0.042697 -0.001012  0.001476  0.075104 -0.001012  0.000110  0.001476
-[4,] 35.793053 -0.431101  0.075104 63.550148 -0.431101 -0.216503  0.075104
-[5,] -0.321184  0.004198 -0.001012 -0.431101  0.004198  0.000226 -0.001012
-[6,] -0.033327  0.000226  0.000110 -0.216503  0.000226  0.001995  0.000110
-[7,] -0.042697 -0.001012  0.001476  0.075104 -0.001012  0.000110  0.001476
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        36.476183  -0.321184   -0.042697        35.793053
+eq 1 price              -0.321184   0.004198   -0.001012        -0.431101
+eq 1 income             -0.042697  -0.001012    0.001476         0.075104
+eq 2 (Intercept)        35.793053  -0.431101    0.075104        63.550148
+eq 2 price              -0.321184   0.004198   -0.001012        -0.431101
+eq 2 farmPrice          -0.033327   0.000226    0.000110        -0.216503
+eq 2 trend              -0.042697  -0.001012    0.001476         0.075104
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.321184      -0.033327  -0.042697
+eq 1 price         0.004198       0.000226  -0.001012
+eq 1 income       -0.001012       0.000110   0.001476
+eq 2 (Intercept)  -0.431101      -0.216503   0.075104
+eq 2 price         0.004198       0.000226  -0.001012
+eq 2 farmPrice     0.000226       0.001995   0.000110
+eq 2 trend        -0.001012       0.000110   0.001476
 > 
 > ## *** iterated WLS with 2 cross-equation restrictions via R and TX (EViews-like)
-> fitwlsi5e <- systemfit( "WLS", system, labels, data = kmenta, rcovformula = 0,
+> fitwlsi5e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
 +    R.restr = restr3m, q.restr = restr3q, TX = tc, maxit = 100 )
-> print( fitwlsi5e )
+> print( summary( fitwlsi5e ) )
 
 systemfit results 
 method: iterated WLS 
@@ -1457,13 +1511,13 @@ supply 0.942237 1.000000
 The determinant of the residual covariance matrix: 1.71819
 OLS R-squared value of the system: 0.701829
 
-WLS estimates for demand  (equation 1 )
-Model Formula: q ~ p + d
+WLS estimates for 'demand' (equation 1)
+Model Formula: consump ~ price + income
 
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 100.96616   5.517039 18.300789        0 ***
-p           -0.316015    0.05885 -5.369835    5e-06 ***
-d            0.323366   0.035166  9.195366        0 ***
+price       -0.316015    0.05885 -5.369835    5e-06 ***
+income       0.323366   0.035166  9.195366        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1473,14 +1527,14 @@ SSR: 63.664581 MSE: 3.744975 Root MSE: 1.935194
 Multiple R-Squared: 0.762547 Adjusted R-Squared: 0.734611 
 
 
-WLS estimates for supply  (equation 2 )
-Model Formula: q ~ p + f + a
+WLS estimates for 'supply' (equation 2)
+Model Formula: consump ~ price + farmPrice + trend
 
              Estimate Std. Error  t value Pr(>|t|)    
 (Intercept) 53.959534   7.211405 7.482527        0 ***
-p            0.183985    0.05885 3.126339 0.003551  **
-f            0.260195   0.039956 6.512031        0 ***
-a            0.323366   0.035166 9.195366        0 ***
+price        0.183985    0.05885 3.126339 0.003551  **
+farmPrice    0.260195   0.039956 6.512031        0 ***
+trend        0.323366   0.035166 9.195366        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -1490,13 +1544,21 @@ SSR: 96.223451 MSE: 6.013966 Root MSE: 2.452339
 Multiple R-Squared: 0.64111 Adjusted R-Squared: 0.573819 
 
 > print( round( fitwlsi5e$bcov, digits = 6 ) )
-          [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
-[1,] 30.437717 -0.265752 -0.037918 29.676241 -0.265752 -0.027921 -0.037918
-[2,] -0.265752  0.003463 -0.000827 -0.355820  0.003463  0.000187 -0.000827
-[3,] -0.037918 -0.000827  0.001237  0.060620 -0.000827  0.000094  0.001237
-[4,] 29.676241 -0.355820  0.060620 52.004362 -0.355820 -0.173988  0.060620
-[5,] -0.265752  0.003463 -0.000827 -0.355820  0.003463  0.000187 -0.000827
-[6,] -0.027921  0.000187  0.000094 -0.173988  0.000187  0.001596  0.000094
-[7,] -0.037918 -0.000827  0.001237  0.060620 -0.000827  0.000094  0.001237
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        30.437717  -0.265752   -0.037918        29.676241
+eq 1 price              -0.265752   0.003463   -0.000827        -0.355820
+eq 1 income             -0.037918  -0.000827    0.001237         0.060620
+eq 2 (Intercept)        29.676241  -0.355820    0.060620        52.004362
+eq 2 price              -0.265752   0.003463   -0.000827        -0.355820
+eq 2 farmPrice          -0.027921   0.000187    0.000094        -0.173988
+eq 2 trend              -0.037918  -0.000827    0.001237         0.060620
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.265752      -0.027921  -0.037918
+eq 1 price         0.003463       0.000187  -0.000827
+eq 1 income       -0.000827       0.000094   0.001237
+eq 2 (Intercept)  -0.355820      -0.173988   0.060620
+eq 2 price         0.003463       0.000187  -0.000827
+eq 2 farmPrice     0.000187       0.001596   0.000094
+eq 2 trend        -0.000827       0.000094   0.001237
 > 
 > 

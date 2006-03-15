@@ -1,48 +1,57 @@
 \name{fitted.systemfit}
 \alias{fitted.systemfit}
+\alias{fitted.systemfit.equation}
 \title{Fitted values}
 
 \description{
-   This function extracts the fitted values of all equations
+   These functions extract the fitted values
    from an object returned by \code{\link{systemfit}}.
 }
 
 \usage{
    \method{fitted}{systemfit}( object, \dots )
+
+   \method{fitted}{systemfit.equation}( object, \dots )
 }
 
 \arguments{
-  \item{object}{an object of type \code{systemfit}.}
-  \item{\dots}{other arguments.}
+   \item{object}{an object of class \code{systemfit} or
+      \code{systemfit.equation}.}
+   \item{\dots}{other arguments.}
 }
 
 \value{
-   \code{fitted.systemfit} returns the vector of fitted values.
+   \code{fitted.systemfit} returns a vector of all fitted values.
+
+   \code{fitted.systemfit.equation} returns a vector of the fitted values
+      of a single equation.
 }
 
 \author{Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}}
 
 \seealso{
-   \code{\link{systemfit}}, \code{\link{fitted.systemfit.equation}}
-   and \code{\link{fitted}}
+   \code{\link{systemfit}}, \code{\link{fitted}}
 }
 
 
 \examples{
-\dontrun{library( systemfit )}
-
-data( kmenta )
-attach( kmenta )
-demand <- q ~ p + d
-supply <- q ~ p + f + a
+data( "Kmenta" )
+demand <- consump ~ price + income
+supply <- consump ~ price + farmPrice + trend
 labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
 ## perform OLS on each of the equations in the system
-fitols <- systemfit( "OLS", system, labels )
+fitols <- systemfit( "OLS", system, labels, data = Kmenta )
 
-## print the fitted values
+## all fitted values
 fitted( fitols )
+
+## fitted values of the first equation
+fitted( fitols$eq[[1]] )
+
+## fitted values of the second equation
+fitted( fitols$eq[[2]] )
 }
 
 \keyword{models}

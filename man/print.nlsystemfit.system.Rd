@@ -1,34 +1,32 @@
 
-% 	$Id: print.nlsystemfit.system.Rd,v 1.3 2004/02/05 19:12:56 hamannj Exp $	
+%  $Id: print.nlsystemfit.system.Rd,v 1.4 2006/02/14 14:14:09 henningsena Exp $
 
-\name{print.nlsystemfit.system}
+\name{print.nlsystemfit}
 \alias{print.nlsystemfit.system}
-\title{print.nlsystemfit.system}
+\alias{print.nlsystemfit.equation}
+\title{Print output of nlsystemfit estimation}
 
 \description{
-  This function prints a summary of the estimated equation system.
+   These functions print a summary of the estimated equation system.
 }
 
 \usage{
-print.nlsystemfit.system(x, digits=6,...)
+   \method{print}{nlsystemfit.system}( x, digits=6, ... )
+
+   \method{print}{nlsystemfit.equation}( x, digits=6, ... )
 }
 
 \arguments{
-  \item{x}{an object of type \code{nlsystemfit.system}.}
-  \item{digits}{number of digits to print.}
-  \item{...}{not used by user.}
-}
-
-\value{
-  \code{print.nlsystemfit.system} returns nothing.
+   \item{x}{an object of class \code{nlsystemfit.system} or
+      \code{nlsystemfit.equation}.}
+   \item{digits}{number of digits to print.}
+   \item{...}{not used by user.}
 }
 
 \author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}}
 
-\seealso{\code{\link{nlsystemfit}},
-  \code{\link{print.nlsystemfit.equation}},
-  \code{\link{summary.nlsystemfit.system}} and
-  }
+\seealso{\code{\link{nlsystemfit}}, \code{\link{summary.nlsystemfit.system}}
+}
 
 \examples{
 library( systemfit )

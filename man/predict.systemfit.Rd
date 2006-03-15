@@ -1,7 +1,8 @@
 \name{predict.systemfit}
 \alias{predict.systemfit}
+\alias{predict.systemfit.equation}
 
-\title{Predictions from Equation System Estimation}
+\title{Predictions from System Estimation}
 
 \description{
    Returns the predicted values, their standard errors and the
@@ -12,17 +13,20 @@
 \method{predict}{systemfit}( object, data = object$data,
                              se.fit = FALSE, se.pred = FALSE,
                              interval = "none", level=0.95, ... )
+
+\method{predict}{systemfit.equation}( object, data, ... )
 }
 
 \arguments{
-  \item{object}{an object of type \code{systemfit}.}
-  \item{data}{data frame in which to predict.}
-  \item{se.fit}{return the standard error of the fitted values?}
-  \item{se.pred}{return the standard error of prediction?}
-  \item{interval}{Type of interval calculation ("none", "confidence"
+   \item{object}{an object of class \code{systemfit} or
+      \code{systemfit.equation}.}
+   \item{data}{data frame in which to predict.}
+   \item{se.fit}{return the standard error of the fitted values?}
+   \item{se.pred}{return the standard error of prediction?}
+   \item{interval}{Type of interval calculation ("none", "confidence"
       or "prediction")}
-  \item{level}{Tolerance/confidence level.}
-  \item{...}{additional optional arguments.}
+   \item{level}{Tolerance/confidence level.}
+   \item{...}{additional optional arguments.}
 }
 
 \details{
@@ -44,6 +48,9 @@
    the standard errors of the prediction (e.g. "eq1.se.pred"),
    and the lower (e.g. "eq1.lwr") and upper (e.g. "eq1.upr")
    limits of the confidence or prediction interval(s).
+
+   \code{predict.systemfit.equation} returns a vector of the predicted
+      values of a single equation.
 }
 
 \references{
@@ -63,23 +70,27 @@
 
 
 \seealso{
-   \code{\link{systemfit}}, \code{\link{predict.systemfit.equation}}
-   and \code{\link{predict}}
+   \code{\link{systemfit}}, \code{\link{predict}}
 }
 
 \examples{
-\dontrun{library( systemfit )}
-data( kmenta )
-demand <- q ~ p + d
-supply <- q ~ p + f + a
+data( "Kmenta" )
+demand <- consump ~ price + income
+supply <- consump ~ price + farmPrice + trend
 labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
 ## OLS estimation
-fitols <- systemfit("OLS", system, labels, data=kmenta )
+fitols <- systemfit("OLS", system, labels, data=Kmenta )
 
-## calculate predicted values and limits
+## predicted values and limits
 predict( fitols )
+
+## predicted values of the first equation
+predict( fitols$eq[[1]] )
+
+## predicted values of the second equation
+predict( fitols$eq[[2]] )
 }
 
 \keyword{models}

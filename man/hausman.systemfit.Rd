@@ -1,5 +1,5 @@
 
-%  $Id: hausman.systemfit.Rd,v 1.6 2005/09/27 13:13:00 henningsena Exp $
+%  $Id: hausman.systemfit.Rd 171 2006-02-20 07:45:38Z henningsena $
 
 \name{hausman.systemfit}
 \alias{hausman.systemfit}
@@ -41,13 +41,15 @@
 
 \value{
    \code{hausman.systemfit} returns a list of the class
-    \code{hausman.systemfit} that contains following elements:
+    \code{htest} that contains following elements:
    \item{q}{vector of the differences between the estimated coefficients.}
    \item{qVar}{variance covariance matrix of \code{q} (difference between the
      variance covariance matrices of the estimated coefficients).}
-   \item{m}{the Hausman test statistic.}
-   \item{df}{degrees of freedom.}
-   \item{pval}{P-value of the test.}
+   \item{statistic}{the Hausman test statistic.}
+   \item{parameter}{degrees of freedom.}
+   \item{p.value}{P-value of the test.}
+   \item{method}{character string describing this test.}
+   \item{data.name}{name of the data.frame used for estimation.}
 }
 
 \references{
@@ -71,18 +73,16 @@
 \seealso{\code{\link{systemfit}}}
 
 \examples{
-\dontrun{library( systemfit )}
-
-data( kmenta )
-demand <- q ~ p + d
-supply <- q ~ p + f + a
-inst <- ~ d + f + a
+data( "Kmenta" )
+demand <- consump ~ price + income
+supply <- consump ~ price + farmPrice + trend
+inst <- ~ income + farmPrice + trend
 labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
 ## perform the estimations
-fit2sls <- systemfit( "2SLS", system, labels, inst, data = kmenta )
-fit3sls <- systemfit( "3SLS", system, labels, inst, data = kmenta )
+fit2sls <- systemfit( "2SLS", system, labels, inst, data = Kmenta )
+fit3sls <- systemfit( "3SLS", system, labels, inst, data = Kmenta )
 
 ## perform the Hausman test
 h <- hausman.systemfit( fit2sls, fit3sls )

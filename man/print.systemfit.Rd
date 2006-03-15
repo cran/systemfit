@@ -1,46 +1,51 @@
 
-%    $Id: print.systemfit.Rd,v 1.2 2004/02/23 14:23:46 henningsena Exp $
+%    $Id: print.systemfit.Rd 173 2006-02-20 09:10:03Z henningsena $
 
 \name{print.systemfit}
 \alias{print.systemfit}
-\title{Print output of systemfit estimation}
+\alias{print.systemfit.equation}
+\title{Print results of systemfit estimation}
 
 \description{
-  This function prints a summary of the estimated equation system.
+   These functions print a few results of the estimated equation system.
 }
 
 \usage{
-   \method{print}{systemfit}(x, digits=6, \dots)
+   \method{print}{systemfit}( x, digits=6, \dots )
+
+   \method{print}{systemfit.equation}( x, digits=6, ... )
 }
 
 \arguments{
-  \item{x}{an object of type \code{systemfit}.}
-  \item{digits}{number of digits to print.}
-  \item{\dots}{other arguments.}
+   \item{x}{an object of class \code{systemfit} or \code{systemfit.equation}.}
+   \item{digits}{number of digits to print.}
+   \item{\dots}{other arguments.}
 }
 
 \author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com},\cr
    Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de} }
 
-\seealso{\code{\link{systemfit}}, \code{\link{print.systemfit.equation}}
-  and \code{\link{summary.systemfit}}}
+\seealso{\code{\link{systemfit}}, \code{\link{summary.systemfit}}}
 
 
 \examples{
-\dontrun{library( systemfit )}
-
-data( kmenta )
-attach( kmenta )
-demand <- q ~ p + d
-supply <- q ~ p + f + a
+data( "Kmenta" )
+demand <- consump ~ price + income
+supply <- consump ~ price + farmPrice + trend
 labels <- list( "demand", "supply" )
 system <- list( demand, supply )
 
 ## perform OLS on each of the equations in the system
-fitols <- systemfit( "OLS", system, labels )
+fitols <- systemfit( "OLS", system, labels, data = Kmenta )
 
-## print the results
+## results of the whole system
 print( fitols )
+
+## results of the first equation
+print( fitols$eq[[1]] )
+
+## results of the second equation
+print( fitols$eq[[2]] )
 }
 
 \keyword{models}

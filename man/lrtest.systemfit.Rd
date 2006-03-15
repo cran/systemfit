@@ -1,81 +1,103 @@
 
-% 	$Id: lrtest.systemfit.Rd,v 1.3 2004/02/23 13:06:55 henningsena Exp $	
+%  $Id: lrtest.systemfit.Rd 171 2006-02-20 07:45:38Z henningsena $
 
 \name{lrtest.systemfit}
 \alias{lrtest.systemfit}
+\alias{print.lrtest.systemfit}
 
 \title{Likelihood Ratio test for Equation Systems}
 
 \description{
-  Perform a Likelihood Ratio test to test linear restrictions
-  when estimating an equation system.
+   Likelihood Ratio test for linear parameter restrictions
+   in equation system.
 }
 
 \usage{
-lrtest.systemfit( resultc, resultu )
+   lrtest.systemfit( resultc, resultu )
+
+   \method{print}{lrtest.systemfit}( x, digits = 4, ... )
 }
 
 \arguments{
-  \item{resultc}{an object of type \code{systemfit} that
-    contains the results of the restricted estimation.}
-  \item{resultu}{an object of type \code{systemfit} that
-    contains the results of the unconstrained estimation.}
+   \item{resultc}{an object of type \code{systemfit} that
+      contains the results of the restricted estimation.}
+   \item{resultu}{an object of type \code{systemfit} that
+      contains the results of the unconstrained estimation.}
+   \item{x}{an object of class \code{ftest.systemfit}.}
+   \item{digits}{number of digits to print.}
+   \item{\dots}{currently not used.}
 }
 
 \details{
-  At the moment only the LR test for SUR models is implemented.
-
-  This test calculates the likelihood ratio value by calculating
-  the estimated residual covariance matrix \eqn{\hat{\Sigma}} by
-  the maximum likelihood formula
-  \eqn{\hat{\sigma}_{ij} = (\hat{e}_i' \hat{e}_j) / T}
-  (no matter which formula is used in the estimation).
+   The LR-statistic for sytems of equations is
+   \deqn{
+   LR = T \cdot \left(
+      log \left| \hat{ \hat{ \Sigma } }_r \right|
+      - log \left| \hat{ \hat{ \Sigma } }_u \right|
+      \right)
+   }
+   where \eqn{T} is the number of observations per equation, and
+   \eqn{\hat{\hat{\Sigma}}_r} and \eqn{\hat{\hat{\Sigma}}_u} are
+   the residual covariance matrices calculated by formula "0"
+   (see \code{\link{systemfit}})
+   of the restricted and unrestricted estimation, respectively.
+   Asymptotically, \eqn{LR} has a \eqn{\chi^2}
+   distribution with \eqn{j} degrees of freedom
+   under the null hypothesis
+   (Green, 2003, p. 349).
 }
 
 \value{
-  \code{lrtest.sur.systemfit} returns a three values:
+   \code{lrtest.systemfit} returns a list of class \code{lrtest.systemfit}
+   that includes following objects:
 
-  \item{lr}{the empirical likelihood ratio value.}
-  \item{p}{the p-value of a \eqn{\chi^2}-test.}
-  \item{df}{the degrees of freedom of the test (= number of restrictions).}
+   \item{statistic}{the empirical likelihood ratio statistic.}
+   \item{p.value}{the p-value of the \eqn{\chi^2}-test.}
+   \item{nRestr}{number of restrictions (\eqn{j}, degrees of freedom).}
 }
 
 \references{
-
-  Greene, W. H. (2002)
+  Greene, W. H. (2003)
   \emph{Econometric Analysis, Fifth Edition}, Prentice Hall.
 }
 
 \author{Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}}
 
-\seealso{\code{\link{systemfit}}}
+\seealso{\code{\link{systemfit}}, \code{\link{ftest.systemfit}},
+   \code{\link{waldtest.systemfit}}}
 
 \examples{
-\dontrun{library( systemfit )}
-data( kmenta )
-demand <- q ~ p + d
-supply <- q ~ p + f + a
-labels <- list( "demand", "supply" )
-system <- list( demand, supply )
+data( "Kmenta" )
+eqDemand <- consump ~ price + income
+eqSupply <- consump ~ price + farmPrice + trend
+system <- list( demand = eqDemand, supply = eqSupply )
 
 ## unconstrained SUR estimation
-fitsur <- systemfit("SUR", system, labels, data=kmenta )
-print( fitsur )
+fitsur <- systemfit( "SUR", system, data = Kmenta )
 
-## SUR estimation with 2 restrictions
-Rrestr <- matrix(0,2,7)
-qrestr <- matrix(0,2,1)
-Rrestr[1,3] <-  1
-Rrestr[1,7] <- -1
-Rrestr[2,2] <- -1
-Rrestr[2,5] <-  1
-qrestr[2,1] <-  0.5
-fitsur2 <- systemfit("SUR", system, labels, data=kmenta,
-                      R.restr=Rrestr, q.restr=qrestr )
-print( fitsur2 )
+# create restriction matrix to impose \eqn{beta_2 = \beta_6}
+R1 <- matrix( 0, nrow = 1, ncol = 7 )
+R1[ 1, 2 ] <- 1
+R1[ 1, 6 ] <- -1
+
+## constrained SUR estimation
+fitsur1 <- systemfit( "SUR", system, data = Kmenta, R.restr = R1 )
 
 ## perform LR-test
-lrtest.systemfit( fitsur2, fitsur )
+lrTest1 <- lrtest.systemfit( fitsur1, fitsur )
+print( lrTest1 )   # rejected
+
+# create restriction matrix to impose \eqn{beta_2 = - \beta_6}
+R2 <- matrix( 0, nrow = 1, ncol = 7 )
+R2[ 1, 2 ] <- 1
+R2[ 1, 6 ] <- 1
+
+## constrained SUR estimation
+fitsur2 <- systemfit( "SUR", system, data = Kmenta, R.restr = R2 )
+
+## perform LR-test
+lrTest2 <- lrtest.systemfit( fitsur2, fitsur )
+print( lrTest2 )   # accepted
 }
 
 \keyword{models}
