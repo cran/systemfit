@@ -1,5 +1,5 @@
 
-%    $Id: print.systemfit.Rd 173 2006-02-20 09:10:03Z henningsena $
+%    $Id: print.systemfit.Rd 354 2007-03-28 14:48:14Z henningsena $
 
 \name{print.systemfit}
 \alias{print.systemfit}
@@ -11,9 +11,11 @@
 }
 
 \usage{
-   \method{print}{systemfit}( x, digits=6, \dots )
+   \method{print}{systemfit}( x,
+      digits = max( 3, getOption("digits") - 1 ), \dots )
 
-   \method{print}{systemfit.equation}( x, digits=6, ... )
+   \method{print}{systemfit.equation}( x,
+      digits = max( 3, getOption("digits") - 1 ), ... )
 }
 
 \arguments{

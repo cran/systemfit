@@ -15,7 +15,7 @@ ftest.systemfit <- function( object, R.restr,
    result <- list()
 
    result$nRestr <- nrow( R.restr )
-   result$dfSys  <- nEq * nObsEq - length( coef )
+   result$dfSys  <- object$df
 
    numerator <- t( R.restr %*% coef - q.restr ) %*%
       solve( R.restr %*% vcov %*% t( R.restr ) ) %*%

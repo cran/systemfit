@@ -1,6 +1,6 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.2.0  (2005-10-06 r35749)
+R version 2.4.1 (2006-12-18)
+Copyright (C) 2006 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -12,7 +12,7 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > 
@@ -104,23 +104,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551058 MSE: 5.784441 Root MSE: 2.405087 
 Multiple R-Squared: 0.654807 Adjusted R-Squared: 0.590084 
 
-> print( round( fitwls1$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        56.540807  -0.594801    0.032162         0.000000
-eq 1 price              -0.594801   0.008222   -0.002333         0.000000
-eq 1 income              0.032162  -0.002333    0.002063         0.000000
-eq 2 (Intercept)         0.000000   0.000000    0.000000       131.398303
-eq 2 price               0.000000   0.000000    0.000000        -0.987500
-eq 2 farmPrice           0.000000   0.000000    0.000000        -0.304361
-eq 2 trend               0.000000   0.000000    0.000000        -0.279183
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.000000       0.000000   0.000000
-eq 1 price         0.000000       0.000000   0.000000
-eq 1 income        0.000000       0.000000   0.000000
-eq 2 (Intercept)  -0.987500      -0.304361  -0.279183
-eq 2 price         0.009003       0.000844   0.000522
-eq 2 farmPrice     0.000844       0.002133   0.001316
-eq 2 trend         0.000522       0.001316   0.009510
 > 
 > ## *************** WLS estimation (EViews-like) ************************
 > fitwls1e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
@@ -179,23 +162,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551058 MSE: 5.784441 Root MSE: 2.405087 
 Multiple R-Squared: 0.654807 Adjusted R-Squared: 0.590084 
 
-> print( round( fitwls1e$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        48.059686  -0.505581    0.027338         0.000000
-eq 1 price              -0.505581   0.006989   -0.001983         0.000000
-eq 1 income              0.027338  -0.001983    0.001754         0.000000
-eq 2 (Intercept)         0.000000   0.000000    0.000000       105.118642
-eq 2 price               0.000000   0.000000    0.000000        -0.790000
-eq 2 farmPrice           0.000000   0.000000    0.000000        -0.243489
-eq 2 trend               0.000000   0.000000    0.000000        -0.223347
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.000000       0.000000   0.000000
-eq 1 price         0.000000       0.000000   0.000000
-eq 1 income        0.000000       0.000000   0.000000
-eq 2 (Intercept)  -0.790000      -0.243489  -0.223347
-eq 2 price         0.007202       0.000675   0.000418
-eq 2 farmPrice     0.000675       0.001707   0.001052
-eq 2 trend         0.000418       0.001052   0.007608
 > 
 > ## ************** WLS with cross-equation restriction ***************
 > fitwls2 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restrm )
@@ -253,23 +219,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 95.627182 MSE: 5.976699 Root MSE: 2.444729 
 Multiple R-Squared: 0.643334 Adjusted R-Squared: 0.576459 
 
-> print( round( fitwls2$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        57.214133  -0.596328    0.026850        -0.788252
-eq 1 price              -0.596328   0.007862   -0.001948         0.057190
-eq 1 income              0.026850  -0.001948    0.001722        -0.050565
-eq 2 (Intercept)        -0.788252   0.057190   -0.050565       128.063465
-eq 2 price               0.001474  -0.000107    0.000095        -1.001596
-eq 2 farmPrice           0.003714  -0.000269    0.000238        -0.280017
-eq 2 trend               0.026850  -0.001948    0.001722        -0.050565
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.001474       0.003714   0.026850
-eq 1 price        -0.000107      -0.000269  -0.001948
-eq 1 income        0.000095       0.000238   0.001722
-eq 2 (Intercept)  -1.001596      -0.280017  -0.050565
-eq 2 price         0.009225       0.000806   0.000095
-eq 2 farmPrice     0.000806       0.002038   0.000238
-eq 2 trend         0.000095       0.000238   0.001722
 > 
 > ## ************** WLS with cross-equation restriction (EViews-like) *******
 > fitwls2e <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restrm,
@@ -328,23 +277,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 95.560501 MSE: 5.972531 Root MSE: 2.443876 
 Multiple R-Squared: 0.643583 Adjusted R-Squared: 0.576755 
 
-> print( round( fitwls2e$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        48.628136  -0.506597    0.022574        -0.662713
-eq 1 price              -0.506597   0.006662   -0.001638         0.048082
-eq 1 income              0.022574  -0.001638    0.001448        -0.042512
-eq 2 (Intercept)        -0.662713   0.048082   -0.042512       102.511245
-eq 2 price               0.001239  -0.000090    0.000079        -0.801390
-eq 2 farmPrice           0.003123  -0.000227    0.000200        -0.224299
-eq 2 trend               0.022574  -0.001638    0.001448        -0.042512
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.001239       0.003123   0.022574
-eq 1 price        -0.000090      -0.000227  -0.001638
-eq 1 income        0.000079       0.000200   0.001448
-eq 2 (Intercept)  -0.801390      -0.224299  -0.042512
-eq 2 price         0.007381       0.000645   0.000079
-eq 2 farmPrice     0.000645       0.001632   0.000200
-eq 2 trend         0.000079       0.000200   0.001448
 > 
 > ## ******* WLS with cross-equation restriction via TX **********
 > fitwls3 <- systemfit("WLS", system, labels, data = Kmenta, TX = tc,)
@@ -402,23 +334,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 95.627182 MSE: 5.976699 Root MSE: 2.444729 
 Multiple R-Squared: 0.643334 Adjusted R-Squared: 0.576459 
 
-> print( round( fitwls3$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        57.214133  -0.596328    0.026850        -0.788252
-eq 1 price              -0.596328   0.007862   -0.001948         0.057190
-eq 1 income              0.026850  -0.001948    0.001722        -0.050565
-eq 2 (Intercept)        -0.788252   0.057190   -0.050565       128.063465
-eq 2 price               0.001474  -0.000107    0.000095        -1.001596
-eq 2 farmPrice           0.003714  -0.000269    0.000238        -0.280017
-eq 2 trend               0.026850  -0.001948    0.001722        -0.050565
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.001474       0.003714   0.026850
-eq 1 price        -0.000107      -0.000269  -0.001948
-eq 1 income        0.000095       0.000238   0.001722
-eq 2 (Intercept)  -1.001596      -0.280017  -0.050565
-eq 2 price         0.009225       0.000806   0.000095
-eq 2 farmPrice     0.000806       0.002038   0.000238
-eq 2 trend         0.000095       0.000238   0.001722
 > 
 > ## ******* WLS with cross-equation restriction via TX (EViews-like) *****
 > fitwls3e <- systemfit("WLS", system, labels, data = Kmenta, TX = tc,
@@ -477,23 +392,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 95.560501 MSE: 5.972531 Root MSE: 2.443876 
 Multiple R-Squared: 0.643583 Adjusted R-Squared: 0.576755 
 
-> print( round( fitwls3e$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        48.628136  -0.506597    0.022574        -0.662713
-eq 1 price              -0.506597   0.006662   -0.001638         0.048082
-eq 1 income              0.022574  -0.001638    0.001448        -0.042512
-eq 2 (Intercept)        -0.662713   0.048082   -0.042512       102.511245
-eq 2 price               0.001239  -0.000090    0.000079        -0.801390
-eq 2 farmPrice           0.003123  -0.000227    0.000200        -0.224299
-eq 2 trend               0.022574  -0.001638    0.001448        -0.042512
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.001239       0.003123   0.022574
-eq 1 price        -0.000090      -0.000227  -0.001638
-eq 1 income        0.000079       0.000200   0.001448
-eq 2 (Intercept)  -0.801390      -0.224299  -0.042512
-eq 2 price         0.007381       0.000645   0.000079
-eq 2 farmPrice     0.000645       0.001632   0.000200
-eq 2 trend         0.000079       0.000200   0.001448
 > 
 > ## ***** WLS with 2 cross-equation restrictions ***************
 > fitwls4 <- systemfit("WLS", system, labels, data = Kmenta, R.restr = restr2m,
@@ -518,7 +416,7 @@ demand 1.000000 0.942607
 supply 0.942607 1.000000
 
 The determinant of the residual covariance matrix: 2.51108
-OLS R-squared value of the system: 0.7018
+OLS R-squared value of the system: 0.701799
 
 WLS estimates for 'demand' (equation 1)
 Model Formula: consump ~ price + income
@@ -552,23 +450,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 96.267574 MSE: 6.016723 Root MSE: 2.452901 
 Multiple R-Squared: 0.640946 Adjusted R-Squared: 0.573623 
 
-> print( round( fitwls4$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        36.571016  -0.321554   -0.043279        35.846737
-eq 1 price              -0.321554   0.004201   -0.001011        -0.431417
-eq 1 income             -0.043279  -0.001011    0.001481         0.074877
-eq 2 (Intercept)        35.846737  -0.431417    0.074877        63.500095
-eq 2 price              -0.321554   0.004201   -0.001011        -0.431417
-eq 2 farmPrice          -0.033436   0.000226    0.000111        -0.215648
-eq 2 trend              -0.043279  -0.001011    0.001481         0.074877
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)  -0.321554      -0.033436  -0.043279
-eq 1 price         0.004201       0.000226  -0.001011
-eq 1 income       -0.001011       0.000111   0.001481
-eq 2 (Intercept)  -0.431417      -0.215648   0.074877
-eq 2 price         0.004201       0.000226  -0.001011
-eq 2 farmPrice     0.000226       0.001986   0.000111
-eq 2 trend        -0.001011       0.000111   0.001481
 > 
 > ## ***** WLS with 2 cross-equation restrictions (EViews-like) **********
 > fitwls4e <- systemfit("WLS", system, labels, data = Kmenta, rcovformula = 0,
@@ -627,23 +508,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 96.215011 MSE: 6.013438 Root MSE: 2.452231 
 Multiple R-Squared: 0.641142 Adjusted R-Squared: 0.573856 
 
-> print( round( fitwls4e$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        30.508171  -0.266011   -0.038366        29.714754
-eq 1 price              -0.266011   0.003465   -0.000826        -0.356026
-eq 1 income             -0.038366  -0.000826    0.001240         0.060437
-eq 2 (Intercept)        29.714754  -0.356026    0.060437        51.967601
-eq 2 price              -0.266011   0.003465   -0.000826        -0.356026
-eq 2 farmPrice          -0.028003   0.000188    0.000095        -0.173384
-eq 2 trend              -0.038366  -0.000826    0.001240         0.060437
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)  -0.266011      -0.028003  -0.038366
-eq 1 price         0.003465       0.000188  -0.000826
-eq 1 income       -0.000826       0.000095   0.001240
-eq 2 (Intercept)  -0.356026      -0.173384   0.060437
-eq 2 price         0.003465       0.000188  -0.000826
-eq 2 farmPrice     0.000188       0.001590   0.000095
-eq 2 trend        -0.000826       0.000095   0.001240
 > 
 > ## *********** WLS with 2 cross-equation restrictions via R and TX ******
 > fitwls5 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restr3m,
@@ -668,7 +532,7 @@ demand 1.000000 0.942607
 supply 0.942607 1.000000
 
 The determinant of the residual covariance matrix: 2.51108
-OLS R-squared value of the system: 0.7018
+OLS R-squared value of the system: 0.701799
 
 WLS estimates for 'demand' (equation 1)
 Model Formula: consump ~ price + income
@@ -702,23 +566,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 96.267574 MSE: 6.016723 Root MSE: 2.452901 
 Multiple R-Squared: 0.640946 Adjusted R-Squared: 0.573623 
 
-> print( round( fitwls5$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        36.571016  -0.321554   -0.043279        35.846737
-eq 1 price              -0.321554   0.004201   -0.001011        -0.431417
-eq 1 income             -0.043279  -0.001011    0.001481         0.074877
-eq 2 (Intercept)        35.846737  -0.431417    0.074877        63.500095
-eq 2 price              -0.321554   0.004201   -0.001011        -0.431417
-eq 2 farmPrice          -0.033436   0.000226    0.000111        -0.215648
-eq 2 trend              -0.043279  -0.001011    0.001481         0.074877
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)  -0.321554      -0.033436  -0.043279
-eq 1 price         0.004201       0.000226  -0.001011
-eq 1 income       -0.001011       0.000111   0.001481
-eq 2 (Intercept)  -0.431417      -0.215648   0.074877
-eq 2 price         0.004201       0.000226  -0.001011
-eq 2 farmPrice     0.000226       0.001986   0.000111
-eq 2 trend        -0.001011       0.000111   0.001481
 > 
 > ## *********** WLS with 2 cross-equation restrictions via R and TX (EViews-like)
 > fitwls5e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
@@ -777,23 +624,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 96.215011 MSE: 6.013438 Root MSE: 2.452231 
 Multiple R-Squared: 0.641142 Adjusted R-Squared: 0.573856 
 
-> print( round( fitwls5e$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        30.508171  -0.266011   -0.038366        29.714754
-eq 1 price              -0.266011   0.003465   -0.000826        -0.356026
-eq 1 income             -0.038366  -0.000826    0.001240         0.060437
-eq 2 (Intercept)        29.714754  -0.356026    0.060437        51.967601
-eq 2 price              -0.266011   0.003465   -0.000826        -0.356026
-eq 2 farmPrice          -0.028003   0.000188    0.000095        -0.173384
-eq 2 trend              -0.038366  -0.000826    0.001240         0.060437
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)  -0.266011      -0.028003  -0.038366
-eq 1 price         0.003465       0.000188  -0.000826
-eq 1 income       -0.000826       0.000095   0.001240
-eq 2 (Intercept)  -0.356026      -0.173384   0.060437
-eq 2 price         0.003465       0.000188  -0.000826
-eq 2 farmPrice     0.000188       0.001590   0.000095
-eq 2 trend        -0.000826       0.000095   0.001240
 > 
 > ## *************** iterated WLS estimation *********************
 > fitwlsi1 <- systemfit( "WLS", system, labels, data = Kmenta, probdfsys = TRUE,
@@ -852,23 +682,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551058 MSE: 5.784441 Root MSE: 2.405087 
 Multiple R-Squared: 0.654807 Adjusted R-Squared: 0.590084 
 
-> print( round( fitwlsi1$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        56.540807  -0.594801    0.032162         0.000000
-eq 1 price              -0.594801   0.008222   -0.002333         0.000000
-eq 1 income              0.032162  -0.002333    0.002063         0.000000
-eq 2 (Intercept)         0.000000   0.000000    0.000000       131.398303
-eq 2 price               0.000000   0.000000    0.000000        -0.987500
-eq 2 farmPrice           0.000000   0.000000    0.000000        -0.304361
-eq 2 trend               0.000000   0.000000    0.000000        -0.279183
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.000000       0.000000   0.000000
-eq 1 price         0.000000       0.000000   0.000000
-eq 1 income        0.000000       0.000000   0.000000
-eq 2 (Intercept)  -0.987500      -0.304361  -0.279183
-eq 2 price         0.009003       0.000844   0.000522
-eq 2 farmPrice     0.000844       0.002133   0.001316
-eq 2 trend         0.000522       0.001316   0.009510
 > 
 > ## *************** iterated WLS estimation (EViews-like) ************
 > fitwlsi1e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
@@ -927,23 +740,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551058 MSE: 5.784441 Root MSE: 2.405087 
 Multiple R-Squared: 0.654807 Adjusted R-Squared: 0.590084 
 
-> print( round( fitwlsi1e$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        48.059686  -0.505581    0.027338         0.000000
-eq 1 price              -0.505581   0.006989   -0.001983         0.000000
-eq 1 income              0.027338  -0.001983    0.001754         0.000000
-eq 2 (Intercept)         0.000000   0.000000    0.000000       105.118642
-eq 2 price               0.000000   0.000000    0.000000        -0.790000
-eq 2 farmPrice           0.000000   0.000000    0.000000        -0.243489
-eq 2 trend               0.000000   0.000000    0.000000        -0.223347
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.000000       0.000000   0.000000
-eq 1 price         0.000000       0.000000   0.000000
-eq 1 income        0.000000       0.000000   0.000000
-eq 2 (Intercept)  -0.790000      -0.243489  -0.223347
-eq 2 price         0.007202       0.000675   0.000418
-eq 2 farmPrice     0.000675       0.001707   0.001052
-eq 2 trend         0.000418       0.001052   0.007608
 > 
 > ## ****** iterated WLS with cross-equation restriction ***************
 > fitwlsi2 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restrm,
@@ -1004,23 +800,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 95.64097 MSE: 5.977561 Root MSE: 2.444905 
 Multiple R-Squared: 0.643283 Adjusted R-Squared: 0.576398 
 
-> print( round( fitwlsi2$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        56.818574  -0.592263    0.026724        -0.784542
-eq 1 price              -0.592263   0.007812   -0.001939         0.056921
-eq 1 income              0.026724  -0.001939    0.001714        -0.050327
-eq 2 (Intercept)        -0.784542   0.056921   -0.050327       128.792445
-eq 2 price               0.001467  -0.000106    0.000094        -1.007391
-eq 2 farmPrice           0.003697  -0.000268    0.000237        -0.281572
-eq 2 trend               0.026724  -0.001939    0.001714        -0.050327
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.001467       0.003697   0.026724
-eq 1 price        -0.000106      -0.000268  -0.001939
-eq 1 income        0.000094       0.000237   0.001714
-eq 2 (Intercept)  -1.007391      -0.281572  -0.050327
-eq 2 price         0.009279       0.000811   0.000094
-eq 2 farmPrice     0.000811       0.002049   0.000237
-eq 2 trend         0.000094       0.000237   0.001714
 > 
 > ## ****** iterated WLS with cross-equation restriction (EViews-like) ********
 > fitwlsi2e <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restrm,
@@ -1081,23 +860,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 95.573129 MSE: 5.973321 Root MSE: 2.444038 
 Multiple R-Squared: 0.643536 Adjusted R-Squared: 0.576699 
 
-> print( round( fitwlsi2e$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        48.325149  -0.503487    0.022480        -0.659954
-eq 1 price              -0.503487   0.006624   -0.001631         0.047882
-eq 1 income              0.022480  -0.001631    0.001442        -0.042335
-eq 2 (Intercept)        -0.659954   0.047882   -0.042335       103.022585
-eq 2 price               0.001234  -0.000090    0.000079        -0.805456
-eq 2 farmPrice           0.003110  -0.000226    0.000199        -0.225388
-eq 2 trend               0.022480  -0.001631    0.001442        -0.042335
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.001234       0.003110   0.022480
-eq 1 price        -0.000090      -0.000226  -0.001631
-eq 1 income        0.000079       0.000199   0.001442
-eq 2 (Intercept)  -0.805456      -0.225388  -0.042335
-eq 2 price         0.007418       0.000649   0.000079
-eq 2 farmPrice     0.000649       0.001640   0.000199
-eq 2 trend         0.000079       0.000199   0.001442
 > 
 > ## ******* iterated WLS with cross-equation restriction via TX **********
 > fitwlsi3 <- systemfit( "WLS", system, labels, data = Kmenta, TX = tc,
@@ -1158,23 +920,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 95.64097 MSE: 5.977561 Root MSE: 2.444905 
 Multiple R-Squared: 0.643283 Adjusted R-Squared: 0.576398 
 
-> print( round( fitwlsi3$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        56.818574  -0.592263    0.026724        -0.784542
-eq 1 price              -0.592263   0.007812   -0.001939         0.056921
-eq 1 income              0.026724  -0.001939    0.001714        -0.050327
-eq 2 (Intercept)        -0.784542   0.056921   -0.050327       128.792445
-eq 2 price               0.001467  -0.000106    0.000094        -1.007391
-eq 2 farmPrice           0.003697  -0.000268    0.000237        -0.281572
-eq 2 trend               0.026724  -0.001939    0.001714        -0.050327
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.001467       0.003697   0.026724
-eq 1 price        -0.000106      -0.000268  -0.001939
-eq 1 income        0.000094       0.000237   0.001714
-eq 2 (Intercept)  -1.007391      -0.281572  -0.050327
-eq 2 price         0.009279       0.000811   0.000094
-eq 2 farmPrice     0.000811       0.002049   0.000237
-eq 2 trend         0.000094       0.000237   0.001714
 > 
 > ## ******* iterated WLS with cross-equation restriction via TX (EViews-like) ***
 > fitwlsi3e <- systemfit( "WLS", system, labels, data = Kmenta, TX = tc,
@@ -1235,23 +980,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 95.573129 MSE: 5.973321 Root MSE: 2.444038 
 Multiple R-Squared: 0.643536 Adjusted R-Squared: 0.576699 
 
-> print( round( fitwlsi3e$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        48.325149  -0.503487    0.022480        -0.659954
-eq 1 price              -0.503487   0.006624   -0.001631         0.047882
-eq 1 income              0.022480  -0.001631    0.001442        -0.042335
-eq 2 (Intercept)        -0.659954   0.047882   -0.042335       103.022585
-eq 2 price               0.001234  -0.000090    0.000079        -0.805456
-eq 2 farmPrice           0.003110  -0.000226    0.000199        -0.225388
-eq 2 trend               0.022480  -0.001631    0.001442        -0.042335
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)   0.001234       0.003110   0.022480
-eq 1 price        -0.000090      -0.000226  -0.001631
-eq 1 income        0.000079       0.000199   0.001442
-eq 2 (Intercept)  -0.805456      -0.225388  -0.042335
-eq 2 price         0.007418       0.000649   0.000079
-eq 2 farmPrice     0.000649       0.001640   0.000199
-eq 2 trend         0.000079       0.000199   0.001442
 > 
 > ## ******* iterated WLS with 2 cross-equation restrictions ***********
 > fitwlsi4 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restr2m,
@@ -1312,23 +1040,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 96.276614 MSE: 6.017288 Root MSE: 2.453016 
 Multiple R-Squared: 0.640912 Adjusted R-Squared: 0.573583 
 
-> print( round( fitwlsi4$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        36.476183  -0.321184   -0.042697        35.793053
-eq 1 price              -0.321184   0.004198   -0.001012        -0.431101
-eq 1 income             -0.042697  -0.001012    0.001476         0.075104
-eq 2 (Intercept)        35.793053  -0.431101    0.075104        63.550148
-eq 2 price              -0.321184   0.004198   -0.001012        -0.431101
-eq 2 farmPrice          -0.033327   0.000226    0.000110        -0.216503
-eq 2 trend              -0.042697  -0.001012    0.001476         0.075104
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)  -0.321184      -0.033327  -0.042697
-eq 1 price         0.004198       0.000226  -0.001012
-eq 1 income       -0.001012       0.000110   0.001476
-eq 2 (Intercept)  -0.431101      -0.216503   0.075104
-eq 2 price         0.004198       0.000226  -0.001012
-eq 2 farmPrice     0.000226       0.001995   0.000110
-eq 2 trend        -0.001012       0.000110   0.001476
 > 
 > ## ******* iterated WLS with 2 cross-equation restrictions (EViews-like) *****
 > fitwlsi4e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
@@ -1389,23 +1100,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 96.223451 MSE: 6.013966 Root MSE: 2.452339 
 Multiple R-Squared: 0.64111 Adjusted R-Squared: 0.573819 
 
-> print( round( fitwlsi4e$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        30.437717  -0.265752   -0.037918        29.676241
-eq 1 price              -0.265752   0.003463   -0.000827        -0.355820
-eq 1 income             -0.037918  -0.000827    0.001237         0.060620
-eq 2 (Intercept)        29.676241  -0.355820    0.060620        52.004362
-eq 2 price              -0.265752   0.003463   -0.000827        -0.355820
-eq 2 farmPrice          -0.027921   0.000187    0.000094        -0.173988
-eq 2 trend              -0.037918  -0.000827    0.001237         0.060620
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)  -0.265752      -0.027921  -0.037918
-eq 1 price         0.003463       0.000187  -0.000827
-eq 1 income       -0.000827       0.000094   0.001237
-eq 2 (Intercept)  -0.355820      -0.173988   0.060620
-eq 2 price         0.003463       0.000187  -0.000827
-eq 2 farmPrice     0.000187       0.001596   0.000094
-eq 2 trend        -0.000827       0.000094   0.001237
 > 
 > ## ***** iterated WLS with 2 cross-equation restrictions via R and TX ******
 > fitwlsi5 <- systemfit( "WLS", system, labels, data = Kmenta, R.restr = restr3m,
@@ -1466,23 +1160,6 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 96.276614 MSE: 6.017288 Root MSE: 2.453016 
 Multiple R-Squared: 0.640912 Adjusted R-Squared: 0.573583 
 
-> print( round( fitwlsi5$bcov, digits = 6 ) )
-                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
-eq 1 (Intercept)        36.476183  -0.321184   -0.042697        35.793053
-eq 1 price              -0.321184   0.004198   -0.001012        -0.431101
-eq 1 income             -0.042697  -0.001012    0.001476         0.075104
-eq 2 (Intercept)        35.793053  -0.431101    0.075104        63.550148
-eq 2 price              -0.321184   0.004198   -0.001012        -0.431101
-eq 2 farmPrice          -0.033327   0.000226    0.000110        -0.216503
-eq 2 trend              -0.042697  -0.001012    0.001476         0.075104
-                 eq 2 price eq 2 farmPrice eq 2 trend
-eq 1 (Intercept)  -0.321184      -0.033327  -0.042697
-eq 1 price         0.004198       0.000226  -0.001012
-eq 1 income       -0.001012       0.000110   0.001476
-eq 2 (Intercept)  -0.431101      -0.216503   0.075104
-eq 2 price         0.004198       0.000226  -0.001012
-eq 2 farmPrice     0.000226       0.001995   0.000110
-eq 2 trend        -0.001012       0.000110   0.001476
 > 
 > ## *** iterated WLS with 2 cross-equation restrictions via R and TX (EViews-like)
 > fitwlsi5e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
@@ -1543,7 +1220,480 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 96.223451 MSE: 6.013966 Root MSE: 2.452339 
 Multiple R-Squared: 0.64111 Adjusted R-Squared: 0.573819 
 
-> print( round( fitwlsi5e$bcov, digits = 6 ) )
+> 
+> 
+> ## ****************** residuals **************************
+> print( residuals( fitwls1 ) )
+       demand     supply
+1   1.0744708 -0.4442544
+2  -0.3902787 -0.8955081
+3   2.6246816  1.9651334
+4   1.8024842  1.1342118
+5   1.9455436  1.5138013
+6   1.1745134  0.6803121
+7   1.5302384  1.5689661
+8  -2.9327287 -4.4073714
+9  -1.3654672 -2.5989581
+10  2.0307798  2.4694121
+11 -0.1488821 -0.5982785
+12 -1.9542622 -1.6973834
+13 -1.1209171 -1.0640179
+14 -0.2200033  0.9701222
+15  1.4866729  3.1590873
+16 -3.7006906 -3.8655164
+17 -1.2730806 -0.2646900
+18 -2.0022429 -2.4488950
+19  1.7380247  3.1097065
+20 -0.2988561  1.7141205
+> print( residuals( fitwls1$eq[[ 2 ]] ) )
+ [1] -0.4442544 -0.8955081  1.9651334  1.1342118  1.5138013  0.6803121
+ [7]  1.5689661 -4.4073714 -2.5989581  2.4694121 -0.5982785 -1.6973834
+[13] -1.0640179  0.9701222  3.1590873 -3.8655164 -0.2646900 -2.4488950
+[19]  3.1097065  1.7141205
+> 
+> print( residuals( fitwls2e ) )
+        demand     supply
+1   0.90687055  0.2094125
+2  -0.46602976 -0.3381010
+3   2.54953226  2.4554025
+4   1.73195200  1.5597373
+5   2.01827687  1.7705235
+6   1.23212191  0.8863774
+7   1.60190665  1.7237761
+8  -2.85436515 -4.3780446
+9  -1.31578571 -2.5971530
+10  2.05169847  2.4998454
+11 -0.38227712 -0.4546305
+12 -2.26226938 -1.5254828
+13 -1.38006367 -1.0006951
+14 -0.30807510  0.8769642
+15  1.66432237  2.8062595
+16 -3.55132820 -4.3278219
+17 -1.04663972 -0.8047013
+18 -1.96474666 -2.9517308
+19  1.84457314  2.5609017
+20 -0.06967376  1.0291606
+> print( residuals( fitwls2e$eq[[ 1 ]] ) )
+ [1]  0.90687055 -0.46602976  2.54953226  1.73195200  2.01827687  1.23212191
+ [7]  1.60190665 -2.85436515 -1.31578571  2.05169847 -0.38227712 -2.26226938
+[13] -1.38006367 -0.30807510  1.66432237 -3.55132820 -1.04663972 -1.96474666
+[19]  1.84457314 -0.06967376
+> 
+> print( residuals( fitwls3 ) )
+        demand     supply
+1   0.91499142  0.2166145
+2  -0.46235933 -0.3319596
+3   2.55317353  2.4608042
+4   1.73536955  1.5644257
+5   2.01475267  1.7733520
+6   1.22933056  0.8886478
+7   1.59843405  1.7254817
+8  -2.85816216 -4.3777215
+9  -1.31819297 -2.5971331
+10  2.05068488  2.5001807
+11 -0.37096825 -0.4530478
+12 -2.24734526 -1.5235889
+13 -1.36750703 -0.9999974
+14 -0.30380768  0.8759378
+15  1.65571458  2.8023721
+16 -3.55856538 -4.3329155
+17 -1.05761164 -0.8106510
+18 -1.96656349 -2.9572709
+19  1.83941046  2.5548551
+20 -0.08077851  1.0216138
+> print( residuals( fitwls3$eq[[ 2 ]] ) )
+ [1]  0.2166145 -0.3319596  2.4608042  1.5644257  1.7733520  0.8886478
+ [7]  1.7254817 -4.3777215 -2.5971331  2.5001807 -0.4530478 -1.5235889
+[13] -0.9999974  0.8759378  2.8023721 -4.3329155 -0.8106510 -2.9572709
+[19]  2.5548551  1.0216138
+> 
+> print( residuals( fitwls4e ) )
+        demand     supply
+1   0.95926014  0.2442554
+2  -0.39069147 -0.3882554
+3   2.61427014  2.4169815
+4   1.80882154  1.4978524
+5   1.97182002  1.8030126
+6   1.20834693  0.8915284
+7   1.59430587  1.6985284
+8  -2.81741017 -4.4906555
+9  -1.37511934 -2.5476339
+10  1.93507467  2.6665273
+11 -0.40185147 -0.2838299
+12 -2.18833458 -1.4434426
+13 -1.26863528 -1.0097105
+14 -0.29843876  0.9209619
+15  1.55121718  2.8690017
+16 -3.61433102 -4.3417601
+17 -1.28230696 -0.6000123
+18 -1.92534398 -3.0558510
+19  1.88601285  2.4249498
+20  0.03333369  0.7275518
+> print( residuals( fitwls4e$eq[[ 1 ]] ) )
+ [1]  0.95926014 -0.39069147  2.61427014  1.80882154  1.97182002  1.20834693
+ [7]  1.59430587 -2.81741017 -1.37511934  1.93507467 -0.40185147 -2.18833458
+[13] -1.26863528 -0.29843876  1.55121718 -3.61433102 -1.28230696 -1.92534398
+[19]  1.88601285  0.03333369
+> 
+> print( residuals( fitwls5 ) )
+        demand     supply
+1   0.96492777  0.2494542
+2  -0.39105396 -0.3840106
+3   2.61447668  2.4207285
+4   1.80810356  1.5010373
+5   1.97070316  1.8050988
+6   1.20672527  0.8931535
+7   1.59104447  1.6996806
+8  -2.82353846 -4.4906916
+9  -1.37431993 -2.5475030
+10  1.94059848  2.6671586
+11 -0.38872134 -0.2823026
+12 -2.17665414 -1.4419035
+13 -1.26159392 -1.0092361
+14 -0.29444764  0.9203364
+15  1.54846863  2.8663879
+16 -3.61845848 -4.3454118
+17 -1.28063129 -0.6037565
+18 -1.92950574 -3.0600326
+19  1.87817892  2.4203333
+20  0.01569795  0.7214788
+> print( residuals( fitwls5$eq[[ 2 ]] ) )
+ [1]  0.2494542 -0.3840106  2.4207285  1.5010373  1.8050988  0.8931535
+ [7]  1.6996806 -4.4906916 -2.5475030  2.6671586 -0.2823026 -1.4419035
+[13] -1.0092361  0.9203364  2.8663879 -4.3454118 -0.6037565 -3.0600326
+[19]  2.4203333  0.7214788
+> 
+> print( residuals( fitwlsi1e ) )
+       demand     supply
+1   1.0744708 -0.4442544
+2  -0.3902787 -0.8955081
+3   2.6246816  1.9651334
+4   1.8024842  1.1342118
+5   1.9455436  1.5138013
+6   1.1745134  0.6803121
+7   1.5302384  1.5689661
+8  -2.9327287 -4.4073714
+9  -1.3654672 -2.5989581
+10  2.0307798  2.4694121
+11 -0.1488821 -0.5982785
+12 -1.9542622 -1.6973834
+13 -1.1209171 -1.0640179
+14 -0.2200033  0.9701222
+15  1.4866729  3.1590873
+16 -3.7006906 -3.8655164
+17 -1.2730806 -0.2646900
+18 -2.0022429 -2.4488950
+19  1.7380247  3.1097065
+20 -0.2988561  1.7141205
+> print( residuals( fitwlsi1e$eq[[ 1 ]] ) )
+ [1]  1.0744708 -0.3902787  2.6246816  1.8024842  1.9455436  1.1745134
+ [7]  1.5302384 -2.9327287 -1.3654672  2.0307798 -0.1488821 -1.9542622
+[13] -1.1209171 -0.2200033  1.4866729 -3.7006906 -1.2730806 -2.0022429
+[19]  1.7380247 -0.2988561
+> 
+> print( residuals( fitwlsi2 ) )
+        demand     supply
+1   0.91665962  0.2180940
+2  -0.46160535 -0.3306980
+3   2.55392152  2.4619138
+4   1.73607159  1.5653888
+5   2.01402872  1.7739331
+6   1.22875715  0.8891142
+7   1.59772070  1.7258321
+8  -2.85894215 -4.3776551
+9  -1.31868747 -2.5971291
+10  2.05047667  2.5002496
+11 -0.36864516 -0.4527227
+12 -2.24427953 -1.5231998
+13 -1.36492763 -0.9998541
+14 -0.30293107  0.8757270
+15  1.65394636  2.8015735
+16 -3.56005205 -4.3339618
+17 -1.05986550 -0.8118732
+18 -1.96693671 -2.9584090
+19  1.83834994  2.5536130
+20 -0.08305967  1.0200636
+> print( residuals( fitwlsi2$eq[[ 2 ]] ) )
+ [1]  0.2180940 -0.3306980  2.4619138  1.5653888  1.7739331  0.8891142
+ [7]  1.7258321 -4.3776551 -2.5971291  2.5002496 -0.4527227 -1.5231998
+[13] -0.9998541  0.8757270  2.8015735 -4.3339618 -0.8118732 -2.9584090
+[19]  2.5536130  1.0200636
+> 
+> print( residuals( fitwlsi3e ) )
+        demand     supply
+1   0.90841531  0.2107825
+2  -0.46533156 -0.3369327
+3   2.55022490  2.4564300
+4   1.73260209  1.5606292
+5   2.01760649  1.7710616
+6   1.23159093  0.8868093
+7   1.60124609  1.7241005
+8  -2.85508742 -4.3779831
+9  -1.31624362 -2.5971492
+10  2.05150567  2.4999092
+11 -0.38012593 -0.4543294
+12 -2.25943049 -1.5251226
+13 -1.37767513 -1.0005623
+14 -0.30726334  0.8767690
+15  1.66268499  2.8055200
+16 -3.55270487 -4.3287908
+17 -1.04872681 -0.8058330
+18 -1.96509226 -2.9527846
+19  1.84359109  2.5597515
+20 -0.07178612  1.0277250
+> print( residuals( fitwlsi3e$eq[[ 1 ]] ) )
+ [1]  0.90841531 -0.46533156  2.55022490  1.73260209  2.01760649  1.23159093
+ [7]  1.60124609 -2.85508742 -1.31624362  2.05150567 -0.38012593 -2.25943049
+[13] -1.37767513 -0.30726334  1.66268499 -3.55270487 -1.04872681 -1.96509226
+[19]  1.84359109 -0.07178612
+> 
+> print( residuals( fitwlsi4 ) )
+        demand     supply
+1   0.96590007  0.2503461
+2  -0.39111362 -0.3832799
+3   2.61451413  2.4213734
+4   1.80798307  1.5015863
+5   1.97051040  1.8054561
+6   1.20644679  0.8934325
+7   1.59048570  1.6998793
+8  -2.82458677 -4.4906943
+9  -1.37418493 -2.5474820
+10  1.94154072  2.6672619
+11 -0.38647337 -0.2820455
+12 -2.17465143 -1.4416416
+13 -1.26038447 -1.0091543
+14 -0.29376383  0.9202276
+15  1.54799430  2.8659370
+16 -3.61916735 -4.3460386
+17 -1.28035189 -0.6044060
+18 -1.93021720 -3.0607476
+19  1.87683864  2.4195446
+20  0.01268104  0.7204450
+> print( residuals( fitwlsi4$eq[[ 2 ]] ) )
+ [1]  0.2503461 -0.3832799  2.4213734  1.5015863  1.8054561  0.8934325
+ [7]  1.6998793 -4.4906943 -2.5474820  2.6672619 -0.2820455 -1.4416416
+[13] -1.0091543  0.9202276  2.8659370 -4.3460386 -0.6044060 -3.0607476
+[19]  2.4195446  0.7204450
+> 
+> print( residuals( fitwlsi5e ) )
+       demand     supply
+1   0.9601718  0.2450916
+2  -0.3907514 -0.3875743
+3   2.6143020  2.4175829
+4   1.8087043  1.4983630
+5   1.9716411  1.8033486
+6   1.2080863  0.8917896
+7   1.5937808  1.6987131
+8  -2.8183979 -4.4906636
+9  -1.3749893 -2.5476118
+10  1.9359668  2.6666321
+11 -0.3997364 -0.2835809
+12 -2.1864550 -1.4431935
+13 -1.2675036 -1.0096344
+14 -0.2977962  0.9208623
+15  1.5507769  2.8685829
+16 -3.6149944 -4.3423473
+17 -1.2820321 -0.6006098
+18 -1.9260151 -3.0565251
+19  1.8847503  2.4242051
+20  0.0304912  0.7265696
+> print( residuals( fitwlsi5e$eq[[ 1 ]] ) )
+ [1]  0.9601718 -0.3907514  2.6143020  1.8087043  1.9716411  1.2080863
+ [7]  1.5937808 -2.8183979 -1.3749893  1.9359668 -0.3997364 -2.1864550
+[13] -1.2675036 -0.2977962  1.5507769 -3.6149944 -1.2820321 -1.9260151
+[19]  1.8847503  0.0304912
+> 
+> 
+> ## *********** variance covariance matrix of the coefficients *******
+> print( round( vcov( fitwls1e ), digits = 6 ) )
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.059686  -0.505581    0.027338         0.000000
+eq 1 price              -0.505581   0.006989   -0.001983         0.000000
+eq 1 income              0.027338  -0.001983    0.001754         0.000000
+eq 2 (Intercept)         0.000000   0.000000    0.000000       105.118642
+eq 2 price               0.000000   0.000000    0.000000        -0.790000
+eq 2 farmPrice           0.000000   0.000000    0.000000        -0.243489
+eq 2 trend               0.000000   0.000000    0.000000        -0.223347
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.000000       0.000000   0.000000
+eq 1 price         0.000000       0.000000   0.000000
+eq 1 income        0.000000       0.000000   0.000000
+eq 2 (Intercept)  -0.790000      -0.243489  -0.223347
+eq 2 price         0.007202       0.000675   0.000418
+eq 2 farmPrice     0.000675       0.001707   0.001052
+eq 2 trend         0.000418       0.001052   0.007608
+> print( round( vcov( fitwls1e$eq[[ 1 ]] ), digits = 6 ) )
+            (Intercept)     price    income
+(Intercept)   48.059686 -0.505581  0.027338
+price         -0.505581  0.006989 -0.001983
+income         0.027338 -0.001983  0.001754
+> 
+> print( round( vcov( fitwls2 ), digits = 6 ) )
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        57.214133  -0.596328    0.026850        -0.788252
+eq 1 price              -0.596328   0.007862   -0.001948         0.057190
+eq 1 income              0.026850  -0.001948    0.001722        -0.050565
+eq 2 (Intercept)        -0.788252   0.057190   -0.050565       128.063465
+eq 2 price               0.001474  -0.000107    0.000095        -1.001596
+eq 2 farmPrice           0.003714  -0.000269    0.000238        -0.280017
+eq 2 trend               0.026850  -0.001948    0.001722        -0.050565
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001474       0.003714   0.026850
+eq 1 price        -0.000107      -0.000269  -0.001948
+eq 1 income        0.000095       0.000238   0.001722
+eq 2 (Intercept)  -1.001596      -0.280017  -0.050565
+eq 2 price         0.009225       0.000806   0.000095
+eq 2 farmPrice     0.000806       0.002038   0.000238
+eq 2 trend         0.000095       0.000238   0.001722
+> print( round( vcov( fitwls2$eq[[ 2 ]] ), digits = 6 ) )
+            (Intercept)     price farmPrice     trend
+(Intercept)  128.063465 -1.001596 -0.280017 -0.050565
+price         -1.001596  0.009225  0.000806  0.000095
+farmPrice     -0.280017  0.000806  0.002038  0.000238
+trend         -0.050565  0.000095  0.000238  0.001722
+> 
+> print( round( vcov( fitwls3e ), digits = 6 ) )
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.628136  -0.506597    0.022574        -0.662713
+eq 1 price              -0.506597   0.006662   -0.001638         0.048082
+eq 1 income              0.022574  -0.001638    0.001448        -0.042512
+eq 2 (Intercept)        -0.662713   0.048082   -0.042512       102.511245
+eq 2 price               0.001239  -0.000090    0.000079        -0.801390
+eq 2 farmPrice           0.003123  -0.000227    0.000200        -0.224299
+eq 2 trend               0.022574  -0.001638    0.001448        -0.042512
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001239       0.003123   0.022574
+eq 1 price        -0.000090      -0.000227  -0.001638
+eq 1 income        0.000079       0.000200   0.001448
+eq 2 (Intercept)  -0.801390      -0.224299  -0.042512
+eq 2 price         0.007381       0.000645   0.000079
+eq 2 farmPrice     0.000645       0.001632   0.000200
+eq 2 trend         0.000079       0.000200   0.001448
+> print( round( vcov( fitwls3e$eq[[ 1 ]] ), digits = 6 ) )
+            (Intercept)     price    income
+(Intercept)   48.628136 -0.506597  0.022574
+price         -0.506597  0.006662 -0.001638
+income         0.022574 -0.001638  0.001448
+> 
+> print( round( vcov( fitwls4 ), digits = 6 ) )
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        36.571016  -0.321554   -0.043279        35.846737
+eq 1 price              -0.321554   0.004201   -0.001011        -0.431417
+eq 1 income             -0.043279  -0.001011    0.001481         0.074877
+eq 2 (Intercept)        35.846737  -0.431417    0.074877        63.500095
+eq 2 price              -0.321554   0.004201   -0.001011        -0.431417
+eq 2 farmPrice          -0.033436   0.000226    0.000111        -0.215648
+eq 2 trend              -0.043279  -0.001011    0.001481         0.074877
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.321554      -0.033436  -0.043279
+eq 1 price         0.004201       0.000226  -0.001011
+eq 1 income       -0.001011       0.000111   0.001481
+eq 2 (Intercept)  -0.431417      -0.215648   0.074877
+eq 2 price         0.004201       0.000226  -0.001011
+eq 2 farmPrice     0.000226       0.001986   0.000111
+eq 2 trend        -0.001011       0.000111   0.001481
+> print( round( vcov( fitwls4$eq[[ 2 ]] ), digits = 6 ) )
+            (Intercept)     price farmPrice     trend
+(Intercept)   63.500095 -0.431417 -0.215648  0.074877
+price         -0.431417  0.004201  0.000226 -0.001011
+farmPrice     -0.215648  0.000226  0.001986  0.000111
+trend          0.074877 -0.001011  0.000111  0.001481
+> 
+> print( round( vcov( fitwls5 ), digits = 6 ) )
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        36.571016  -0.321554   -0.043279        35.846737
+eq 1 price              -0.321554   0.004201   -0.001011        -0.431417
+eq 1 income             -0.043279  -0.001011    0.001481         0.074877
+eq 2 (Intercept)        35.846737  -0.431417    0.074877        63.500095
+eq 2 price              -0.321554   0.004201   -0.001011        -0.431417
+eq 2 farmPrice          -0.033436   0.000226    0.000111        -0.215648
+eq 2 trend              -0.043279  -0.001011    0.001481         0.074877
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.321554      -0.033436  -0.043279
+eq 1 price         0.004201       0.000226  -0.001011
+eq 1 income       -0.001011       0.000111   0.001481
+eq 2 (Intercept)  -0.431417      -0.215648   0.074877
+eq 2 price         0.004201       0.000226  -0.001011
+eq 2 farmPrice     0.000226       0.001986   0.000111
+eq 2 trend        -0.001011       0.000111   0.001481
+> print( round( vcov( fitwls5$eq[[ 1 ]] ), digits = 6 ) )
+            (Intercept)     price    income
+(Intercept)   36.571016 -0.321554 -0.043279
+price         -0.321554  0.004201 -0.001011
+income        -0.043279 -0.001011  0.001481
+> 
+> print( round( vcov( fitwlsi1 ), digits = 6 ) )
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.540807  -0.594801    0.032162         0.000000
+eq 1 price              -0.594801   0.008222   -0.002333         0.000000
+eq 1 income              0.032162  -0.002333    0.002063         0.000000
+eq 2 (Intercept)         0.000000   0.000000    0.000000       131.398303
+eq 2 price               0.000000   0.000000    0.000000        -0.987500
+eq 2 farmPrice           0.000000   0.000000    0.000000        -0.304361
+eq 2 trend               0.000000   0.000000    0.000000        -0.279183
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.000000       0.000000   0.000000
+eq 1 price         0.000000       0.000000   0.000000
+eq 1 income        0.000000       0.000000   0.000000
+eq 2 (Intercept)  -0.987500      -0.304361  -0.279183
+eq 2 price         0.009003       0.000844   0.000522
+eq 2 farmPrice     0.000844       0.002133   0.001316
+eq 2 trend         0.000522       0.001316   0.009510
+> print( round( vcov( fitwlsi1$eq[[ 2 ]] ), digits = 6 ) )
+            (Intercept)     price farmPrice     trend
+(Intercept)  131.398303 -0.987500 -0.304361 -0.279183
+price         -0.987500  0.009003  0.000844  0.000522
+farmPrice     -0.304361  0.000844  0.002133  0.001316
+trend         -0.279183  0.000522  0.001316  0.009510
+> 
+> print( round( vcov( fitwlsi2e ), digits = 6 ) )
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        48.325149  -0.503487    0.022480        -0.659954
+eq 1 price              -0.503487   0.006624   -0.001631         0.047882
+eq 1 income              0.022480  -0.001631    0.001442        -0.042335
+eq 2 (Intercept)        -0.659954   0.047882   -0.042335       103.022585
+eq 2 price               0.001234  -0.000090    0.000079        -0.805456
+eq 2 farmPrice           0.003110  -0.000226    0.000199        -0.225388
+eq 2 trend               0.022480  -0.001631    0.001442        -0.042335
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001234       0.003110   0.022480
+eq 1 price        -0.000090      -0.000226  -0.001631
+eq 1 income        0.000079       0.000199   0.001442
+eq 2 (Intercept)  -0.805456      -0.225388  -0.042335
+eq 2 price         0.007418       0.000649   0.000079
+eq 2 farmPrice     0.000649       0.001640   0.000199
+eq 2 trend         0.000079       0.000199   0.001442
+> print( round( vcov( fitwlsi2e$eq[[ 1 ]] ), digits = 6 ) )
+            (Intercept)     price    income
+(Intercept)   48.325149 -0.503487  0.022480
+price         -0.503487  0.006624 -0.001631
+income         0.022480 -0.001631  0.001442
+> 
+> print( round( vcov( fitwlsi3 ), digits = 6 ) )
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        56.818574  -0.592263    0.026724        -0.784542
+eq 1 price              -0.592263   0.007812   -0.001939         0.056921
+eq 1 income              0.026724  -0.001939    0.001714        -0.050327
+eq 2 (Intercept)        -0.784542   0.056921   -0.050327       128.792445
+eq 2 price               0.001467  -0.000106    0.000094        -1.007391
+eq 2 farmPrice           0.003697  -0.000268    0.000237        -0.281572
+eq 2 trend               0.026724  -0.001939    0.001714        -0.050327
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)   0.001467       0.003697   0.026724
+eq 1 price        -0.000106      -0.000268  -0.001939
+eq 1 income        0.000094       0.000237   0.001714
+eq 2 (Intercept)  -1.007391      -0.281572  -0.050327
+eq 2 price         0.009279       0.000811   0.000094
+eq 2 farmPrice     0.000811       0.002049   0.000237
+eq 2 trend         0.000094       0.000237   0.001714
+> print( round( vcov( fitwlsi3$eq[[ 2 ]] ), digits = 6 ) )
+            (Intercept)     price farmPrice     trend
+(Intercept)  128.792445 -1.007391 -0.281572 -0.050327
+price         -1.007391  0.009279  0.000811  0.000094
+farmPrice     -0.281572  0.000811  0.002049  0.000237
+trend         -0.050327  0.000094  0.000237  0.001714
+> 
+> print( round( vcov( fitwlsi4e ), digits = 6 ) )
                  eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
 eq 1 (Intercept)        30.437717  -0.265752   -0.037918        29.676241
 eq 1 price              -0.265752   0.003463   -0.000827        -0.355820
@@ -1560,5 +1710,1401 @@ eq 2 (Intercept)  -0.355820      -0.173988   0.060620
 eq 2 price         0.003463       0.000187  -0.000827
 eq 2 farmPrice     0.000187       0.001596   0.000094
 eq 2 trend        -0.000827       0.000094   0.001237
+> print( round( vcov( fitwlsi4e$eq[[ 1 ]] ), digits = 6 ) )
+            (Intercept)     price    income
+(Intercept)   30.437717 -0.265752 -0.037918
+price         -0.265752  0.003463 -0.000827
+income        -0.037918 -0.000827  0.001237
 > 
+> print( round( vcov( fitwlsi5e ), digits = 6 ) )
+                 eq 1 (Intercept) eq 1 price eq 1 income eq 2 (Intercept)
+eq 1 (Intercept)        30.437717  -0.265752   -0.037918        29.676241
+eq 1 price              -0.265752   0.003463   -0.000827        -0.355820
+eq 1 income             -0.037918  -0.000827    0.001237         0.060620
+eq 2 (Intercept)        29.676241  -0.355820    0.060620        52.004362
+eq 2 price              -0.265752   0.003463   -0.000827        -0.355820
+eq 2 farmPrice          -0.027921   0.000187    0.000094        -0.173988
+eq 2 trend              -0.037918  -0.000827    0.001237         0.060620
+                 eq 2 price eq 2 farmPrice eq 2 trend
+eq 1 (Intercept)  -0.265752      -0.027921  -0.037918
+eq 1 price         0.003463       0.000187  -0.000827
+eq 1 income       -0.000827       0.000094   0.001237
+eq 2 (Intercept)  -0.355820      -0.173988   0.060620
+eq 2 price         0.003463       0.000187  -0.000827
+eq 2 farmPrice     0.000187       0.001596   0.000094
+eq 2 trend        -0.000827       0.000094   0.001237
+> print( round( vcov( fitwlsi5e$eq[[ 2 ]] ), digits = 6 ) )
+            (Intercept)     price farmPrice     trend
+(Intercept)   52.004362 -0.355820 -0.173988  0.060620
+price         -0.355820  0.003463  0.000187 -0.000827
+farmPrice     -0.173988  0.000187  0.001596  0.000094
+trend          0.060620 -0.000827  0.000094  0.001237
+> 
+> 
+> ## *********** confidence intervals of coefficients *************
+> print( confint( fitwls1 ) )
+                  2.5 %  97.5 %
+eq 1 (Intercept) 84.031 115.760
+eq 1 price       -0.508  -0.125
+eq 1 income       0.239   0.430
+eq 2 (Intercept) 33.975  82.576
+eq 2 price       -0.041   0.362
+eq 2 farmPrice    0.150   0.346
+eq 2 trend        0.042   0.455
+> print( confint( fitwls1$eq[[ 2 ]], level = 0.9 ) )
+               5 %   95 %
+(Intercept) 38.263 78.288
+price       -0.005  0.326
+farmPrice    0.167  0.329
+trend        0.078  0.419
+> 
+> print( confint( fitwls2e, level = 0.9 ) )
+                    5 %    95 %
+eq 1 (Intercept) 85.474 113.818
+eq 1 price       -0.464  -0.132
+eq 1 income       0.241   0.396
+eq 2 (Intercept) 35.634  76.786
+eq 2 price       -0.010   0.339
+eq 2 farmPrice    0.176   0.340
+eq 2 trend        0.241   0.396
+> print( confint( fitwls2e$eq[[ 1 ]], level = 0.99 ) )
+             0.5 %  99.5 %
+(Intercept) 80.620 118.672
+price       -0.521  -0.076
+income       0.215   0.422
+> 
+> print( confint( fitwls3, level = 0.99 ) )
+                  0.5 %  99.5 %
+eq 1 (Intercept) 84.286 115.030
+eq 1 price       -0.479  -0.119
+eq 1 income       0.235   0.404
+eq 2 (Intercept) 33.190  79.186
+eq 2 price       -0.031   0.359
+eq 2 farmPrice    0.166   0.350
+eq 2 trend        0.235   0.404
+> print( confint( fitwls3$eq[[ 2 ]], level = 0.5 ) )
+              25 %   75 %
+(Intercept) 48.472 63.903
+price        0.099  0.230
+farmPrice    0.227  0.289
+trend        0.291  0.348
+> 
+> print( confint( fitwls4e, level = 0.5 ) )
+                   25 %    75 %
+eq 1 (Intercept) 89.763 112.189
+eq 1 price       -0.436  -0.197
+eq 1 income       0.252   0.395
+eq 2 (Intercept) 39.328  68.598
+eq 2 price        0.064   0.303
+eq 2 farmPrice    0.179   0.341
+eq 2 trend        0.252   0.395
+> print( confint( fitwls4e$eq[[ 1 ]], level = 0.25 ) )
+            37.5 %  62.5 %
+(Intercept) 99.202 102.750
+price       -0.335  -0.297
+income       0.312   0.335
+> 
+> print( confint( fitwls5, level = 0.25 ) )
+                 37.5 %  62.5 %
+eq 1 (Intercept) 88.637 113.191
+eq 1 price       -0.448  -0.184
+eq 1 income       0.246   0.402
+eq 2 (Intercept) 37.764  70.119
+eq 2 price        0.052   0.316
+eq 2 farmPrice    0.170   0.351
+eq 2 trend        0.246   0.402
+> print( confint( fitwls5$eq[[ 2 ]], level = 0.975 ) )
+             1.3 % 98.8 %
+(Intercept) 35.279 72.604
+price        0.032  0.336
+farmPrice    0.156  0.365
+trend        0.234  0.414
+> 
+> print( confint( fitwlsi1e, level = 0.975 ) )
+                  1.3 %  98.8 %
+eq 1 (Intercept) 85.791 114.000
+eq 1 price       -0.486  -0.146
+eq 1 income       0.249   0.420
+eq 2 (Intercept) 37.416  79.135
+eq 2 price       -0.012   0.333
+eq 2 farmPrice    0.164   0.332
+eq 2 trend        0.071   0.426
+> print( confint( fitwlsi1e$eq[[ 1 ]], level = 0.999 ) )
+             0.1 %   100 %
+(Intercept) 74.863 124.928
+price       -0.618  -0.014
+income       0.183   0.486
+> 
+> print( confint( fitwlsi2, level = 0.999 ) )
+                  0.1 %   100 %
+eq 1 (Intercept) 84.342 114.979
+eq 1 price       -0.479  -0.120
+eq 1 income       0.235   0.404
+eq 2 (Intercept) 33.120  79.246
+eq 2 price       -0.031   0.360
+eq 2 farmPrice    0.166   0.350
+eq 2 trend        0.235   0.404
+> print( confint( fitwlsi2$eq[[ 2 ]], level = 0.1 ) )
+              45 %   55 %
+(Intercept) 54.746 57.620
+price        0.152  0.176
+farmPrice    0.252  0.264
+trend        0.314  0.325
+> 
+> print( confint( fitwlsi3e, level = 0.1 ) )
+                   45 %    55 %
+eq 1 (Intercept) 85.521 113.776
+eq 1 price       -0.464  -0.133
+eq 1 income       0.242   0.396
+eq 2 (Intercept) 35.579  76.833
+eq 2 price       -0.011   0.339
+eq 2 farmPrice    0.176   0.340
+eq 2 trend        0.242   0.396
+> print( confint( fitwlsi3e$eq[[ 1 ]], level = 0.01 ) )
+            49.5 % 50.5 %
+(Intercept) 99.561 99.736
+price       -0.299 -0.297
+income       0.318  0.319
+> 
+> print( confint( fitwlsi4, level = 0.01 ) )
+                 49.5 %  50.5 %
+eq 1 (Intercept) 88.642 113.164
+eq 1 price       -0.447  -0.184
+eq 1 income       0.246   0.402
+eq 2 (Intercept) 37.754  70.122
+eq 2 price        0.053   0.316
+eq 2 farmPrice    0.170   0.351
+eq 2 trend        0.246   0.402
+> print( confint( fitwlsi4$eq[[ 2 ]], level = 0.33 ) )
+            33.5 % 66.5 %
+(Intercept) 50.512 57.364
+price        0.156  0.212
+farmPrice    0.241  0.279
+trend        0.307  0.340
+> 
+> print( confint( fitwlsi5e, level = 0.33 ) )
+                 33.5 %  66.5 %
+eq 1 (Intercept) 89.766 112.166
+eq 1 price       -0.435  -0.197
+eq 1 income       0.252   0.395
+eq 2 (Intercept) 39.320  68.599
+eq 2 price        0.065   0.303
+eq 2 farmPrice    0.179   0.341
+eq 2 trend        0.252   0.395
+> print( confint( fitwlsi5e$eq[[ 1 ]] ) )
+             2.5 %  97.5 %
+(Intercept) 89.766 112.166
+price       -0.435  -0.197
+income       0.252   0.395
+> 
+> 
+> ## *********** fitted values *************
+> print( fitted( fitwls1 ) )
+            eq1       eq2
+ [1,]  97.41053  98.92925
+ [2,]  99.57728 100.08251
+ [3,]  99.53832 100.19787
+ [4,]  99.70152 100.36979
+ [5,] 102.29446 102.72620
+ [6,] 102.06849 102.56269
+ [7,] 102.46276 102.42403
+ [8,] 102.83273 104.30737
+ [9,] 101.71547 102.94896
+[10,] 100.78922 100.35059
+[11,]  95.58388  96.03328
+[12,]  94.37826  94.12138
+[13,]  95.65592  95.59902
+[14,]  98.97700  97.78688
+[15,] 104.31033 102.63791
+[16,] 103.92569 104.09052
+[17,] 104.79508 103.78669
+[18,] 101.93124 102.37790
+[19,] 103.48498 102.11329
+[20,] 106.53086 104.51788
+> print( fitted( fitwls1$eq[[ 2 ]] ) )
+ [1]  98.92925 100.08251 100.19787 100.36979 102.72620 102.56269 102.42403
+ [8] 104.30737 102.94896 100.35059  96.03328  94.12138  95.59902  97.78688
+[15] 102.63791 104.09052 103.78669 102.37790 102.11329 104.51788
+> 
+> print( fitted( fitwls2e ) )
+            eq1       eq2
+ [1,]  97.57813  98.27559
+ [2,]  99.65303  99.52510
+ [3,]  99.61347  99.70760
+ [4,]  99.77205  99.94426
+ [5,] 102.22172 102.46948
+ [6,] 102.01088 102.35662
+ [7,] 102.39109 102.26922
+ [8,] 102.75437 104.27804
+ [9,] 101.66579 102.94715
+[10,] 100.76830 100.32015
+[11,]  95.81728  95.88963
+[12,]  94.68627  93.94948
+[13,]  95.91506  95.53570
+[14,]  99.06508  97.88004
+[15,] 104.13268 102.99074
+[16,] 103.77633 104.55282
+[17,] 104.56864 104.32670
+[18,] 101.89375 102.88073
+[19,] 103.37843 102.66210
+[20,] 106.30167 105.20284
+> print( fitted( fitwls2e$eq[[ 1 ]] ) )
+ [1]  97.57813  99.65303  99.61347  99.77205 102.22172 102.01088 102.39109
+ [8] 102.75437 101.66579 100.76830  95.81728  94.68627  95.91506  99.06508
+[15] 104.13268 103.77633 104.56864 101.89375 103.37843 106.30167
+> 
+> print( fitted( fitwls3 ) )
+            eq1       eq2
+ [1,]  97.57001  98.26839
+ [2,]  99.64936  99.51896
+ [3,]  99.60983  99.70220
+ [4,]  99.76863  99.93957
+ [5,] 102.22525 102.46665
+ [6,] 102.01367 102.35435
+ [7,] 102.39457 102.26752
+ [8,] 102.75816 104.27772
+ [9,] 101.66819 102.94713
+[10,] 100.76932 100.31982
+[11,]  95.80597  95.88805
+[12,]  94.67135  93.94759
+[13,]  95.90251  95.53500
+[14,]  99.06081  97.88106
+[15,] 104.14129 102.99463
+[16,] 103.78357 104.55792
+[17,] 104.57961 104.33265
+[18,] 101.89556 102.88627
+[19,] 103.38359 102.66814
+[20,] 106.31278 105.21039
+> print( fitted( fitwls3$eq[[ 2 ]] ) )
+ [1]  98.26839  99.51896  99.70220  99.93957 102.46665 102.35435 102.26752
+ [8] 104.27772 102.94713 100.31982  95.88805  93.94759  95.53500  97.88106
+[15] 102.99463 104.55792 104.33265 102.88627 102.66814 105.21039
+> 
+> print( fitted( fitwls4e ) )
+            eq1       eq2
+ [1,]  97.52574  98.24074
+ [2,]  99.57769  99.57526
+ [3,]  99.54873  99.74602
+ [4,]  99.69518 100.00615
+ [5,] 102.26818 102.43699
+ [6,] 102.03465 102.35147
+ [7,] 102.39869 102.29447
+ [8,] 102.71741 104.39066
+ [9,] 101.72512 102.89763
+[10,] 100.88493 100.15347
+[11,]  95.83685  95.71883
+[12,]  94.61233  93.86744
+[13,]  95.80364  95.54471
+[14,]  99.05544  97.83604
+[15,] 104.24578 102.92800
+[16,] 103.83933 104.56676
+[17,] 104.80431 104.12201
+[18,] 101.85434 102.98485
+[19,] 103.33699 102.79805
+[20,] 106.19867 105.50445
+> print( fitted( fitwls4e$eq[[ 1 ]] ) )
+ [1]  97.52574  99.57769  99.54873  99.69518 102.26818 102.03465 102.39869
+ [8] 102.71741 101.72512 100.88493  95.83685  94.61233  95.80364  99.05544
+[15] 104.24578 103.83933 104.80431 101.85434 103.33699 106.19867
+> 
+> print( fitted( fitwls5 ) )
+            eq1       eq2
+ [1,]  97.52007  98.23555
+ [2,]  99.57805  99.57101
+ [3,]  99.54852  99.74227
+ [4,]  99.69590 100.00296
+ [5,] 102.26930 102.43490
+ [6,] 102.03627 102.34985
+ [7,] 102.40196 102.29332
+ [8,] 102.72354 104.39069
+ [9,] 101.72432 102.89750
+[10,] 100.87940 100.15284
+[11,]  95.82372  95.71730
+[12,]  94.60065  93.86590
+[13,]  95.79659  95.54424
+[14,]  99.05145  97.83666
+[15,] 104.24853 102.93061
+[16,] 103.84346 104.57041
+[17,] 104.80263 104.12576
+[18,] 101.85851 102.98903
+[19,] 103.34482 102.80267
+[20,] 106.21630 105.51052
+> print( fitted( fitwls5$eq[[ 2 ]] ) )
+ [1]  98.23555  99.57101  99.74227 100.00296 102.43490 102.34985 102.29332
+ [8] 104.39069 102.89750 100.15284  95.71730  93.86590  95.54424  97.83666
+[15] 102.93061 104.57041 104.12576 102.98903 102.80267 105.51052
+> 
+> print( fitted( fitwlsi1e ) )
+            eq1       eq2
+ [1,]  97.41053  98.92925
+ [2,]  99.57728 100.08251
+ [3,]  99.53832 100.19787
+ [4,]  99.70152 100.36979
+ [5,] 102.29446 102.72620
+ [6,] 102.06849 102.56269
+ [7,] 102.46276 102.42403
+ [8,] 102.83273 104.30737
+ [9,] 101.71547 102.94896
+[10,] 100.78922 100.35059
+[11,]  95.58388  96.03328
+[12,]  94.37826  94.12138
+[13,]  95.65592  95.59902
+[14,]  98.97700  97.78688
+[15,] 104.31033 102.63791
+[16,] 103.92569 104.09052
+[17,] 104.79508 103.78669
+[18,] 101.93124 102.37790
+[19,] 103.48498 102.11329
+[20,] 106.53086 104.51788
+> print( fitted( fitwlsi1e$eq[[ 1 ]] ) )
+ [1]  97.41053  99.57728  99.53832  99.70152 102.29446 102.06849 102.46276
+ [8] 102.83273 101.71547 100.78922  95.58388  94.37826  95.65592  98.97700
+[15] 104.31033 103.92569 104.79508 101.93124 103.48498 106.53086
+> 
+> print( fitted( fitwlsi2 ) )
+            eq1       eq2
+ [1,]  97.56834  98.26691
+ [2,]  99.64861  99.51770
+ [3,]  99.60908  99.70109
+ [4,]  99.76793  99.93861
+ [5,] 102.22597 102.46607
+ [6,] 102.01424 102.35389
+ [7,] 102.39528 102.26717
+ [8,] 102.75894 104.27766
+ [9,] 101.66869 102.94713
+[10,] 100.76952 100.31975
+[11,]  95.80365  95.88772
+[12,]  94.66828  93.94720
+[13,]  95.89993  95.53485
+[14,]  99.05993  97.88127
+[15,] 104.14305 102.99543
+[16,] 103.78505 104.55896
+[17,] 104.58187 104.33387
+[18,] 101.89594 102.88741
+[19,] 103.38465 102.66939
+[20,] 106.31506 105.21194
+> print( fitted( fitwlsi2$eq[[ 2 ]] ) )
+ [1]  98.26691  99.51770  99.70109  99.93861 102.46607 102.35389 102.26717
+ [8] 104.27766 102.94713 100.31975  95.88772  93.94720  95.53485  97.88127
+[15] 102.99543 104.55896 104.33387 102.88741 102.66939 105.21194
+> 
+> print( fitted( fitwlsi3e ) )
+            eq1       eq2
+ [1,]  97.57658  98.27422
+ [2,]  99.65233  99.52393
+ [3,]  99.61278  99.70657
+ [4,]  99.77140  99.94337
+ [5,] 102.22239 102.46894
+ [6,] 102.01141 102.35619
+ [7,] 102.39175 102.26890
+ [8,] 102.75509 104.27798
+ [9,] 101.66624 102.94715
+[10,] 100.76849 100.32009
+[11,]  95.81513  95.88933
+[12,]  94.68343  93.94912
+[13,]  95.91268  95.53556
+[14,]  99.06426  97.88023
+[15,] 104.13432 102.99148
+[16,] 103.77770 104.55379
+[17,] 104.57073 104.32783
+[18,] 101.89409 102.88178
+[19,] 103.37941 102.66325
+[20,] 106.30379 105.20427
+> print( fitted( fitwlsi3e$eq[[ 1 ]] ) )
+ [1]  97.57658  99.65233  99.61278  99.77140 102.22239 102.01141 102.39175
+ [8] 102.75509 101.66624 100.76849  95.81513  94.68343  95.91268  99.06426
+[15] 104.13432 103.77770 104.57073 101.89409 103.37941 106.30379
+> 
+> print( fitted( fitwlsi4 ) )
+            eq1       eq2
+ [1,]  97.51910  98.23465
+ [2,]  99.57811  99.57028
+ [3,]  99.54849  99.74163
+ [4,]  99.69602 100.00241
+ [5,] 102.26949 102.43454
+ [6,] 102.03655 102.34957
+ [7,] 102.40251 102.29312
+ [8,] 102.72459 104.39069
+ [9,] 101.72418 102.89748
+[10,] 100.87846 100.15274
+[11,]  95.82147  95.71705
+[12,]  94.59865  93.86564
+[13,]  95.79538  95.54415
+[14,]  99.05076  97.83677
+[15,] 104.24901 102.93106
+[16,] 103.84417 104.57104
+[17,] 104.80235 104.12641
+[18,] 101.85922 102.98975
+[19,] 103.34616 102.80346
+[20,] 106.21932 105.51156
+> print( fitted( fitwlsi4$eq[[ 2 ]] ) )
+ [1]  98.23465  99.57028  99.74163 100.00241 102.43454 102.34957 102.29312
+ [8] 104.39069 102.89748 100.15274  95.71705  93.86564  95.54415  97.83677
+[15] 102.93106 104.57104 104.12641 102.98975 102.80346 105.51156
+> 
+> print( fitted( fitwlsi5e ) )
+            eq1       eq2
+ [1,]  97.52483  98.23991
+ [2,]  99.57775  99.57457
+ [3,]  99.54870  99.74542
+ [4,]  99.69530 100.00564
+ [5,] 102.26836 102.43665
+ [6,] 102.03491 102.35121
+ [7,] 102.39922 102.29429
+ [8,] 102.71840 104.39066
+ [9,] 101.72499 102.89761
+[10,] 100.88403 100.15337
+[11,]  95.83474  95.71858
+[12,]  94.61045  93.86719
+[13,]  95.80250  95.54463
+[14,]  99.05480  97.83614
+[15,] 104.24622 102.92842
+[16,] 103.83999 104.56735
+[17,] 104.80403 104.12261
+[18,] 101.85502 102.98553
+[19,] 103.33825 102.79879
+[20,] 106.20151 105.50543
+> print( fitted( fitwlsi5e$eq[[ 1 ]] ) )
+ [1]  97.52483  99.57775  99.54870  99.69530 102.26836 102.03491 102.39922
+ [8] 102.71840 101.72499 100.88403  95.83474  94.61045  95.80250  99.05480
+[15] 104.24622 103.83999 104.80403 101.85502 103.33825 106.20151
+> 
+> 
+> ## *********** predicted values *************
+> predictData <- Kmenta
+> predictData$price <- Kmenta$price * 0.9
+> predictData$income <- Kmenta$income * 1.1
+> 
+> print( predict( fitwls1, se.fit = TRUE, interval = "prediction" ) )
+    eq1.pred eq1.se.fit   eq1.lwr   eq1.upr  eq2.pred eq2.se.fit  eq2.lwr
+1   97.41053  0.6429061  93.11835 101.70270  98.92925  1.0562480 93.36068
+2   99.57728  0.5771956  95.32688 103.82768 100.08251  1.0374518 94.52983
+3   99.53832  0.5449443  95.30691 103.76972 100.19787  0.9385873 94.72482
+4   99.70152  0.5820617  95.44816 103.95487 100.36979  0.9123586 94.91671
+5  102.29446  0.5016690  98.08694 106.50197 102.72620  0.8946358 97.28633
+6  102.06849  0.4634706  97.88052 106.25646 102.56269  0.7906098 97.19572
+7  102.46276  0.4835427  98.26470 106.66082 102.42403  0.7188933 97.10259
+8  102.83273  0.6012030  98.56754 107.09792 104.30737  0.9633419 98.81503
+9  101.71547  0.5267396  97.49434 105.93660 102.94896  0.7884907 97.58340
+10 100.78922  0.7882143  96.39053 105.18791 100.35059  0.9805372 94.84459
+11  95.58388  0.9455360  91.04929 100.11848  96.03328  1.1849089 90.34954
+12  94.37826  0.9796228  89.81157  98.94495  94.12138  1.3944857 88.22781
+13  95.65592  0.8800474  91.18038 100.13145  95.59902  1.2443670 89.85846
+14  98.97700  0.5076743  94.76628 103.18772  97.78688  0.8956664 92.34625
+15 104.31033  0.7581877  99.93520 108.68546 102.63791  0.8740121 97.21313
+16 103.92569  0.6163758  99.65087 108.20051 104.09052  0.9157984 98.63485
+17 104.79508  1.2729944  99.91693 109.67323 103.78669  1.6051425 97.65693
+18 101.93124  0.5355403  97.70518 106.15730 102.37790  0.9624635 96.88624
+19 103.48498  0.6800135  99.16742 107.80253 102.11329  1.0975095 96.50897
+20 106.53086  1.2739852 101.65155 111.41016 104.51788  1.6642760 98.31765
+    eq2.upr
+1  104.4978
+2  105.6352
+3  105.6709
+4  105.8229
+5  108.1661
+6  107.9297
+7  107.7455
+8  109.7997
+9  108.3145
+10 105.8566
+11 101.7170
+12 100.0150
+13 101.3396
+14 103.2275
+15 108.0627
+16 109.5462
+17 109.9165
+18 107.8695
+19 107.7176
+20 110.7181
+> print( predict( fitwls1$eq[[ 2 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 98.92925 100.08251 100.19787 100.36979 102.72620 102.56269 102.42403 104.30737 
+        9        10        11        12        13        14        15        16 
+102.94896 100.35059  96.03328  94.12138  95.59902  97.78688 102.63791 104.09052 
+       17        18        19        20 
+103.78669 102.37790 102.11329 104.51788 
+> 
+> print( predict( fitwls2e, se.pred = TRUE, interval = "confidence",
++    level = 0.999, data = predictData ) )
+   eq1.pred eq1.se.pred   eq1.lwr  eq1.upr  eq2.pred eq2.se.pred   eq2.lwr
+1  103.3548    2.121769 100.23784 106.4717  96.62801    2.652305  92.91701
+2  105.8722    2.122807 102.74613 108.9983  97.81280    2.566527  94.99013
+3  105.7793    2.132197 102.57138 108.9871  98.00891    2.575770  95.07911
+4  106.0176    2.124613 102.87561 109.1595  98.22798    2.555081  95.54331
+5  108.3242    2.352586 103.51746 113.1310 100.86003    2.715806  96.59494
+6  108.1791    2.311283 103.63952 112.7187 100.72328    2.665122  96.89508
+7  108.6934    2.303087 104.20811 113.1786 100.60944    2.617766  97.23134
+8  109.3134    2.273420 105.02893 113.5980 102.55755    2.576167  99.62322
+9  107.6200    2.359011 102.77253 112.4674 101.36324    2.744218  96.86854
+10 106.3215    2.462926 100.84484 111.7982  98.82194    2.917806  93.08215
+11 100.9862    2.280160  96.65545 105.3169  94.36092    2.979804  88.22204
+12 100.0830    2.122655  96.95821 103.2077  92.32690    2.964108  86.28734
+13 101.6796    2.049031  99.27499 104.0842  93.84566    2.814328  88.82023
+14 104.8970    2.196285 101.17043 108.6235  96.25819    2.777269  91.50757
+15 110.2544    2.532022 104.38339 116.1254 101.42862    2.778391  96.66951
+16 110.0611    2.435089 104.74830 115.3740 102.93598    2.686074  98.92242
+17 110.2198    2.812503 102.87785 117.5617 102.90616    3.135222  95.83455
+18 108.3222    2.232261 104.32814 112.3163 101.17250    2.576098  98.23896
+19 110.0599    2.302592 105.57797 114.5419 100.92508    2.566816  98.09900
+20 113.7360    2.497424 108.06035 119.4116 103.33902    2.524894 101.05445
+     eq2.upr
+1  100.33900
+2  100.63547
+3  100.93871
+4  100.91265
+5  105.12512
+6  104.55148
+7  103.98754
+8  105.49187
+9  105.85794
+10 104.56173
+11 100.49979
+12  98.36645
+13  98.87109
+14 101.00880
+15 106.18774
+16 106.94955
+17 109.97778
+18 104.10603
+19 103.75116
+20 105.62358
+> print( predict( fitwls2e$eq[[ 1 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 97.57813  99.65303  99.61347  99.77205 102.22172 102.01088 102.39109 102.75437 
+        9        10        11        12        13        14        15        16 
+101.66579 100.76830  95.81728  94.68627  95.91506  99.06508 104.13268 103.77633 
+       17        18        19        20 
+104.56864 101.89375 103.37843 106.30167 
+> 
+> print( predict( fitwls3, se.pred = TRUE, interval = "prediction",
++    level = 0.975 ) )
+    eq1.pred eq1.se.pred   eq1.lwr   eq1.upr  eq2.pred eq2.se.pred  eq2.lwr
+1   97.57001    2.031852  92.80520 102.33482  98.26839    2.535330 92.32289
+2   99.64936    2.019746  94.91294 104.38578  99.51896    2.564586 93.50486
+3   99.60983    2.010678  94.89467 104.32498  99.70220    2.547705 93.72768
+4   99.76863    2.021433  95.02826 104.50901  99.93957    2.556828 93.94367
+5  102.22525    1.999360  97.53664 106.91386 102.46665    2.586852 96.40034
+6  102.01367    1.990707  97.34535 106.68199 102.35435    2.559262 96.35274
+7  102.39457    1.994884  97.71645 107.07268 102.26752    2.543361 96.30319
+8  102.75816    2.026689  98.00546 107.51086 104.27772    2.632255 98.10494
+9  101.66819    2.006897  96.96191 106.37448 102.94713    2.572052 96.91553
+10 100.76932    2.092613  95.86202 105.67661 100.31982    2.638749 94.13180
+11  95.80597    2.139534  90.78864 100.82329  95.88805    2.717651 89.51500
+12  94.67135    2.141473  89.64947  99.69322  93.94759    2.815408 87.34530
+13  95.90251    2.106694  90.96219 100.84282  95.53500    2.749739 89.08670
+14  99.06081    2.000007  94.37068 103.75094  97.88106    2.605147 91.77185
+15 104.14129    2.070537  99.28576 108.99681 102.99463    2.561061 96.98880
+16 103.78357    2.025560  99.03351 108.53362 104.55792    2.547688 98.58344
+17 104.57961    2.306185  99.17148 109.98775 104.33265    2.854724 97.63816
+18 101.89556    2.009637  97.18285 106.60828 102.88627    2.552868 96.89965
+19 103.38359    2.049950  98.57634 108.19084 102.66814    2.593128 96.58711
+20 106.31278    2.306350 100.90426 111.72130 105.21039    2.838883 98.55305
+    eq2.upr
+1  104.2139
+2  105.5331
+3  105.6767
+4  105.9355
+5  108.5330
+6  108.3560
+7  108.2318
+8  110.4505
+9  108.9787
+10 106.5078
+11 102.2611
+12 100.5499
+13 101.9833
+14 103.9903
+15 109.0005
+16 110.5324
+17 111.0271
+18 108.8729
+19 108.7492
+20 111.8677
+> print( predict( fitwls3$eq[[ 2 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 98.26839  99.51896  99.70220  99.93957 102.46665 102.35435 102.26752 104.27772 
+        9        10        11        12        13        14        15        16 
+102.94713 100.31982  95.88805  93.94759  95.53500  97.88106 102.99463 104.55792 
+       17        18        19        20 
+104.33265 102.88627 102.66814 105.21039 
+> 
+> print( predict( fitwls4e, se.fit = TRUE, interval = "confidence",
++    level = 0.25 ) )
+    eq1.pred eq1.se.fit   eq1.lwr   eq1.upr  eq2.pred eq2.se.fit   eq2.lwr
+1   97.52574  0.5411318  97.35195  97.69953  98.24074  0.5977061  98.04879
+2   99.57769  0.4711652  99.42637  99.72901  99.57526  0.6788869  99.35722
+3   99.54873  0.4538917  99.40296  99.69450  99.74602  0.6336021  99.54253
+4   99.69518  0.4747512  99.54271  99.84765 100.00615  0.6434304  99.79950
+5  102.26818  0.4336288 102.12892 102.40744 102.43699  0.7528527 102.19520
+6  102.03465  0.4180538 101.90039 102.16891 102.35147  0.6799018 102.13312
+7  102.39869  0.4402439 102.25731 102.54008 102.29447  0.6246769 102.09385
+8  102.71741  0.5368824 102.54499 102.88983 104.39066  0.7987784 104.13412
+9  101.72512  0.4470025 101.58156 101.86868 102.89763  0.6999301 102.67285
+10 100.88493  0.6283967 100.68311 101.08674 100.15347  0.7155425  99.92367
+11  95.83685  0.8330272  95.56932  96.10439  95.71883  0.9162461  95.42457
+12  94.61233  0.8073247  94.35306  94.87161  93.86744  1.2263908  93.47358
+13  95.80364  0.6768936  95.58624  96.02103  95.54471  1.1297604  95.18188
+14  99.05544  0.4590429  98.90801  99.20286  97.83604  0.7957504  97.58048
+15 104.24578  0.5715452 104.06223 104.42934 102.92800  0.6556507 102.71743
+16 103.83933  0.5090263 103.67585 104.00281 104.56676  0.6443078 104.35983
+17 104.80431  0.8773425 104.52254 105.08607 104.12201  1.1503725 103.75256
+18 101.85434  0.4780096 101.70083 102.00786 102.98485  0.5745827 102.80032
+19 103.33699  0.6037356 103.14309 103.53088 102.79805  0.6485995 102.58975
+20 106.19867  1.1023012 105.84465 106.55268 105.50445  0.8745894 105.22357
+     eq2.upr
+1   98.43270
+2   99.79329
+3   99.94951
+4  100.21279
+5  102.67877
+6  102.56983
+7  102.49509
+8  104.64719
+9  103.12242
+10 100.38328
+11  96.01309
+12  94.26131
+13  95.90754
+14  98.09160
+15 103.13857
+16 104.77369
+17 104.49146
+18 103.16938
+19 103.00635
+20 105.78533
+> print( predict( fitwls4e$eq[[ 1 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 97.52574  99.57769  99.54873  99.69518 102.26818 102.03465 102.39869 102.71741 
+        9        10        11        12        13        14        15        16 
+101.72512 100.88493  95.83685  94.61233  95.80364  99.05544 104.24578 103.83933 
+       17        18        19        20 
+104.80431 101.85434 103.33699 106.19867 
+> 
+> print( predict( fitwls5, se.fit = TRUE, se.pred = TRUE,
++    interval = "prediction", level = 0.5, data = predictData ) )
+   eq1.pred eq1.se.fit eq1.se.pred   eq1.lwr  eq1.upr  eq2.pred eq2.se.fit
+1  103.5201  0.7491781    2.074745 102.10605 104.9342  96.38911  0.7990824
+2  106.0329  0.7839155    2.087540 104.61015 107.4557  97.65204  0.6791416
+3  105.9481  0.7932300    2.091056 104.52288 107.3733  97.83856  0.6924804
+4  106.1779  0.7917647    2.090500 104.75305 107.6027  98.07954  0.6566609
+5  108.5975  1.1356385    2.243429 107.06851 110.1266 100.63120  1.0513865
+6  108.4332  1.0860872    2.218758 106.92094 109.9454 100.51937  0.9471824
+7  108.9371  1.0973950    2.224315 107.42114 110.4532 100.43321  0.8452420
+8  109.5245  1.1072698    2.229203 108.00516 111.0438 102.46254  0.8490795
+9  107.8998  1.1261155    2.238624 106.37405 109.4256 101.12242  1.0999557
+10 106.6407  1.2432658    2.299785 105.07322 108.2081  98.47380  1.2761372
+11 101.1968  1.0658889    2.208941  99.69124 102.7023  94.00408  1.4220983
+12 100.2126  0.8144036    2.099179  98.78187 101.6433  92.04748  1.5952243
+13 101.7876  0.6173095    2.030855 100.40349 103.1718  93.65022  1.4007768
+14 105.1056  0.8740814    2.123045 103.65863 106.5526  96.01907  1.2011578
+15 110.5926  1.3771964    2.374862 108.97397 112.2112 101.17995  1.1686511
+16 110.3576  1.2792261    2.319422 108.77672 111.9384 102.75843  1.0604880
+17 110.6573  1.6558053    2.546565 108.92169 112.3930 102.53377  1.7267137
+18 108.5258  1.0139645    2.184359 107.03698 110.0145 101.07463  0.8312935
+19 110.2715  1.1799842    2.266200 108.72692 111.8160 100.85600  0.8342535
+20 113.9180  1.6346173    2.532839 112.19171 115.6443 103.42175  0.6528172
+   eq2.se.pred   eq2.lwr   eq2.upr
+1     2.579778  94.63083  98.14739
+2     2.545183  95.91734  99.38675
+3     2.548775  96.10141  99.57571
+4     2.539277  96.34886  99.81022
+5     2.668733  98.81229 102.45011
+6     2.629425  98.72725 102.31149
+7     2.594447  98.66493 102.20149
+8     2.595700 100.69340 104.23167
+9     2.688238  99.29022 102.95463
+10    2.765004  96.58927 100.35833
+11    2.835328  92.07162  95.93654
+12    2.925998  90.05322  94.04173
+13    2.824694  91.72501  95.57543
+14    2.731209  94.15757  97.88056
+15    2.717070  99.32810 103.03181
+16    2.672332 100.93706 104.57979
+17    2.999711 100.48927 104.57826
+18    2.589937  99.30942 102.83983
+19    2.590888  99.09014 102.62185
+20    2.538286 101.69174 105.15175
+> print( predict( fitwls5$eq[[ 2 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 98.23555  99.57101  99.74227 100.00296 102.43490 102.34985 102.29332 104.39069 
+        9        10        11        12        13        14        15        16 
+102.89750 100.15284  95.71730  93.86590  95.54424  97.83666 102.93061 104.57041 
+       17        18        19        20 
+104.12576 102.98903 102.80267 105.51052 
+> 
+> print( predict( fitwlsi1e, se.fit = TRUE, se.pred = TRUE,
++    interval = "confidence", level = 0.99 ) )
+    eq1.pred eq1.se.fit eq1.se.pred   eq1.lwr   eq1.upr  eq2.pred eq2.se.fit
+1   97.41053  0.5927301    2.019089  95.79043  99.03062  98.92925  0.9447369
+2   99.57728  0.5321481    2.002142  98.12277 101.03179 100.08251  0.9279251
+3   99.53832  0.5024139    1.994445  98.16508 100.91155 100.19787  0.8394980
+4   99.70152  0.5366343    2.003339  98.23475 101.16829 100.36979  0.8160383
+5  102.29446  0.4625160    1.984770 101.03027 103.55864 102.72620  0.8001866
+6  102.06849  0.4272988    1.976860 100.90056 103.23641 102.56269  0.7071429
+7  102.46276  0.4458044    1.980942 101.24425 103.68127 102.42403  0.6429978
+8  102.83273  0.5542818    2.008138 101.31772 104.34773 104.30737  0.8616392
+9  101.71547  0.4856299    1.990283 100.38811 103.04283 102.94896  0.7052475
+10 100.78922  0.7266977    2.062397  98.80295 102.77549 100.35059  0.8770191
+11  95.58388  0.8717412    2.117858  93.20117  97.96659  96.03328  1.0598147
+12  94.37826  0.9031676    2.130986  91.90966  96.84687  94.12138  1.2472659
+13  95.65592  0.8113636    2.093729  93.43824  97.87360  95.59902  1.1129957
+14  98.97700  0.4680526    1.986068  97.69769 100.25632  97.78688  0.8011084
+15 104.31033  0.6990145    2.052806 102.39973 106.22093 102.63791  0.7817402
+16 103.92569  0.5682704    2.012044 102.37245 105.47893 104.09052  0.8191150
+17 104.79508  1.1736428    2.258944 101.58719 108.00297 103.78669  1.4356831
+18 101.93124  0.4937438    1.992279 100.58170 103.28078 102.37790  0.8608535
+19 103.48498  0.6269415    2.029396 101.77137 105.19858 102.11329  0.9816423
+20 106.53086  1.1745563    2.259419 103.32047 109.74124 104.51788  1.4885737
+   eq2.se.pred   eq2.lwr   eq2.upr
+1     2.583983  96.34703 101.51148
+2     2.577884  97.54623 102.61878
+3     2.547390  97.90329 102.49245
+4     2.539756  98.13933 102.60025
+5     2.534707 100.53907 104.91333
+6     2.506889 100.62987 104.49551
+7     2.489556 100.66654 104.18152
+8     2.554773 101.95227 106.66247
+9     2.506355 101.02132 104.87659
+10    2.560001  97.95345 102.74772
+11    2.628241  93.13651  98.93005
+12    2.709264  90.71226  97.53051
+13    2.650132  92.55689  98.64114
+14    2.534998  95.59723  99.97653
+15    2.528944 100.50120 104.77462
+16    2.540746 101.85165 106.32938
+17    2.801005  99.86257 107.71081
+18    2.554508 100.02494 104.73085
+19    2.597703  99.43019 104.79639
+20    2.828479 100.44920 108.58656
+> print( predict( fitwlsi1e$eq[[ 1 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 97.41053  99.57728  99.53832  99.70152 102.29446 102.06849 102.46276 102.83273 
+        9        10        11        12        13        14        15        16 
+101.71547 100.78922  95.58388  94.37826  95.65592  98.97700 104.31033 103.92569 
+       17        18        19        20 
+104.79508 101.93124 103.48498 106.53086 
+> 
+> print( predict( fitwlsi2, se.fit = TRUE, interval = "prediction",
++    level = 0.9, data = predictData ) )
+   eq1.pred eq1.se.fit   eq1.lwr  eq1.upr  eq2.pred eq2.se.fit  eq2.lwr
+1  103.3638  0.9367713  99.72649 107.0010  96.61881  1.1511536 92.04933
+2  105.8879  0.9417896 102.24696 109.5289  97.80486  0.8746145 93.41415
+3  105.7948  0.9661980 102.13562 109.4540  98.00187  0.9090365 93.59121
+4  106.0337  0.9467030 102.38905 109.6783  98.22180  0.8332240 93.85416
+5  108.3482  1.4480318 104.25967 112.4367 100.85612  1.3274674 96.15190
+6  108.2024  1.3678200 104.19361 112.2111 100.72003  1.1915793 96.12102
+7  108.7179  1.3521389 104.72435 112.7114 100.60687  1.0515709 96.10654
+8  109.3392  1.2927561 105.40228 113.2760 102.55662  0.9137037 98.14320
+9  107.6421  1.4594574 103.54198 111.7422 101.36272  1.3996585 96.59905
+10 106.3407  1.6469029 102.04236 110.6390  98.82107  1.7873720 93.69998
+11 100.9894  1.3001218  97.04556 104.9332  94.35853  1.9114938 89.11084
+12 100.0826  0.9380103  96.44441 103.7208  92.32411  1.8804939 87.10854
+13 101.6832  0.7220605  98.18875 105.1777  93.84429  1.5648690 88.93584
+14 104.9107  1.1208297 101.12752 108.6939  96.25892  1.4793420 91.42689
+15 110.2845  1.7689877 105.84959 114.7193 101.43282  1.4812862 96.59909
+16 110.0901  1.6015948 105.84099 114.3392 102.94162  1.2482948 98.29979
+17 110.2512  2.2096941 105.28311 115.2192 102.91289  2.2008808 97.35044
+18 108.3451  1.2046028 104.48904 112.2012 101.17864  0.9109945 96.76683
+19 110.0877  1.3527626 106.09354 114.0818 100.93182  0.8768975 96.53981
+20 113.7732  1.7142018 109.40031 118.1461 103.34753  0.7051871 99.04485
+     eq2.upr
+1  101.18828
+2  102.19557
+3  102.41252
+4  102.58943
+5  105.56033
+6  105.31904
+7  105.10719
+8  106.97003
+9  106.12639
+10 103.94215
+11  99.60622
+12  97.53967
+13  98.75274
+14 101.09094
+15 106.26655
+16 107.58344
+17 108.47535
+18 105.59046
+19 105.32384
+20 107.65021
+> print( predict( fitwlsi2$eq[[ 2 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 98.26691  99.51770  99.70109  99.93861 102.46607 102.35389 102.26717 104.27766 
+        9        10        11        12        13        14        15        16 
+102.94713 100.31975  95.88772  93.94720  95.53485  97.88127 102.99543 104.55896 
+       17        18        19        20 
+104.33387 102.88741 102.66939 105.21194 
+> 
+> print( predict( fitwlsi3e, interval = "prediction", level = 0.925 ) )
+    eq1.pred   eq1.lwr   eq1.upr  eq2.pred   eq2.lwr  eq2.upr
+1   97.57658  93.87091 101.28226  98.27422  93.64898 102.8995
+2   99.65233  95.96505 103.33961  99.52393  94.85563 104.1922
+3   99.61278  95.93964 103.28591  99.70657  95.06371 104.3494
+4   99.77140  96.08147 103.46133  99.94337  95.28717 104.5996
+5  102.22239  98.56690 105.87788 102.46894  97.76844 107.1694
+6  102.01141  98.36935 105.65346 102.35619  97.69694 107.0154
+7  102.39175  98.74324 106.04027 102.26890  97.63341 106.9044
+8  102.75509  99.05698 106.45320 104.27798  99.50987 109.0461
+9  101.66624  97.99894 105.33355 102.94715  98.26901 107.6253
+10 100.76849  96.96707 104.56992 100.32009  95.54225 105.0979
+11  95.81513  91.94116  99.68909  95.88933  90.99290 100.7858
+12  94.68343  90.80730  98.55956  93.94912  88.90505  98.9932
+13  95.91268  92.09062  99.73473  95.53556  90.59084 100.4803
+14  99.06426  95.40782 102.72071  97.88023  93.15264 102.6078
+15 104.13432 100.36819 107.90044 102.99148  98.32921 107.6538
+16 103.77770 100.08173 107.47368 104.55379  99.91106 109.1965
+17 104.57073 100.43316 108.70830 104.32783  99.22316 109.4325
+18 101.89409  98.22249 105.56570 102.88178  98.23118 107.5324
+19 103.37941  99.64506 107.11376 102.66325  97.95241 107.3741
+20 106.30379 102.16598 110.44159 105.20427 100.12295 110.2856
+> print( predict( fitwlsi3e$eq[[ 1 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 97.57658  99.65233  99.61278  99.77140 102.22239 102.01141 102.39175 102.75509 
+        9        10        11        12        13        14        15        16 
+101.66624 100.76849  95.81513  94.68343  95.91268  99.06426 104.13432 103.77770 
+       17        18        19        20 
+104.57073 101.89409 103.37941 106.30379 
+> 
+> print( predict( fitwlsi4, interval = "confidence", data = predictData ) )
+   eq1.pred   eq1.lwr  eq1.upr  eq2.pred   eq2.lwr   eq2.upr
+1  103.5199 102.00084 105.0389  96.38809  94.76510  98.01109
+2  106.0338 104.44438 107.6232  97.65118  96.27098  99.03138
+3  105.9488 104.34039 107.5573  97.83778  96.43046  99.24511
+4  106.1788 104.57348 107.7841  98.07886  96.74406  99.41366
+5  108.5986 106.29482 110.9023 100.63072  98.49350 102.76795
+6  108.4343 106.23123 110.6373 100.51896  98.59354 102.44438
+7  108.9386 106.71285 111.1643 100.43288  98.71460 102.15116
+8  109.5265 107.28143 111.7715 102.46241 100.73508 104.18974
+9  107.9005 105.61588 110.1851 101.12228  98.88701 103.35755
+10 106.6405 104.11810 109.1628  98.47358  95.88227 101.06489
+11 101.1951  99.03450 103.3558  94.00371  91.11466  96.89275
+12 100.2112  98.56106 101.8614  92.04709  88.80335  95.29084
+13 101.7871 100.53624 103.0380  93.65001  90.80091  96.49911
+14 105.1057 103.33284 106.8785  96.01905  93.57783  98.46027
+15 110.5939 107.79986 113.3880 101.18029  98.80672 103.55386
+16 110.3592 107.76427 112.9540 102.75893 100.60437 104.91350
+17 110.6579 107.29788 114.0179 102.53431  99.02766 106.04096
+18 108.5274 106.47135 110.5834 101.07521  99.38595 102.76447
+19 110.2738 107.88153 112.6660 100.85665  99.16098 102.55232
+20 113.9221 110.60991 117.2343 103.42264 102.09559 104.74968
+> print( predict( fitwlsi4$eq[[ 2 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 98.23465  99.57028  99.74163 100.00241 102.43454 102.34957 102.29312 104.39069 
+        9        10        11        12        13        14        15        16 
+102.89748 100.15274  95.71705  93.86564  95.54415  97.83677 102.93106 104.57104 
+       17        18        19        20 
+104.12641 102.98975 102.80346 105.51156 
+> 
+> print( predict( fitwlsi5e, se.fit = TRUE, se.pred = TRUE,
++    interval = "prediction", level = 0.01 ) )
+    eq1.pred eq1.se.fit eq1.se.pred   eq1.lwr   eq1.upr  eq2.pred eq2.se.fit
+1   97.52483  0.5400036    2.009124  97.49947  97.55019  98.23991  0.5983125
+2   99.57775  0.4702323    1.991505  99.55261  99.60289  99.57457  0.6795139
+3   99.54870  0.4529386    1.987493  99.52361  99.57379  99.74542  0.6343129
+4   99.69530  0.4738147    1.992354  99.67015  99.72045 100.00564  0.6441366
+5  102.26836  0.4326308    1.982964 102.24333 102.29339 102.43665  0.7543882
+6  102.03491  0.4170038    1.979613 102.00992 102.05990 102.35121  0.6812909
+7  102.39922  0.4391323    1.984392 102.37417 102.42427 102.29429  0.6259133
+8  102.71840  0.5356140    2.007949 102.69305 102.74374 104.39066  0.8001120
+9  101.72499  0.4460194    1.985928 101.69992 101.75006 102.89761  0.7013499
+10 100.88403  0.6272902    2.034323 100.85835 100.90971 100.15337  0.7162473
+11  95.83474  0.8311882    2.106146  95.80815  95.86132  95.71858  0.9176132
+12  94.61045  0.8057985    2.096255  94.58399  94.63692  93.86719  1.2289238
+13  95.80250  0.6758509    2.049817  95.77663  95.82838  95.54463  1.1321679
+14  99.05480  0.4579061    1.988631  99.02969  99.07990  97.83614  0.7973588
+15 104.24622  0.5707106    2.017594 104.22075 104.27169 102.92842  0.6565249
+16 103.83999  0.5080032    2.000761 103.81474 103.86525 104.56735  0.6453483
+17 104.80403  0.8766627    2.124503 104.77721 104.83085 104.12261  1.1512322
+18 101.85502  0.4768610    1.993081 101.82986 101.88017 102.98553  0.5753597
+19 103.33825  0.6023452    2.026770 103.31267 103.36383 102.79879  0.6494177
+20 106.20151  1.0999909    2.225973 106.17341 106.22961 105.50543  0.8747639
+   eq2.se.pred   eq2.lwr   eq2.upr
+1     2.524271  98.20804  98.27177
+2     2.544741  99.54245  99.60670
+3     2.533045  99.71344  99.77739
+4     2.535523  99.97363 100.03764
+5     2.565749 102.40426 102.46904
+6     2.545216 102.31908 102.38334
+7     2.530955 102.26234 102.32624
+8     2.579563 104.35810 104.42323
+9     2.550658 102.86541 102.92981
+10    2.554795 100.12112 100.18562
+11    2.618393  95.68553  95.75163
+12    2.743031  93.83257  93.90182
+13    2.701068  95.51054  95.57873
+14    2.578710  97.80359  97.86869
+15    2.538699 102.89637 102.96046
+16    2.535831 104.53534 104.59936
+17    2.709114 104.08841 104.15681
+18    2.518929 102.95373 103.01732
+19    2.536870 102.76677 102.83082
+20    2.603685 105.47256 105.53830
+> print( predict( fitwlsi5e$eq[[ 1 ]] ) )
+        1         2         3         4         5         6         7         8 
+ 97.52483  99.57775  99.54870  99.69530 102.26836 102.03491 102.39922 102.71840 
+        9        10        11        12        13        14        15        16 
+101.72499 100.88403  95.83474  94.61045  95.80250  99.05480 104.24622 103.83999 
+       17        18        19        20 
+104.80403 101.85502 103.33825 106.20151 
+> 
+> # predict just one observation
+> smallData <- data.frame( price = 130, income = 150, farmPrice = 120,
++    trend = 25, consump = 1 ) ### consump should be removed later!!!!
+> 
+> print( predict( fitwls1, data = smallData ) )
+  eq1.pred eq2.pred
+1 108.9719 115.1066
+> print( predict( fitwls1$eq[[ 1 ]], data = smallData ) )
+[1] 108.9719
+> 
+> print( predict( fitwls2e, se.fit = TRUE, level = 0.9,
++    data = smallData ) )
+  eq1.pred eq1.se.fit eq2.pred eq2.se.fit
+1 108.6751   2.232114 116.4698   3.029383
+> print( predict( fitwls2e$eq[[ 1 ]], se.pred = TRUE, level = 0.99,
++    data = smallData ) )
+[1] 108.6751
+> 
+> print( predict( fitwls3, interval = "prediction", level = 0.975,
++    data = smallData ) )
+  eq1.pred  eq1.lwr  eq1.upr eq2.pred  eq2.lwr  eq2.upr
+1 108.6895 101.4168 115.9622 116.4848 106.6985 126.2711
+> print( predict( fitwls3$eq[[ 1 ]], interval = "confidence", level = 0.8,
++    data = smallData ) )
+[1] 108.6895
+> 
+> print( predict( fitwls4e, se.fit = TRUE, interval = "confidence",
++    level = 0.999, data = smallData ) )
+  eq1.pred eq1.se.fit  eq1.lwr  eq1.upr eq2.pred eq2.se.fit  eq2.lwr  eq2.upr
+1 108.3841   2.022465 101.1211 115.6470 117.1831   2.023029 109.9181 124.4481
+> print( predict( fitwls4e$eq[[ 2 ]], se.pred = TRUE, interval = "prediction",
++    level = 0.75, data = smallData ) )
+[1] 117.1831
+> 
+> print( predict( fitwls5, se.fit = TRUE, interval = "prediction",
++    data = smallData ) )
+  eq1.pred eq1.se.fit  eq1.lwr  eq1.upr eq2.pred eq2.se.fit  eq2.lwr  eq2.upr
+1 108.4158   2.204294 102.4616 114.3700 117.1955   2.232657 110.4619 123.9290
+> print( predict( fitwls5$eq[[ 1 ]], se.pred = TRUE, interval = "confidence",
++    data = smallData ) )
+[1] 108.4158
+> 
+> print( predict( fitwlsi3e, se.fit = TRUE, se.pred = TRUE,
++    interval = "prediction", level = 0.5, data = smallData ) )
+  eq1.pred eq1.se.fit eq1.se.pred  eq1.lwr  eq1.upr eq2.pred eq2.se.fit
+1 108.6779   2.225366    2.950308 106.6664 110.6893 116.4726    3.03627
+  eq2.se.pred  eq2.lwr eq2.upr
+1    3.897725 113.8153  119.13
+> print( predict( fitwlsi3e$eq[[ 1 ]], se.fit = TRUE, se.pred = TRUE,
++    interval = "confidence", level = 0.25, data = smallData ) )
+[1] 108.6779
+> 
+> 
+> ## ************ correlation of predicted values ***************
+> print( correlation.systemfit( fitwls1, 2, 1 ) )
+      [,1]
+ [1,]    0
+ [2,]    0
+ [3,]    0
+ [4,]    0
+ [5,]    0
+ [6,]    0
+ [7,]    0
+ [8,]    0
+ [9,]    0
+[10,]    0
+[11,]    0
+[12,]    0
+[13,]    0
+[14,]    0
+[15,]    0
+[16,]    0
+[17,]    0
+[18,]    0
+[19,]    0
+[20,]    0
+> 
+> print( correlation.systemfit( fitwls2e, 1, 2 ) )
+               [,1]
+ [1,]  0.4115250948
+ [2,]  0.1476243455
+ [3,]  0.1477105740
+ [4,]  0.1076538329
+ [5,] -0.0692837781
+ [6,] -0.0530387684
+ [7,] -0.0515507551
+ [8,] -0.0061527116
+ [9,] -0.0003325098
+[10,] -0.0012616002
+[11,]  0.0485737003
+[12,]  0.0649964981
+[13,]  0.0246180879
+[14,] -0.0284850242
+[15,]  0.1749800980
+[16,]  0.2527224191
+[17,]  0.1033924160
+[18,]  0.0742187805
+[19,]  0.1565453583
+[20,]  0.1354384602
+> 
+> print( correlation.systemfit( fitwls3, 2, 1 ) )
+               [,1]
+ [1,]  0.4059007052
+ [2,]  0.1453642164
+ [3,]  0.1453753421
+ [4,]  0.1058345766
+ [5,] -0.0679578282
+ [6,] -0.0520264637
+ [7,] -0.0505428859
+ [8,] -0.0060310164
+ [9,] -0.0003260297
+[10,] -0.0012373958
+[11,]  0.0475335961
+[12,]  0.0634931455
+[13,]  0.0240601297
+[14,] -0.0279098394
+[15,]  0.1715798057
+[16,]  0.2482122651
+[17,]  0.1014092496
+[18,]  0.0730842901
+[19,]  0.1539499362
+[20,]  0.1329437387
+> 
+> print( correlation.systemfit( fitwls4e, 1, 2 ) )
+              [,1]
+ [1,]  0.381624440
+ [2,]  0.291726703
+ [3,]  0.254209402
+ [4,]  0.285981118
+ [5,] -0.027748597
+ [6,] -0.049737587
+ [7,] -0.058503091
+ [8,]  0.093878722
+ [9,]  0.094692182
+[10,]  0.438137210
+[11,]  0.105586324
+[12,]  0.008757484
+[13,]  0.040901768
+[14,] -0.039844430
+[15,]  0.407668956
+[16,]  0.245707948
+[17,]  0.641600205
+[18,]  0.240373572
+[19,]  0.340751504
+[20,]  0.542701864
+> 
+> print( correlation.systemfit( fitwls5, 2, 1 ) )
+              [,1]
+ [1,]  0.377463361
+ [2,]  0.293573225
+ [3,]  0.255278767
+ [4,]  0.287508859
+ [5,] -0.027357165
+ [6,] -0.049208930
+ [7,] -0.057831291
+ [8,]  0.093232705
+ [9,]  0.094422234
+[10,]  0.437498987
+[11,]  0.102725087
+[12,]  0.007198567
+[13,]  0.040430021
+[14,] -0.039645302
+[15,]  0.406196629
+[16,]  0.242970462
+[17,]  0.640554444
+[18,]  0.236242777
+[19,]  0.334674502
+[20,]  0.537750325
+> 
+> print( correlation.systemfit( fitwlsi1e, 1, 2 ) )
+      [,1]
+ [1,]    0
+ [2,]    0
+ [3,]    0
+ [4,]    0
+ [5,]    0
+ [6,]    0
+ [7,]    0
+ [8,]    0
+ [9,]    0
+[10,]    0
+[11,]    0
+[12,]    0
+[13,]    0
+[14,]    0
+[15,]    0
+[16,]    0
+[17,]    0
+[18,]    0
+[19,]    0
+[20,]    0
+> 
+> print( correlation.systemfit( fitwlsi2, 2, 1 ) )
+               [,1]
+ [1,]  0.4046963582
+ [2,]  0.1448812792
+ [3,]  0.1448771320
+ [4,]  0.1054476389
+ [5,] -0.0676775463
+ [6,] -0.0518124438
+ [7,] -0.0503300691
+ [8,] -0.0060053343
+ [9,] -0.0003246611
+[10,] -0.0012322796
+[11,]  0.0473150301
+[12,]  0.0631785831
+[13,]  0.0239432437
+[14,] -0.0277885882
+[15,]  0.1708619045
+[16,]  0.2472564637
+[17,]  0.1009901318
+[18,]  0.0728417781
+[19,]  0.1533975265
+[20,]  0.1324154824
+> 
+> print( correlation.systemfit( fitwlsi3e, 1, 2 ) )
+               [,1]
+ [1,]  0.4104849041
+ [2,]  0.1472057720
+ [3,]  0.1472776244
+ [4,]  0.1073158269
+ [5,] -0.0690363738
+ [6,] -0.0528499086
+ [7,] -0.0513625613
+ [8,] -0.0061299793
+ [9,] -0.0003313000
+[10,] -0.0012570838
+[11,]  0.0483788413
+[12,]  0.0647140218
+[13,]  0.0245133343
+[14,] -0.0283775000
+[15,]  0.1743451185
+[16,]  0.2518823415
+[17,]  0.1030223295
+[18,]  0.0740087349
+[19,]  0.1560633777
+[20,]  0.1349735335
+> 
+> print( correlation.systemfit( fitwlsi4, 2, 1 ) )
+              [,1]
+ [1,]  0.376715715
+ [2,]  0.293869901
+ [3,]  0.255442794
+ [4,]  0.287749865
+ [5,] -0.027287463
+ [6,] -0.049113757
+ [7,] -0.057711054
+ [8,]  0.093114682
+ [9,]  0.094366574
+[10,]  0.437361582
+[11,]  0.102226968
+[12,]  0.006932181
+[13,]  0.040345202
+[14,] -0.039607646
+[15,]  0.405908578
+[16,]  0.242478183
+[17,]  0.640335727
+[18,]  0.235511131
+[19,]  0.333601416
+[20,]  0.536872895
+> 
+> print( correlation.systemfit( fitwlsi5e, 1, 2 ) )
+              [,1]
+ [1,]  0.380977079
+ [2,]  0.292036504
+ [3,]  0.254393812
+ [4,]  0.286240302
+ [5,] -0.027687296
+ [6,] -0.049655459
+ [7,] -0.058398266
+ [8,]  0.093779446
+ [9,]  0.094654795
+[10,]  0.438052437
+[11,]  0.105130854
+[12,]  0.008506098
+[13,]  0.040828414
+[14,] -0.039814654
+[15,]  0.407455034
+[16,]  0.245282340
+[17,]  0.641457306
+[18,]  0.239724174
+[19,]  0.339793982
+[20,]  0.541923460
+> 
+> 
+> ## ************** F tests ****************
+> # testing first restriction
+> print( ftest.systemfit( fitwls1, restrm ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.1363 
+degrees of freedom of the numerator: 1 
+degrees of freedom of the denominator: 33 
+p-value: 0.7143 
+
+> print( ftest.systemfit( fitwlsi1e, restrm ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.1686 
+degrees of freedom of the numerator: 1 
+degrees of freedom of the denominator: 33 
+p-value: 0.6841 
+
+> 
+> # testing second restriction
+> restrOnly2m <- matrix(0,1,7)
+> restrOnly2q <- 0.5
+> restrOnly2m[1,2] <- -1
+> restrOnly2m[1,5] <-  1
+> # first restriction not imposed 
+> print( ftest.systemfit( fitwls1e, restrOnly2m, restrOnly2q ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.008123 
+degrees of freedom of the numerator: 1 
+degrees of freedom of the denominator: 33 
+p-value: 0.9287 
+
+> print( ftest.systemfit( fitwlsi1, restrOnly2m, restrOnly2q ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.006692 
+degrees of freedom of the numerator: 1 
+degrees of freedom of the denominator: 33 
+p-value: 0.9353 
+
+> # first restriction imposed
+> print( ftest.systemfit( fitwls2, restrOnly2m, restrOnly2q ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.01656 
+degrees of freedom of the numerator: 1 
+degrees of freedom of the denominator: 34 
+p-value: 0.8984 
+
+> print( ftest.systemfit( fitwls3, restrOnly2m, restrOnly2q ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.01656 
+degrees of freedom of the numerator: 1 
+degrees of freedom of the denominator: 34 
+p-value: 0.8984 
+
+> print( ftest.systemfit( fitwlsi2e, restrOnly2m, restrOnly2q ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.02097 
+degrees of freedom of the numerator: 1 
+degrees of freedom of the denominator: 34 
+p-value: 0.8857 
+
+> print( ftest.systemfit( fitwlsi3e, restrOnly2m, restrOnly2q ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.02097 
+degrees of freedom of the numerator: 1 
+degrees of freedom of the denominator: 34 
+p-value: 0.8857 
+
+> 
+> # testing both of the restrictions
+> print( ftest.systemfit( fitwls1e, restr2m, restr2q ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.09512 
+degrees of freedom of the numerator: 2 
+degrees of freedom of the denominator: 33 
+p-value: 0.9095 
+
+> print( ftest.systemfit( fitwlsi1, restr2m, restr2q ) )
+
+F-test for linear parameter restrictions in equation systems
+F-statistic: 0.07665 
+degrees of freedom of the numerator: 2 
+degrees of freedom of the denominator: 33 
+p-value: 0.9264 
+
+> 
+> 
+> ## ************** Wald tests ****************
+> # testing first restriction
+> print( waldtest.systemfit( fitwls1, restrm ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.644 
+degrees of freedom: 1 
+p-value: 0.4223 
+
+> print( waldtest.systemfit( fitwlsi1e, restrm ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.7962 
+degrees of freedom: 1 
+p-value: 0.3722 
+
+> 
+> # testing second restriction
+> # first restriction not imposed
+> print( waldtest.systemfit( fitwls1e, restrOnly2m, restrOnly2q ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.03837 
+degrees of freedom: 1 
+p-value: 0.8447 
+
+> print( waldtest.systemfit( fitwlsi1, restrOnly2m, restrOnly2q ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.03161 
+degrees of freedom: 1 
+p-value: 0.8589 
+
+> # first restriction imposed
+> print( waldtest.systemfit( fitwls2, restrOnly2m, restrOnly2q ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.07761 
+degrees of freedom: 1 
+p-value: 0.7806 
+
+> print( waldtest.systemfit( fitwls3, restrOnly2m, restrOnly2q ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.07761 
+degrees of freedom: 1 
+p-value: 0.7806 
+
+> print( waldtest.systemfit( fitwlsi2e, restrOnly2m, restrOnly2q ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.09829 
+degrees of freedom: 1 
+p-value: 0.7539 
+
+> print( waldtest.systemfit( fitwlsi3e, restrOnly2m, restrOnly2q ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.09829 
+degrees of freedom: 1 
+p-value: 0.7539 
+
+> 
+> # testing both of the restrictions
+> print( waldtest.systemfit( fitwls1e, restr2m, restr2q ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.8986 
+degrees of freedom: 2 
+p-value: 0.6381 
+
+> print( waldtest.systemfit( fitwlsi1, restr2m, restr2q ) )
+
+Wald-test for linear parameter restrictions in equation systems
+Wald-statistic: 0.7242 
+degrees of freedom: 2 
+p-value: 0.6962 
+
 > 

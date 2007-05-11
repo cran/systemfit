@@ -1,5 +1,5 @@
 
-%  $Id: summary.nlsystemfit.system.Rd,v 1.4 2006/02/14 14:15:11 henningsena Exp $
+%  $Id: summary.nlsystemfit.system.Rd 154 2006-02-14 14:15:11Z henningsena $
 
 \name{summary.nlsystemfit}
 \alias{summary.nlsystemfit.system}

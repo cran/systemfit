@@ -1,4 +1,4 @@
-###   $Id: nlsystemfit.r,v 1.19 2005/08/24 22:44:47 hamannj Exp $
+###   $Id: nlsystemfit.r 133 2005-08-24 22:44:47Z hamannj $
 ###
 ###            Simultaneous Nonlinear Least Squares for R
 ###

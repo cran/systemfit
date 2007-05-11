@@ -15,9 +15,11 @@
 
    \method{summary}{systemfit.equation}( object, ... )
 
-   \method{print}{summary.systemfit}( x, digits = 6, ... )
+   \method{print}{summary.systemfit}( x,
+      digits = max( 3, getOption("digits") - 1 ), ... )
 
-   \method{print}{summary.systemfit.equation}( x, digits = 6, ... )
+   \method{print}{summary.systemfit.equation}( x,
+      digits = max( 3, getOption("digits") - 1 ), ... )
 }
 
 \arguments{

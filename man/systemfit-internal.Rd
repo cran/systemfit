@@ -1,5 +1,5 @@
 
-% 	$Id: systemfit-internal.Rd,v 1.2 2004/02/04 02:34:28 hamannj Exp $	
+% 	$Id: systemfit-internal.Rd 73 2004-02-04 02:34:28Z hamannj $	
 
 \name{systemfit-internal}
 \alias{knls}
