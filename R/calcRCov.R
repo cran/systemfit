@@ -65,5 +65,6 @@
       stop( paste( "Sigma^2 can only be calculated if argument",
          "'rcovformula' is either 0, 1, 'geomean', 3 or 'max'" ) )
    }
+   return( result )
 }
 
