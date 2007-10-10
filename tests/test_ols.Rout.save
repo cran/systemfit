@@ -1,6 +1,6 @@
 
-R : Copyright 2006, The R Foundation for Statistical Computing
-Version 2.3.1 (2006-06-01)
+R version 2.6.0 (2007-10-03)
+Copyright (C) 2007 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -2550,7 +2550,7 @@ income       0.220   0.406
  [6,] -0.0520264637
  [7,] -0.0505428859
  [8,] -0.0060310164
- [9,] -0.0003260296
+ [9,] -0.0003260297
 [10,] -0.0012373958
 [11,]  0.0475335961
 [12,]  0.0634931455

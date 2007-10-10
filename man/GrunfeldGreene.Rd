@@ -1,5 +1,6 @@
 \name{GrunfeldGreene}
 \alias{GrunfeldGreene}
+\docType{data}
 \title{Grunfeld Data as published by Greene (2003)}
 \description{
    Panel data on 5 US firms for the years 1935-1954.

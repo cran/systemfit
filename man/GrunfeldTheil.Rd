@@ -1,5 +1,6 @@
 \name{GrunfeldTheil}
 \alias{GrunfeldTheil}
+\docType{data}
 \title{Grunfeld Data as published in Theil (1971)}
 \description{
    Panel data on 2 US firms for the years 1935-1954.

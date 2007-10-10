@@ -1,8 +1,9 @@
 
-%  $Id: Kmenta.Rd 171 2006-02-20 07:45:38Z henningsena $
+%  $Id: Kmenta.Rd 484 2007-10-10 07:45:49Z henningsena $
 
 \name{Kmenta}
 \alias{Kmenta}
+\docType{data}
 \title{Partly Artificial Data on the U. S. Economy}
 \description{
    These are partly contrived data from Kmenta (1986), constructed

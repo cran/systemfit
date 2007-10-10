@@ -1,11 +1,10 @@
 
-% 	$Id: ppine.Rd 74 2004-02-05 19:12:56Z hamannj $	
+% 	$Id: ppine.Rd 484 2007-10-10 07:45:49Z henningsena $	
 
 
-\keyword{datasets}
 \name{ppine}
 \alias{ppine}
-\non_function{}
+\docType{data}
 \title{Tree Growth Data for Ponderosa Pine}
 \usage{data(ppine)}
 \description{

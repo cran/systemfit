@@ -1,6 +1,6 @@
 
-R version 2.4.1 (2006-12-18)
-Copyright (C) 2006 The R Foundation for Statistical Computing
+R version 2.6.0 (2007-10-03)
+Copyright (C) 2007 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -5336,7 +5336,7 @@ Instruments: ~income + farmPrice + trend
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 92.035347    8.92142 10.316222        0 ***
 price       -0.104341   0.095776 -1.089428 0.283627    
-income       0.197867   0.029919  6.613411        0 ***
+income       0.197867   0.029919   6.61341        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -5354,13 +5354,13 @@ Instruments: ~income + farmPrice + trend
 (Intercept) 68.282985  11.153002 6.122386    1e-06 ***
 price        0.185084   0.105254  1.75845  0.08767   .
 farmPrice    0.124457   0.025087 4.961019  1.9e-05 ***
-trend        0.197867   0.029919 6.613411        0 ***
+trend        0.197867   0.029919  6.61341        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
 Residual standard error: 2.937766 on 16 degrees of freedom
 Number of observations: 20 Degrees of Freedom: 16 
-SSR: 138.087513 MSE: 8.63047 Root MSE: 2.937766 
+SSR: 138.087514 MSE: 8.63047 Root MSE: 2.937766 
 Multiple R-Squared: 0.484968 Adjusted R-Squared: 0.388399 
 
 [1] "********* iterated 3SLS with restriction via TX *****************"
@@ -6172,7 +6172,7 @@ Instruments: ~income + farmPrice + trend
              Estimate Std. Error   t value Pr(>|t|)    
 (Intercept) 92.035347    8.92142 10.316222        0 ***
 price       -0.104341   0.095776 -1.089428 0.283627    
-income       0.197867   0.029919   6.61341        0 ***
+income       0.197867   0.029919  6.613411        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -6190,7 +6190,7 @@ Instruments: ~income + farmPrice + trend
 (Intercept) 68.282985  11.153002 6.122386    1e-06 ***
 price        0.185084   0.105254  1.75845  0.08767   .
 farmPrice    0.124457   0.025087 4.961019  1.9e-05 ***
-trend        0.197867   0.029919  6.61341        0 ***
+trend        0.197867   0.029919 6.613411        0 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 
@@ -8510,7 +8510,7 @@ Model Formula: consump ~ price + income
 Instruments: ~income + farmPrice
 
               Estimate Std. Error   t value Pr(>|t|)    
-(Intercept) 135.467355  10.954937 12.365872        0 ***
+(Intercept) 135.467356  10.954937 12.365872        0 ***
 price        -0.727195   0.116021 -6.267805        0 ***
 income        0.391287   0.017976 21.767577        0 ***
 ---
@@ -10723,12 +10723,12 @@ Multiple R-Squared: 0.193198 Adjusted R-Squared: 0.041923
 7   1.65218686  2.05116866
 8  -2.98165726 -4.01317617
 9  -1.06323141 -1.80846849
-10  2.52704409  3.17851923
+10  2.52704409  3.17851924
 11 -0.36753028 -0.87217375
 12 -2.64453365 -2.87806869
 13 -1.89988804 -2.43696623
 14 -0.37105491  0.23715494
-15  2.16852591  3.47421834
+15  2.16852591  3.47421835
 16 -3.25663470 -3.68012940
 17 -0.03552765  0.80943943
 18 -2.11311382 -3.21290404
@@ -10844,13 +10844,13 @@ Multiple R-Squared: 0.193198 Adjusted R-Squared: 0.041923
 16 -3.3140796 -3.70428888
 17 -0.0169310  1.44454881
 18 -2.1691745 -3.47339545
-19  1.6008414  1.71577469
+19  1.6008414  1.71577470
 20 -0.6602509 -0.53000411
 > print( residuals( fit3slsd[[ 3 ]]$e4$eq[[ 2 ]] ) )
  [1]  0.08795568 -0.85032874  2.05382301  1.00743231  2.52602217  1.37840427
  [7]  1.93450538 -4.39714243 -1.69160141  3.67359012 -0.31930077 -2.56373953
 [13] -2.39737497  0.42317873  3.68194110 -3.70428888  1.44454881 -3.47339545
-[19]  1.71577469 -0.53000411
+[19]  1.71577470 -0.53000411
 > 
 > 
 > ## *********** variance covariance matrix of the coefficients *******

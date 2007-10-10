@@ -1,5 +1,6 @@
 \name{KleinI}
 \alias{KleinI}
+\docType{data}
 \title{Klein Model I}
 \description{
    Data for Klein's (1950) Model I of the US economy.
