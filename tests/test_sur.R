@@ -183,6 +183,29 @@ print( summary( fitsuri5r2 ) )
 # disabled, because the estimation does not converge
 
 
+## *********** estimations with a single regressor ************
+fitsurS1 <- systemfit( "SUR",
+   list( price ~ consump - 1, farmPrice ~ consump + trend ),
+   data = Kmenta )
+print( summary( fitsurS1 ) )
+fitsurS2 <- systemfit( "SUR",
+   list( consump ~ price - 1, consump ~ trend - 1 ),
+   data = Kmenta )
+print( summary( fitsurS2 ) )
+fitsurS3 <- systemfit( "SUR",
+   list( consump ~ trend - 1, price ~ trend - 1 ),
+   data = Kmenta )
+print( summary( fitsurS3 ) )
+fitsurS4 <- systemfit( "SUR",
+   list( consump ~ trend - 1, price ~ trend - 1 ),
+   data = Kmenta, R.restr = matrix( c( 1, -1 ), nrow = 1 ) )
+print( summary( fitsurS4 ) )
+fitsurS5 <- systemfit( "SUR",
+   list( consump ~ 1, price ~ 1 ),
+   data = Kmenta )
+print( summary( fitsurS5 ) )
+
+
 ## ****************** residuals **************************
 print( residuals( fitsur1e2 ) )
 print( residuals( fitsur1e2$eq[[ 2 ]] ) )

@@ -216,6 +216,30 @@ fit2slsd3r <- systemfit( "2SLS", system, labels, data = Kmenta, TX = tc,
 print( summary( fit2slsd3r ) )
 
 
+## *********** estimations with a single regressor ************
+fit2slsS1 <- systemfit( "2SLS",
+   list( consump ~ price - 1, price ~ consump + trend ),
+   data = Kmenta, inst = ~ farmPrice + trend + income )
+print( summary( fit2slsS1 ) )
+fit2slsS2 <- systemfit( "2SLS",
+   list( consump ~ price - 1, consump ~ trend - 1 ),
+   data = Kmenta, inst = ~ farmPrice + price + income )
+print( summary( fit2slsS2 ) )
+fit2slsS3 <- systemfit( "2SLS",
+   list( consump ~ trend - 1, price ~ trend - 1 ),
+   data = Kmenta, inst = instlist )
+print( summary( fit2slsS3 ) )
+fit2slsS4 <- systemfit( "2SLS",
+   list( consump ~ trend - 1, price ~ trend - 1 ),
+   data = Kmenta, inst = ~ farmPrice + trend + income,
+   R.restr = matrix( c( 1, -1 ), nrow = 1 ) )
+print( summary( fit2slsS4 ) )
+fit2slsS5 <- systemfit( "2SLS",
+   list( consump ~ 1, price ~ 1 ),
+   data = Kmenta, inst = ~ farmPrice )
+print( summary( fit2slsS1 ) )
+
+
 ## ****************** residuals **************************
 print( residuals( fit2sls1 ) )
 print( residuals( fit2sls1$eq[[ 1 ]] ) )

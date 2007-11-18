@@ -1,6 +1,6 @@
 
-R version 2.4.1 (2006-12-18)
-Copyright (C) 2006 The R Foundation for Statistical Computing
+R version 2.6.0 (2007-10-03)
+Copyright (C) 2007 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -1945,6 +1945,301 @@ Multiple R-Squared: 0.411679 Adjusted R-Squared: 0.301369
 > # print( summary( fitsuri5e ) )
 > # print( round( vcov( fitsuri5e ), digits = 6 ) )
 > # disabled, because the estimation does not converge
+> 
+> 
+> ## *********** estimations with a single regressor ************
+> fitsurS1 <- systemfit( "SUR",
++    list( price ~ consump - 1, farmPrice ~ consump + trend ),
++    data = Kmenta )
+> print( summary( fitsurS1 ) )
+
+systemfit results 
+method: SUR 
+
+            N DF      SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19  848.208 44.6425 6.68151 -0.271197 -0.271197
+equation 2 20 17 1211.393 71.2584 8.44147  0.605250  0.558808
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    44.6425   -20.4719
+equation 2   -20.4719    68.9387
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    44.6425   -25.2569
+equation 2   -25.2569    71.2584
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.447766
+equation 2  -0.447766   1.000000
+
+The determinant of the residual covariance matrix: 2543.25
+OLS R-squared value of the system: 0.448716
+McElroy's R-squared value for the system: 0.46504
+
+SUR estimates for equation 1
+Model Formula: price ~ consump - 1
+
+        Estimate Std. Error   t value Pr(>|t|)    
+consump 0.990187   0.014798 66.915518        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 6.681506 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 848.208049 MSE: 44.642529 Root MSE: 6.681506 
+Multiple R-Squared: -0.271197 Adjusted R-Squared: -0.271197 
+
+
+SUR estimates for equation 2
+Model Formula: farmPrice ~ consump + trend
+
+               Estimate Std. Error   t value Pr(>|t|)    
+(Intercept) -108.487034  47.754167 -2.271782 0.036376   *
+consump        2.123094   0.476729  4.453456 0.000349 ***
+trend         -0.862227   0.302675 -2.848684 0.011105   *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 8.44147 on 17 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 17 
+SSR: 1211.393006 MSE: 71.258412 Root MSE: 8.44147 
+Multiple R-Squared: 0.60525 Adjusted R-Squared: 0.558808 
+
+> fitsurS2 <- systemfit( "SUR",
++    list( consump ~ price - 1, consump ~ trend - 1 ),
++    data = Kmenta )
+> print( summary( fitsurS2 ) )
+
+systemfit results 
+method: SUR 
+
+            N DF       SSR       MSE     RMSE         R2     Adj R2
+equation 1 20 19   861.496   45.3419  6.73364   -2.21317   -2.21317
+equation 2 20 19 46508.986 2447.8414 49.47566 -172.46701 -172.46701
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   45.33940   -5.15473
+equation 2   -5.15473 2447.83799
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   45.34188   -6.36777
+equation 2   -6.36777 2447.84137
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000 -0.0439392
+equation 2 -0.0439392  1.0000000
+
+The determinant of the residual covariance matrix: 110949
+OLS R-squared value of the system: -87.3401
+McElroy's R-squared value for the system: -5.2751
+
+SUR estimates for equation 1
+Model Formula: consump ~ price - 1
+
+      Estimate Std. Error   t value Pr(>|t|)    
+price 1.006129   0.015028 66.949676        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 6.733638 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 861.49576 MSE: 45.341882 Root MSE: 6.733638 
+Multiple R-Squared: -2.213166 Adjusted R-Squared: -2.213166 
+
+
+SUR estimates for equation 2
+Model Formula: consump ~ trend - 1
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 7.409599   0.923503 8.023364        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.475664 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 46508.986073 MSE: 2447.841372 Root MSE: 49.475664 
+Multiple R-Squared: -172.467011 Adjusted R-Squared: -172.467011 
+
+> fitsurS3 <- systemfit( "SUR",
++    list( consump ~ trend - 1, price ~ trend - 1 ),
++    data = Kmenta )
+> print( summary( fitsurS3 ) )
+
+systemfit results 
+method: SUR 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 46508.9 2447.84 49.4756 -172.4668 -172.4668
+equation 2 20 19 47028.1 2475.16 49.7510  -69.4803  -69.4803
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    2447.84    2439.23
+equation 2    2439.23    2475.16
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    2447.84    2439.23
+equation 2    2439.23    2475.16
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1    1.00000    0.98828
+equation 2    0.98828    1.00000
+
+The determinant of the residual covariance matrix: 108970
+OLS R-squared value of the system: -99.0005
+McElroy's R-squared value for the system: -0.97698
+
+SUR estimates for equation 1
+Model Formula: consump ~ trend - 1
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend  7.40487   0.923529 8.018018        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.47563 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 46508.921896 MSE: 2447.837995 Root MSE: 49.47563 
+Multiple R-Squared: -172.466772 Adjusted R-Squared: -172.466772 
+
+
+SUR estimates for equation 2
+Model Formula: price ~ trend - 1
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 7.318426   0.928669 7.880553        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.751015 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 47028.107165 MSE: 2475.163535 Root MSE: 49.751015 
+Multiple R-Squared: -69.480332 Adjusted R-Squared: -69.480332 
+
+> fitsurS4 <- systemfit( "SUR",
++    list( consump ~ trend - 1, price ~ trend - 1 ),
++    data = Kmenta, R.restr = matrix( c( 1, -1 ), nrow = 1 ) )
+> print( summary( fitsurS4 ) )
+
+systemfit results 
+method: SUR 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 46509.8 2447.88 49.4761 -172.4700 -172.4700
+equation 2 20 19 47041.8 2475.88 49.7583  -69.5009  -69.5009
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    2448.12    2438.95
+equation 2    2438.95    2475.45
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    2447.88    2439.05
+equation 2    2439.05    2475.88
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000   0.988425
+equation 2   0.988425   1.000000
+
+The determinant of the residual covariance matrix: 111731
+OLS R-squared value of the system: -99.016
+McElroy's R-squared value for the system: -1.02684
+
+SUR estimates for equation 1
+Model Formula: consump ~ trend - 1
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 7.387505   0.923234 8.001768        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.476091 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 46509.787279 MSE: 2447.883541 Root MSE: 49.476091 
+Multiple R-Squared: -172.469999 Adjusted R-Squared: -172.469999 
+
+
+SUR estimates for equation 2
+Model Formula: price ~ trend - 1
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 7.387505   0.923234 8.001768        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.758259 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 47041.802822 MSE: 2475.884359 Root MSE: 49.758259 
+Multiple R-Squared: -69.500857 Adjusted R-Squared: -69.500857 
+
+> fitsurS5 <- systemfit( "SUR",
++    list( consump ~ 1, price ~ 1 ),
++    data = Kmenta )
+> print( summary( fitsurS5 ) )
+
+systemfit results 
+method: SUR 
+
+            N DF     SSR     MSE    RMSE R2 Adj R2
+equation 1 20 19 268.114 14.1113 3.75650  0      0
+equation 2 20 19 667.251 35.1185 5.92609  0      0
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000  0.0980957
+equation 2  0.0980957  1.0000000
+
+The determinant of the residual covariance matrix: 490.798
+OLS R-squared value of the system: -2.22045e-16
+McElroy's R-squared value for the system: 2.22045e-16
+
+SUR estimates for equation 1
+Model Formula: consump ~ 1
+
+            Estimate Std. Error    t value Pr(>|t|)    
+(Intercept) 100.8982   0.839979 120.119974        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 3.756498 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 268.114299 MSE: 14.111279 Root MSE: 3.756498 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
+
+SUR estimates for equation 2
+Model Formula: price ~ 1
+
+             Estimate Std. Error   t value Pr(>|t|)    
+(Intercept) 100.01905   1.325113 75.479627        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 5.926086 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 667.251499 MSE: 35.1185 Root MSE: 5.926086 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
 > 
 > 
 > ## ****************** residuals **************************

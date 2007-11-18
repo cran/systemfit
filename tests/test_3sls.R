@@ -102,6 +102,29 @@ for( i in seq( along = formulas ) ) {
       inst = inst, TX = tc, rcovformula = 0, probdfsys = TRUE,
       R.restr = restr3m, q.restr = restr3q, formula3sls = formulas[ i ] )
    print( summary( fit3sls[[ i ]]$e5e ) )
+
+   ## *********** estimations with a single regressor ************
+   fit3sls[[ i ]]$S1 <- systemfit( "3SLS",
+      list( farmPrice ~ consump - 1, price ~ consump + trend ),
+      data = Kmenta, inst = ~ trend + income )
+   print( summary( fit3sls[[ i ]]$S1 ) )
+   fit3sls[[ i ]]$S2 <- systemfit( "3SLS",
+      list( consump ~ farmPrice - 1, consump ~ trend - 1 ),
+      data = Kmenta, inst = ~ price + income )
+   print( summary( fit3sls[[ i ]]$S2 ) )
+   fit3sls[[ i ]]$S3 <- systemfit( "3SLS",
+      list( consump ~ trend - 1, farmPrice ~ trend - 1 ),
+      data = Kmenta, inst = instlist )
+   print( summary( fit3sls[[ i ]]$S3 ) )
+   fit3sls[[ i ]]$S4 <- systemfit( "3SLS",
+      list( consump ~ farmPrice - 1, price ~ trend - 1 ),
+      data = Kmenta, inst = ~ farmPrice + trend + income,
+      R.restr = matrix( c( 1, -1 ), nrow = 1 ) )
+   print( summary( fit3sls[[ i ]]$S4 ) )
+   fit3sls[[ i ]]$S5 <- systemfit( "3SLS",
+      list( consump ~ 1, price ~ 1 ),
+      data = Kmenta, inst = ~ income )
+   print( summary( fit3sls[[ i ]]$S5 ) )
 }
 
 ## ******************** iterated 3SLS **********************

@@ -1,6 +1,6 @@
 
-R : Copyright 2006, The R Foundation for Statistical Computing
-Version 2.3.1 (2006-06-01)
+R version 2.6.0 (2007-10-03)
+Copyright (C) 2007 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -2100,6 +2100,284 @@ Residual standard error: 2.504004 on 16 degrees of freedom
 Number of observations: 20 Degrees of Freedom: 16 
 SSR: 100.320616 MSE: 6.270038 Root MSE: 2.504004 
 Multiple R-Squared: 0.625829 Adjusted R-Squared: 0.555672 
+
+> 
+> 
+> ## *********** estimations with a single regressor ************
+> fit2slsS1 <- systemfit( "2SLS",
++    list( consump ~ price - 1, price ~ consump + trend ),
++    data = Kmenta, inst = ~ farmPrice + trend + income )
+> print( summary( fit2slsS1 ) )
+
+systemfit results 
+method: 2SLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 861.480 45.3411 6.73358 -2.213109 -2.213109
+equation 2 20 17 682.257 40.1328 6.33504 -0.022489 -0.142782
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    45.3411   -40.5010
+equation 2   -40.5010    40.1328
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.950278
+equation 2  -0.950278   1.000000
+
+The determinant of the residual covariance matrix: 179.335
+OLS R-squared value of the system: -0.650411
+
+2SLS estimates for equation 1
+Model Formula: consump ~ price - 1
+Instruments: ~farmPrice + trend + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+price 1.006043    0.01503 66.934541        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 6.733578 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 861.480497 MSE: 45.341079 Root MSE: 6.733578 
+Multiple R-Squared: -2.213109 Adjusted R-Squared: -2.213109 
+
+
+2SLS estimates for equation 2
+Model Formula: price ~ consump + trend
+Instruments: ~farmPrice + trend + income
+
+             Estimate Std. Error   t value Pr(>|t|)  
+(Intercept) 55.536516  46.266768  1.200354 0.246462  
+consump      0.445299   0.462203  0.963427 0.348839  
+trend       -0.042602   0.249578 -0.170697 0.866477  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 6.335044 on 17 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 17 
+SSR: 682.257396 MSE: 40.132788 Root MSE: 6.335044 
+Multiple R-Squared: -0.022489 Adjusted R-Squared: -0.142782 
+
+> fit2slsS2 <- systemfit( "2SLS",
++    list( consump ~ price - 1, consump ~ trend - 1 ),
++    data = Kmenta, inst = ~ farmPrice + price + income )
+> print( summary( fit2slsS2 ) )
+
+systemfit results 
+method: 2SLS 
+
+            N DF       SSR       MSE     RMSE         R2     Adj R2
+equation 1 20 19   861.449   45.3394  6.73345   -2.21299   -2.21299
+equation 2 20 19 46594.549 2452.3447 49.52115 -172.78614 -172.78614
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   45.33940   -6.33258
+equation 2   -6.33258 2452.34470
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000 -0.0448498
+equation 2 -0.0448498  1.0000000
+
+The determinant of the residual covariance matrix: 111148
+OLS R-squared value of the system: -87.4996
+
+2SLS estimates for equation 1
+Model Formula: consump ~ price - 1
+Instruments: ~farmPrice + price + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+price 1.005643   0.015029 66.915518        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 6.733453 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 861.448515 MSE: 45.339396 Root MSE: 6.733453 
+Multiple R-Squared: -2.21299 Adjusted R-Squared: -2.21299 
+
+
+2SLS estimates for equation 2
+Model Formula: consump ~ trend - 1
+Instruments: ~farmPrice + price + income
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 7.577599    0.93412 8.112016        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.521154 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 46594.549257 MSE: 2452.344698 Root MSE: 49.521154 
+Multiple R-Squared: -172.78614 Adjusted R-Squared: -172.78614 
+
+> fit2slsS3 <- systemfit( "2SLS",
++    list( consump ~ trend - 1, price ~ trend - 1 ),
++    data = Kmenta, inst = instlist )
+> print( summary( fit2slsS3 ) )
+
+systemfit results 
+method: 2SLS 
+
+            N DF     SSR     MSE   RMSE        R2    Adj R2
+equation 1 20 19 50950.0 2681.58 51.784 -189.0308 -189.0308
+equation 2 20 19 47028.1 2475.16 49.751  -69.4803  -69.4803
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    2681.58    2439.23
+equation 2    2439.23    2475.16
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1    1.00000    0.98909
+equation 2    0.98909    1.00000
+
+The determinant of the residual covariance matrix: 687515
+OLS R-squared value of the system: -103.748
+
+2SLS estimates for equation 1
+Model Formula: consump ~ trend - 1
+Instruments: ~income + farmPrice
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 8.648819   1.045436 8.272929        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 51.783957 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 50949.98529 MSE: 2681.578173 Root MSE: 51.783957 
+Multiple R-Squared: -189.030839 Adjusted R-Squared: -189.030839 
+
+
+2SLS estimates for equation 2
+Model Formula: price ~ trend - 1
+Instruments: ~income + farmPrice + trend
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 7.318426   0.928669 7.880553        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.751015 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 47028.107165 MSE: 2475.163535 Root MSE: 49.751015 
+Multiple R-Squared: -69.480332 Adjusted R-Squared: -69.480332 
+
+> fit2slsS4 <- systemfit( "2SLS",
++    list( consump ~ trend - 1, price ~ trend - 1 ),
++    data = Kmenta, inst = ~ farmPrice + trend + income,
++    R.restr = matrix( c( 1, -1 ), nrow = 1 ) )
+> print( summary( fit2slsS4 ) )
+
+systemfit results 
+method: 2SLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 46514.3 2448.12 49.4785 -172.4868 -172.4868
+equation 2 20 19 47033.5 2475.45 49.7539  -69.4884  -69.4884
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    2448.12    2438.95
+equation 2    2438.95    2475.45
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000   0.988344
+equation 2   0.988344   1.000000
+
+The determinant of the residual covariance matrix: 111736
+OLS R-squared value of the system: -99.0119
+
+2SLS estimates for equation 1
+Model Formula: consump ~ trend - 1
+Instruments: ~farmPrice + trend + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+trend 7.361648    0.64644 11.387978        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.478482 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 46514.283492 MSE: 2448.120184 Root MSE: 49.478482 
+Multiple R-Squared: -172.486769 Adjusted R-Squared: -172.486769 
+
+
+2SLS estimates for equation 2
+Model Formula: price ~ trend - 1
+Instruments: ~farmPrice + trend + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+trend 7.361648    0.64644 11.387978        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.753851 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 47033.468761 MSE: 2475.445724 Root MSE: 49.753851 
+Multiple R-Squared: -69.488367 Adjusted R-Squared: -69.488367 
+
+> fit2slsS5 <- systemfit( "2SLS",
++    list( consump ~ 1, price ~ 1 ),
++    data = Kmenta, inst = ~ farmPrice )
+> print( summary( fit2slsS1 ) )
+
+systemfit results 
+method: 2SLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 861.480 45.3411 6.73358 -2.213109 -2.213109
+equation 2 20 17 682.257 40.1328 6.33504 -0.022489 -0.142782
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    45.3411   -40.5010
+equation 2   -40.5010    40.1328
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.950278
+equation 2  -0.950278   1.000000
+
+The determinant of the residual covariance matrix: 179.335
+OLS R-squared value of the system: -0.650411
+
+2SLS estimates for equation 1
+Model Formula: consump ~ price - 1
+Instruments: ~farmPrice + trend + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+price 1.006043    0.01503 66.934541        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 6.733578 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 861.480497 MSE: 45.341079 Root MSE: 6.733578 
+Multiple R-Squared: -2.213109 Adjusted R-Squared: -2.213109 
+
+
+2SLS estimates for equation 2
+Model Formula: price ~ consump + trend
+Instruments: ~farmPrice + trend + income
+
+             Estimate Std. Error   t value Pr(>|t|)  
+(Intercept) 55.536516  46.266768  1.200354 0.246462  
+consump      0.445299   0.462203  0.963427 0.348839  
+trend       -0.042602   0.249578 -0.170697 0.866477  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 6.335044 on 17 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 17 
+SSR: 682.257396 MSE: 40.132788 Root MSE: 6.335044 
+Multiple R-Squared: -0.022489 Adjusted R-Squared: -0.142782 
 
 > 
 > 

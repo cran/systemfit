@@ -181,6 +181,29 @@ fitols5rs <- systemfit( "OLS", system, labels, data = Kmenta,R.restr = restr3m,
 print( summary( fitols5rs ) )
 
 
+## *********** estimations with a single regressor ************
+fitolsS1 <- systemfit( "OLS",
+   list( consump ~ price - 1, consump ~ price + trend ),
+   data = Kmenta )
+print( summary( fitolsS1 ) )
+fitolsS2 <- systemfit( "OLS",
+   list( consump ~ price - 1, consump ~ trend - 1 ),
+   data = Kmenta )
+print( summary( fitolsS2 ) )
+fitolsS3 <- systemfit( "OLS",
+   list( consump ~ trend - 1, price ~ trend - 1 ),
+   data = Kmenta )
+print( summary( fitolsS3 ) )
+fitolsS4 <- systemfit( "OLS",
+   list( consump ~ trend - 1, price ~ trend - 1 ),
+   data = Kmenta, R.restr = matrix( c( 1, -1 ), nrow = 1 ) )
+print( summary( fitolsS4 ) )
+fitolsS5 <- systemfit( "OLS",
+   list( consump ~ 1, farmPrice ~ 1 ),
+   data = Kmenta )
+print( summary( fitolsS5 ) )
+
+
 ## ****************** residuals **************************
 print( residuals( fitols1p ) )
 print( residuals( fitols1p$eq[[ 2 ]] ) )

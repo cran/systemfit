@@ -119,6 +119,29 @@ Type 'q()' to quit R.
 +       inst = inst, TX = tc, rcovformula = 0, probdfsys = TRUE,
 +       R.restr = restr3m, q.restr = restr3q, formula3sls = formulas[ i ] )
 +    print( summary( fit3sls[[ i ]]$e5e ) )
++ 
++    ## *********** estimations with a single regressor ************
++    fit3sls[[ i ]]$S1 <- systemfit( "3SLS",
++       list( farmPrice ~ consump - 1, price ~ consump + trend ),
++       data = Kmenta, inst = ~ trend + income )
++    print( summary( fit3sls[[ i ]]$S1 ) )
++    fit3sls[[ i ]]$S2 <- systemfit( "3SLS",
++       list( consump ~ farmPrice - 1, consump ~ trend - 1 ),
++       data = Kmenta, inst = ~ price + income )
++    print( summary( fit3sls[[ i ]]$S2 ) )
++    fit3sls[[ i ]]$S3 <- systemfit( "3SLS",
++       list( consump ~ trend - 1, farmPrice ~ trend - 1 ),
++       data = Kmenta, inst = instlist )
++    print( summary( fit3sls[[ i ]]$S3 ) )
++    fit3sls[[ i ]]$S4 <- systemfit( "3SLS",
++       list( consump ~ farmPrice - 1, price ~ trend - 1 ),
++       data = Kmenta, inst = ~ farmPrice + trend + income,
++       R.restr = matrix( c( 1, -1 ), nrow = 1 ) )
++    print( summary( fit3sls[[ i ]]$S4 ) )
++    fit3sls[[ i ]]$S5 <- systemfit( "3SLS",
++       list( consump ~ 1, price ~ 1 ),
++       data = Kmenta, inst = ~ income )
++    print( summary( fit3sls[[ i ]]$S5 ) )
 + }
 [1] "***************************************************"
 [1] "3SLS formula: GLS"
@@ -806,6 +829,288 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 104.607293 MSE: 6.537956 Root MSE: 2.556943 
 Multiple R-Squared: 0.609841 Adjusted R-Squared: 0.536686 
 
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19 2131.73 112.1961 10.5923  0.305346  0.305346
+equation 2 20 17 1558.31  91.6653  9.5742 -1.335417 -1.610172
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   112.1961   -44.8124
+equation 2   -44.8124    56.8401
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   112.1961   -68.3457
+equation 2   -68.3457    91.6653
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1    1.00000   -0.67393
+equation 2   -0.67393    1.00000
+
+The determinant of the residual covariance matrix: 5613.35
+OLS R-squared value of the system: 0.0123054
+McElroy's R-squared value for the system: 0.367859
+
+3SLS estimates for equation 1
+Model Formula: farmPrice ~ consump - 1
+Instruments: ~trend + income
+
+        Estimate Std. Error   t value Pr(>|t|)    
+consump 0.958805   0.023465 40.861424        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 10.592265 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2131.725321 MSE: 112.19607 Root MSE: 10.592265 
+Multiple R-Squared: 0.305346 Adjusted R-Squared: 0.305346 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ consump + trend
+Instruments: ~trend + income
+
+              Estimate Std. Error   t value Pr(>|t|)   
+(Intercept) -92.192162  49.895926 -1.847689 0.082124  .
+consump        1.95335   0.498714  3.916776 0.001111 **
+trend        -0.469044   0.246607 -1.901986 0.074256  .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 9.574201 on 17 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 17 
+SSR: 1558.310522 MSE: 91.665325 Root MSE: 9.574201 
+Multiple R-Squared: -1.335417 Adjusted R-Squared: -1.610172 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF      SSR      MSE    RMSE         R2     Adj R2
+equation 1 20 19  2313.07  121.741 11.0336   -7.62719   -7.62719
+equation 2 20 19 54013.37 2842.809 53.3180 -200.45649 -200.45649
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    121.015   -254.518
+equation 2   -254.518   2952.586
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    121.741   -251.033
+equation 2   -251.033   2842.809
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.432614
+equation 2  -0.432614   1.000000
+
+The determinant of the residual covariance matrix: 283068
+OLS R-squared value of the system: -104.042
+McElroy's R-squared value for the system: -10.5731
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~price + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.041669   0.025298 41.176354        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 11.033616 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2313.072954 MSE: 121.740682 Root MSE: 11.033616 
+Multiple R-Squared: -7.62719 Adjusted R-Squared: -7.62719 
+
+
+3SLS estimates for equation 2
+Model Formula: consump ~ trend - 1
+Instruments: ~price + income
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 9.021901   1.128434 7.995067        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 53.317997 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 54013.366836 MSE: 2842.808781 Root MSE: 53.317997 
+Multiple R-Squared: -200.456494 Adjusted R-Squared: -200.456494 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 76691.6 4036.40 63.5327 -285.0408 -285.0408
+equation 2 20 19 90377.5 4756.71 68.9689  -28.4508  -28.4508
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    2681.58    2546.60
+equation 2    2546.60    2740.77
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    4036.40    4336.14
+equation 2    4336.14    4756.71
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000   0.928126
+equation 2   0.928126   1.000000
+
+The determinant of the residual covariance matrix: 397886
+OLS R-squared value of the system: -49.0676
+McElroy's R-squared value for the system: -0.819787
+
+3SLS estimates for equation 1
+Model Formula: consump ~ trend - 1
+Instruments: ~income + farmPrice
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 4.161935   0.723381 5.753446  1.5e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 63.532684 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 76691.635978 MSE: 4036.401894 Root MSE: 63.532684 
+Multiple R-Squared: -285.040827 Adjusted R-Squared: -285.040827 
+
+
+3SLS estimates for equation 2
+Model Formula: farmPrice ~ trend - 1
+Instruments: ~income + farmPrice + trend
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 3.274034   0.676184 4.841928 0.000113 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 68.96891 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 90377.49914 MSE: 4756.710481 Root MSE: 68.96891 
+Multiple R-Squared: -28.450844 Adjusted R-Squared: -28.450844 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF       SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19   3553.12  187.006 13.6750  -12.2523  -12.2523
+equation 2 20 19 157573.33 8293.333 91.0677 -235.1528 -235.1528
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    208.152   -731.315
+equation 2   -731.315   8270.707
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    187.006   -623.358
+equation 2   -623.358   8293.333
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.121188
+equation 2  -0.121188   1.000000
+
+The determinant of the residual covariance matrix: 1.16233e+06
+OLS R-squared value of the system: -171.26
+McElroy's R-squared value for the system: -17.403
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~farmPrice + trend + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 13.675021 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 3553.117614 MSE: 187.00619 Root MSE: 13.675021 
+Multiple R-Squared: -12.25225 Adjusted R-Squared: -12.25225 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ trend - 1
+Instruments: ~farmPrice + trend + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+trend 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 91.067739 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 157573.327609 MSE: 8293.333032 Root MSE: 91.067739 
+Multiple R-Squared: -235.152827 Adjusted R-Squared: -235.152827 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE R2 Adj R2
+equation 1 20 19 268.114 14.1113 3.75650  0      0
+equation 2 20 19 667.251 35.1185 5.92609  0      0
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000  0.0980957
+equation 2  0.0980957  1.0000000
+
+The determinant of the residual covariance matrix: 490.798
+OLS R-squared value of the system: 1.11022e-16
+McElroy's R-squared value for the system: 2.22045e-16
+
+3SLS estimates for equation 1
+Model Formula: consump ~ 1
+Instruments: ~income
+
+            Estimate Std. Error    t value Pr(>|t|)    
+(Intercept) 100.8982   0.839979 120.119974        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 3.756498 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 268.114299 MSE: 14.111279 Root MSE: 3.756498 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ 1
+Instruments: ~income
+
+             Estimate Std. Error   t value Pr(>|t|)    
+(Intercept) 100.01905   1.325113 75.479627        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 5.926086 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 667.251499 MSE: 35.1185 Root MSE: 5.926086 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
 [1] "***************************************************"
 [1] "3SLS formula: IV"
 [1] "************* 3SLS *********************************"
@@ -1491,6 +1796,288 @@ Residual standard error: 2.556943 on 16 degrees of freedom
 Number of observations: 20 Degrees of Freedom: 16 
 SSR: 104.607293 MSE: 6.537956 Root MSE: 2.556943 
 Multiple R-Squared: 0.609841 Adjusted R-Squared: 0.536686 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19 2131.73 112.1961 10.5923  0.305346  0.305346
+equation 2 20 17 1558.31  91.6653  9.5742 -1.335417 -1.610172
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   112.1961   -44.8124
+equation 2   -44.8124    56.8401
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   112.1961   -68.3457
+equation 2   -68.3457    91.6653
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1    1.00000   -0.67393
+equation 2   -0.67393    1.00000
+
+The determinant of the residual covariance matrix: 5613.35
+OLS R-squared value of the system: 0.0123054
+McElroy's R-squared value for the system: 0.367859
+
+3SLS estimates for equation 1
+Model Formula: farmPrice ~ consump - 1
+Instruments: ~trend + income
+
+        Estimate Std. Error   t value Pr(>|t|)    
+consump 0.958805   0.023465 40.861424        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 10.592265 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2131.725321 MSE: 112.19607 Root MSE: 10.592265 
+Multiple R-Squared: 0.305346 Adjusted R-Squared: 0.305346 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ consump + trend
+Instruments: ~trend + income
+
+              Estimate Std. Error   t value Pr(>|t|)   
+(Intercept) -92.192162  49.895926 -1.847689 0.082124  .
+consump        1.95335   0.498714  3.916776 0.001111 **
+trend        -0.469044   0.246607 -1.901986 0.074256  .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 9.574201 on 17 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 17 
+SSR: 1558.310522 MSE: 91.665325 Root MSE: 9.574201 
+Multiple R-Squared: -1.335417 Adjusted R-Squared: -1.610172 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF      SSR      MSE    RMSE         R2     Adj R2
+equation 1 20 19  2313.07  121.741 11.0336   -7.62719   -7.62719
+equation 2 20 19 54013.37 2842.809 53.3180 -200.45649 -200.45649
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    121.015   -254.518
+equation 2   -254.518   2952.586
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    121.741   -251.033
+equation 2   -251.033   2842.809
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.432614
+equation 2  -0.432614   1.000000
+
+The determinant of the residual covariance matrix: 283068
+OLS R-squared value of the system: -104.042
+McElroy's R-squared value for the system: -10.5731
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~price + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.041669   0.025298 41.176354        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 11.033616 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2313.072954 MSE: 121.740682 Root MSE: 11.033616 
+Multiple R-Squared: -7.62719 Adjusted R-Squared: -7.62719 
+
+
+3SLS estimates for equation 2
+Model Formula: consump ~ trend - 1
+Instruments: ~price + income
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 9.021901   1.128434 7.995067        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 53.317997 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 54013.366836 MSE: 2842.808781 Root MSE: 53.317997 
+Multiple R-Squared: -200.456494 Adjusted R-Squared: -200.456494 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 76691.6 4036.40 63.5327 -285.0408 -285.0408
+equation 2 20 19 90377.5 4756.71 68.9689  -28.4508  -28.4508
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    2681.58    2546.60
+equation 2    2546.60    2740.77
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    4036.40    4336.14
+equation 2    4336.14    4756.71
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000   0.928126
+equation 2   0.928126   1.000000
+
+The determinant of the residual covariance matrix: 397886
+OLS R-squared value of the system: -49.0676
+McElroy's R-squared value for the system: -0.819787
+
+3SLS estimates for equation 1
+Model Formula: consump ~ trend - 1
+Instruments: ~income + farmPrice
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 4.161935   0.723381 5.753446  1.5e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 63.532684 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 76691.635978 MSE: 4036.401894 Root MSE: 63.532684 
+Multiple R-Squared: -285.040827 Adjusted R-Squared: -285.040827 
+
+
+3SLS estimates for equation 2
+Model Formula: farmPrice ~ trend - 1
+Instruments: ~income + farmPrice + trend
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 3.274034   0.676184 4.841928 0.000113 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 68.96891 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 90377.49914 MSE: 4756.710481 Root MSE: 68.96891 
+Multiple R-Squared: -28.450844 Adjusted R-Squared: -28.450844 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF       SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19   3553.12  187.006 13.6750  -12.2523  -12.2523
+equation 2 20 19 157573.33 8293.333 91.0677 -235.1528 -235.1528
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    208.152   -731.315
+equation 2   -731.315   8270.707
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    187.006   -623.358
+equation 2   -623.358   8293.333
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.121188
+equation 2  -0.121188   1.000000
+
+The determinant of the residual covariance matrix: 1.16233e+06
+OLS R-squared value of the system: -171.26
+McElroy's R-squared value for the system: -17.403
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~farmPrice + trend + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 13.675021 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 3553.117614 MSE: 187.00619 Root MSE: 13.675021 
+Multiple R-Squared: -12.25225 Adjusted R-Squared: -12.25225 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ trend - 1
+Instruments: ~farmPrice + trend + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+trend 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 91.067739 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 157573.327609 MSE: 8293.333032 Root MSE: 91.067739 
+Multiple R-Squared: -235.152827 Adjusted R-Squared: -235.152827 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE R2 Adj R2
+equation 1 20 19 268.114 14.1113 3.75650  0      0
+equation 2 20 19 667.251 35.1185 5.92609  0      0
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000  0.0980957
+equation 2  0.0980957  1.0000000
+
+The determinant of the residual covariance matrix: 490.798
+OLS R-squared value of the system: 1.11022e-16
+McElroy's R-squared value for the system: 2.22045e-16
+
+3SLS estimates for equation 1
+Model Formula: consump ~ 1
+Instruments: ~income
+
+            Estimate Std. Error    t value Pr(>|t|)    
+(Intercept) 100.8982   0.839979 120.119974        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 3.756498 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 268.114299 MSE: 14.111279 Root MSE: 3.756498 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ 1
+Instruments: ~income
+
+             Estimate Std. Error   t value Pr(>|t|)    
+(Intercept) 100.01905   1.325113 75.479627        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 5.926086 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 667.251499 MSE: 35.1185 Root MSE: 5.926086 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
 
 [1] "***************************************************"
 [1] "3SLS formula: Schmidt"
@@ -2178,6 +2765,288 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 104.607293 MSE: 6.537956 Root MSE: 2.556943 
 Multiple R-Squared: 0.609841 Adjusted R-Squared: 0.536686 
 
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19 2131.73 112.1961 10.5923  0.305346  0.305346
+equation 2 20 17 1558.31  91.6653  9.5742 -1.335417 -1.610172
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   112.1961   -44.8124
+equation 2   -44.8124    56.8401
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   112.1961   -68.3457
+equation 2   -68.3457    91.6653
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1    1.00000   -0.67393
+equation 2   -0.67393    1.00000
+
+The determinant of the residual covariance matrix: 5613.35
+OLS R-squared value of the system: 0.0123054
+McElroy's R-squared value for the system: 0.367859
+
+3SLS estimates for equation 1
+Model Formula: farmPrice ~ consump - 1
+Instruments: ~trend + income
+
+        Estimate Std. Error   t value Pr(>|t|)    
+consump 0.958805   0.023465 40.861424        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 10.592265 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2131.725321 MSE: 112.19607 Root MSE: 10.592265 
+Multiple R-Squared: 0.305346 Adjusted R-Squared: 0.305346 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ consump + trend
+Instruments: ~trend + income
+
+              Estimate Std. Error   t value Pr(>|t|)   
+(Intercept) -92.192162  49.895926 -1.847689 0.082124  .
+consump        1.95335   0.498714  3.916776 0.001111 **
+trend        -0.469044   0.246607 -1.901986 0.074256  .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 9.574201 on 17 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 17 
+SSR: 1558.310522 MSE: 91.665325 Root MSE: 9.574201 
+Multiple R-Squared: -1.335417 Adjusted R-Squared: -1.610172 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF      SSR      MSE    RMSE         R2     Adj R2
+equation 1 20 19  2313.07  121.741 11.0336   -7.62719   -7.62719
+equation 2 20 19 54013.37 2842.809 53.3180 -200.45649 -200.45649
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    121.015   -254.518
+equation 2   -254.518   2952.586
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    121.741   -251.033
+equation 2   -251.033   2842.809
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.432614
+equation 2  -0.432614   1.000000
+
+The determinant of the residual covariance matrix: 283068
+OLS R-squared value of the system: -104.042
+McElroy's R-squared value for the system: -10.5731
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~price + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.041669   0.025298 41.176354        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 11.033616 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2313.072954 MSE: 121.740682 Root MSE: 11.033616 
+Multiple R-Squared: -7.62719 Adjusted R-Squared: -7.62719 
+
+
+3SLS estimates for equation 2
+Model Formula: consump ~ trend - 1
+Instruments: ~price + income
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 9.021901   1.128434 7.995067        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 53.317997 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 54013.366836 MSE: 2842.808781 Root MSE: 53.317997 
+Multiple R-Squared: -200.456494 Adjusted R-Squared: -200.456494 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 76691.6 4036.40 63.5327 -285.0408 -285.0408
+equation 2 20 19 90377.5 4756.71 68.9689  -28.4508  -28.4508
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    2681.58    2546.60
+equation 2    2546.60    2740.77
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    4036.40    4336.14
+equation 2    4336.14    4756.71
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000   0.928126
+equation 2   0.928126   1.000000
+
+The determinant of the residual covariance matrix: 397886
+OLS R-squared value of the system: -49.0676
+McElroy's R-squared value for the system: -0.819787
+
+3SLS estimates for equation 1
+Model Formula: consump ~ trend - 1
+Instruments: ~income + farmPrice
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 4.161935   0.723381 5.753446  1.5e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 63.532684 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 76691.635978 MSE: 4036.401894 Root MSE: 63.532684 
+Multiple R-Squared: -285.040827 Adjusted R-Squared: -285.040827 
+
+
+3SLS estimates for equation 2
+Model Formula: farmPrice ~ trend - 1
+Instruments: ~income + farmPrice + trend
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 3.274034   0.676184 4.841928 0.000113 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 68.96891 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 90377.49914 MSE: 4756.710481 Root MSE: 68.96891 
+Multiple R-Squared: -28.450844 Adjusted R-Squared: -28.450844 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF       SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19   3553.12  187.006 13.6750  -12.2523  -12.2523
+equation 2 20 19 157573.33 8293.333 91.0677 -235.1528 -235.1528
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    208.152   -731.315
+equation 2   -731.315   8270.707
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    187.006   -623.358
+equation 2   -623.358   8293.333
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.121188
+equation 2  -0.121188   1.000000
+
+The determinant of the residual covariance matrix: 1.16233e+06
+OLS R-squared value of the system: -171.26
+McElroy's R-squared value for the system: -17.403
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~farmPrice + trend + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 13.675021 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 3553.117614 MSE: 187.00619 Root MSE: 13.675021 
+Multiple R-Squared: -12.25225 Adjusted R-Squared: -12.25225 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ trend - 1
+Instruments: ~farmPrice + trend + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+trend 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 91.067739 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 157573.327609 MSE: 8293.333032 Root MSE: 91.067739 
+Multiple R-Squared: -235.152827 Adjusted R-Squared: -235.152827 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE R2 Adj R2
+equation 1 20 19 268.114 14.1113 3.75650  0      0
+equation 2 20 19 667.251 35.1185 5.92609  0      0
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000  0.0980957
+equation 2  0.0980957  1.0000000
+
+The determinant of the residual covariance matrix: 490.798
+OLS R-squared value of the system: 1.11022e-16
+McElroy's R-squared value for the system: 2.22045e-16
+
+3SLS estimates for equation 1
+Model Formula: consump ~ 1
+Instruments: ~income
+
+            Estimate Std. Error    t value Pr(>|t|)    
+(Intercept) 100.8982   0.839979 120.119974        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 3.756498 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 268.114299 MSE: 14.111279 Root MSE: 3.756498 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ 1
+Instruments: ~income
+
+             Estimate Std. Error   t value Pr(>|t|)    
+(Intercept) 100.01905   1.325113 75.479627        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 5.926086 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 667.251499 MSE: 35.1185 Root MSE: 5.926086 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
 [1] "***************************************************"
 [1] "3SLS formula: GMM"
 [1] "************* 3SLS *********************************"
@@ -2864,6 +3733,288 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 104.607293 MSE: 6.537956 Root MSE: 2.556943 
 Multiple R-Squared: 0.609841 Adjusted R-Squared: 0.536686 
 
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19 2131.73 112.1961 10.5923  0.305346  0.305346
+equation 2 20 17 1558.31  91.6653  9.5742 -1.335417 -1.610172
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   112.1961   -44.8124
+equation 2   -44.8124    56.8401
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   112.1961   -68.3457
+equation 2   -68.3457    91.6653
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1    1.00000   -0.67393
+equation 2   -0.67393    1.00000
+
+The determinant of the residual covariance matrix: 5613.35
+OLS R-squared value of the system: 0.0123054
+McElroy's R-squared value for the system: 0.367859
+
+3SLS estimates for equation 1
+Model Formula: farmPrice ~ consump - 1
+Instruments: ~trend + income
+
+        Estimate Std. Error   t value Pr(>|t|)    
+consump 0.958805   0.023465 40.861424        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 10.592265 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2131.725321 MSE: 112.19607 Root MSE: 10.592265 
+Multiple R-Squared: 0.305346 Adjusted R-Squared: 0.305346 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ consump + trend
+Instruments: ~trend + income
+
+              Estimate Std. Error   t value Pr(>|t|)   
+(Intercept) -92.192162  49.895926 -1.847689 0.082124  .
+consump        1.95335   0.498714  3.916776 0.001111 **
+trend        -0.469044   0.246607 -1.901986 0.074256  .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 9.574201 on 17 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 17 
+SSR: 1558.310522 MSE: 91.665325 Root MSE: 9.574201 
+Multiple R-Squared: -1.335417 Adjusted R-Squared: -1.610172 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF      SSR      MSE    RMSE         R2     Adj R2
+equation 1 20 19  2313.07  121.741 11.0336   -7.62719   -7.62719
+equation 2 20 19 54013.37 2842.809 53.3180 -200.45649 -200.45649
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    121.015   -254.518
+equation 2   -254.518   2952.586
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    121.741   -251.033
+equation 2   -251.033   2842.809
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.432614
+equation 2  -0.432614   1.000000
+
+The determinant of the residual covariance matrix: 283068
+OLS R-squared value of the system: -104.042
+McElroy's R-squared value for the system: -10.5731
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~price + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.041669   0.025298 41.176354        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 11.033616 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2313.072954 MSE: 121.740682 Root MSE: 11.033616 
+Multiple R-Squared: -7.62719 Adjusted R-Squared: -7.62719 
+
+
+3SLS estimates for equation 2
+Model Formula: consump ~ trend - 1
+Instruments: ~price + income
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 9.021901   1.128434 7.995067        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 53.317997 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 54013.366836 MSE: 2842.808781 Root MSE: 53.317997 
+Multiple R-Squared: -200.456494 Adjusted R-Squared: -200.456494 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 76691.6 4036.40 63.5327 -285.0408 -285.0408
+equation 2 20 19 90377.5 4756.71 68.9689  -28.4508  -28.4508
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    2681.58    2546.60
+equation 2    2546.60    2740.77
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    4036.40    4336.14
+equation 2    4336.14    4756.71
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000   0.928126
+equation 2   0.928126   1.000000
+
+The determinant of the residual covariance matrix: 397886
+OLS R-squared value of the system: -49.0676
+McElroy's R-squared value for the system: -0.819787
+
+3SLS estimates for equation 1
+Model Formula: consump ~ trend - 1
+Instruments: ~income + farmPrice
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 4.161935   0.723381 5.753446  1.5e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 63.532684 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 76691.635978 MSE: 4036.401894 Root MSE: 63.532684 
+Multiple R-Squared: -285.040827 Adjusted R-Squared: -285.040827 
+
+
+3SLS estimates for equation 2
+Model Formula: farmPrice ~ trend - 1
+Instruments: ~income + farmPrice + trend
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 3.274034   0.676184 4.841928 0.000113 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 68.96891 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 90377.49914 MSE: 4756.710481 Root MSE: 68.96891 
+Multiple R-Squared: -28.450844 Adjusted R-Squared: -28.450844 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF       SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19   3553.12  187.006 13.6750  -12.2523  -12.2523
+equation 2 20 19 157573.33 8293.333 91.0677 -235.1528 -235.1528
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    208.152   -731.315
+equation 2   -731.315   8270.707
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    187.006   -623.358
+equation 2   -623.358   8293.333
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.121188
+equation 2  -0.121188   1.000000
+
+The determinant of the residual covariance matrix: 1.16233e+06
+OLS R-squared value of the system: -171.26
+McElroy's R-squared value for the system: -17.403
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~farmPrice + trend + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 13.675021 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 3553.117614 MSE: 187.00619 Root MSE: 13.675021 
+Multiple R-Squared: -12.25225 Adjusted R-Squared: -12.25225 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ trend - 1
+Instruments: ~farmPrice + trend + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+trend 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 91.067739 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 157573.327609 MSE: 8293.333032 Root MSE: 91.067739 
+Multiple R-Squared: -235.152827 Adjusted R-Squared: -235.152827 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE R2 Adj R2
+equation 1 20 19 268.114 14.1113 3.75650  0      0
+equation 2 20 19 667.251 35.1185 5.92609  0      0
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000  0.0980957
+equation 2  0.0980957  1.0000000
+
+The determinant of the residual covariance matrix: 490.798
+OLS R-squared value of the system: 1.11022e-16
+McElroy's R-squared value for the system: 2.22045e-16
+
+3SLS estimates for equation 1
+Model Formula: consump ~ 1
+Instruments: ~income
+
+            Estimate Std. Error    t value Pr(>|t|)    
+(Intercept) 100.8982   0.839979 120.119974        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 3.756498 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 268.114299 MSE: 14.111279 Root MSE: 3.756498 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ 1
+Instruments: ~income
+
+             Estimate Std. Error   t value Pr(>|t|)    
+(Intercept) 100.01905   1.325113 75.479627        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 5.926086 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 667.251499 MSE: 35.1185 Root MSE: 5.926086 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
 [1] "***************************************************"
 [1] "3SLS formula: EViews"
 [1] "************* 3SLS *********************************"
@@ -3549,6 +4700,288 @@ Residual standard error: 4.112445 on 16 degrees of freedom
 Number of observations: 20 Degrees of Freedom: 16 
 SSR: 270.595239 MSE: 16.912202 Root MSE: 4.112445 
 Multiple R-Squared: -0.009253 Adjusted R-Squared: -0.198488 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19 2131.73 112.1961 10.5923  0.305346  0.305346
+equation 2 20 17 1558.31  91.6653  9.5742 -1.335417 -1.610172
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   112.1961   -44.8124
+equation 2   -44.8124    56.8401
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   112.1961   -68.3457
+equation 2   -68.3457    91.6653
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1    1.00000   -0.67393
+equation 2   -0.67393    1.00000
+
+The determinant of the residual covariance matrix: 5613.35
+OLS R-squared value of the system: 0.0123054
+McElroy's R-squared value for the system: 0.367859
+
+3SLS estimates for equation 1
+Model Formula: farmPrice ~ consump - 1
+Instruments: ~trend + income
+
+        Estimate Std. Error   t value Pr(>|t|)    
+consump 0.958805   0.023465 40.861424        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 10.592265 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2131.725321 MSE: 112.19607 Root MSE: 10.592265 
+Multiple R-Squared: 0.305346 Adjusted R-Squared: 0.305346 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ consump + trend
+Instruments: ~trend + income
+
+              Estimate Std. Error   t value Pr(>|t|)   
+(Intercept) -92.192162  49.895926 -1.847689 0.082124  .
+consump        1.95335   0.498714  3.916776 0.001111 **
+trend        -0.469044   0.246607 -1.901986 0.074256  .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 9.574201 on 17 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 17 
+SSR: 1558.310522 MSE: 91.665325 Root MSE: 9.574201 
+Multiple R-Squared: -1.335417 Adjusted R-Squared: -1.610172 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF      SSR      MSE    RMSE         R2     Adj R2
+equation 1 20 19  2313.07  121.741 11.0336   -7.62719   -7.62719
+equation 2 20 19 54013.37 2842.809 53.3180 -200.45649 -200.45649
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    121.015   -254.518
+equation 2   -254.518   2952.586
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    121.741   -251.033
+equation 2   -251.033   2842.809
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.432614
+equation 2  -0.432614   1.000000
+
+The determinant of the residual covariance matrix: 283068
+OLS R-squared value of the system: -104.042
+McElroy's R-squared value for the system: -10.5731
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~price + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.041669   0.025298 41.176354        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 11.033616 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 2313.072954 MSE: 121.740682 Root MSE: 11.033616 
+Multiple R-Squared: -7.62719 Adjusted R-Squared: -7.62719 
+
+
+3SLS estimates for equation 2
+Model Formula: consump ~ trend - 1
+Instruments: ~price + income
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 9.021901   1.128434 7.995067        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 53.317997 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 54013.366836 MSE: 2842.808781 Root MSE: 53.317997 
+Multiple R-Squared: -200.456494 Adjusted R-Squared: -200.456494 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 76691.6 4036.40 63.5327 -285.0408 -285.0408
+equation 2 20 19 90377.5 4756.71 68.9689  -28.4508  -28.4508
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    2681.58    2546.60
+equation 2    2546.60    2740.77
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    4036.40    4336.14
+equation 2    4336.14    4756.71
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000   0.928126
+equation 2   0.928126   1.000000
+
+The determinant of the residual covariance matrix: 397886
+OLS R-squared value of the system: -49.0676
+McElroy's R-squared value for the system: -0.819787
+
+3SLS estimates for equation 1
+Model Formula: consump ~ trend - 1
+Instruments: ~income + farmPrice
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 4.161935   0.723381 5.753446  1.5e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 63.532684 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 76691.635978 MSE: 4036.401894 Root MSE: 63.532684 
+Multiple R-Squared: -285.040827 Adjusted R-Squared: -285.040827 
+
+
+3SLS estimates for equation 2
+Model Formula: farmPrice ~ trend - 1
+Instruments: ~income + farmPrice + trend
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 3.274034   0.676184 4.841928 0.000113 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 68.96891 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 90377.49914 MSE: 4756.710481 Root MSE: 68.96891 
+Multiple R-Squared: -28.450844 Adjusted R-Squared: -28.450844 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF       SSR      MSE    RMSE        R2    Adj R2
+equation 1 20 19   3553.12  187.006 13.6750  -12.2523  -12.2523
+equation 2 20 19 157573.33 8293.333 91.0677 -235.1528 -235.1528
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1    208.152   -731.315
+equation 2   -731.315   8270.707
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    187.006   -623.358
+equation 2   -623.358   8293.333
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000  -0.121188
+equation 2  -0.121188   1.000000
+
+The determinant of the residual covariance matrix: 1.16233e+06
+OLS R-squared value of the system: -171.26
+McElroy's R-squared value for the system: -17.403
+
+3SLS estimates for equation 1
+Model Formula: consump ~ farmPrice - 1
+Instruments: ~farmPrice + trend + income
+
+          Estimate Std. Error   t value Pr(>|t|)    
+farmPrice 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 13.675021 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 3553.117614 MSE: 187.00619 Root MSE: 13.675021 
+Multiple R-Squared: -12.25225 Adjusted R-Squared: -12.25225 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ trend - 1
+Instruments: ~farmPrice + trend + income
+
+      Estimate Std. Error   t value Pr(>|t|)    
+trend 1.112179   0.027239 40.829911        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 91.067739 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 157573.327609 MSE: 8293.333032 Root MSE: 91.067739 
+Multiple R-Squared: -235.152827 Adjusted R-Squared: -235.152827 
+
+
+systemfit results 
+method: 3SLS 
+
+            N DF     SSR     MSE    RMSE R2 Adj R2
+equation 1 20 19 268.114 14.1113 3.75650  0      0
+equation 2 20 19 667.251 35.1185 5.92609  0      0
+
+The covariance matrix of the residuals used for estimation
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000  0.0980957
+equation 2  0.0980957  1.0000000
+
+The determinant of the residual covariance matrix: 490.798
+OLS R-squared value of the system: 1.11022e-16
+McElroy's R-squared value for the system: 2.22045e-16
+
+3SLS estimates for equation 1
+Model Formula: consump ~ 1
+Instruments: ~income
+
+            Estimate Std. Error    t value Pr(>|t|)    
+(Intercept) 100.8982   0.839979 120.119974        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 3.756498 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 268.114299 MSE: 14.111279 Root MSE: 3.756498 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
+
+3SLS estimates for equation 2
+Model Formula: price ~ 1
+Instruments: ~income
+
+             Estimate Std. Error   t value Pr(>|t|)    
+(Intercept) 100.01905   1.325113 75.479627        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 5.926086 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 667.251499 MSE: 35.1185 Root MSE: 5.926086 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
 
 > 
 > ## ******************** iterated 3SLS **********************

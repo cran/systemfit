@@ -1222,6 +1222,271 @@ Multiple R-Squared: 0.64111 Adjusted R-Squared: 0.573819
 
 > 
 > 
+> ## *********** estimations with a single regressor ************
+> fitwlsS1 <- systemfit( "WLS",
++    list( consump ~ price - 1, consump ~ price + trend ),
++    data = Kmenta )
+> print( summary( fitwlsS1 ) )
+
+systemfit results 
+method: WLS 
+
+            N DF     SSR     MSE    RMSE       R2    Adj R2
+equation 1 20 19 861.449 45.3394 6.73345 -2.21299 -2.212990
+equation 2 20 17 259.497 15.2645 3.90699  0.03214 -0.081726
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    45.3394    14.4388
+equation 2    14.4388    15.2645
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000   0.549479
+equation 2   0.549479   1.000000
+
+The determinant of the residual covariance matrix: 483.606
+OLS R-squared value of the system: -1.09042
+
+WLS estimates for equation 1
+Model Formula: consump ~ price - 1
+
+      Estimate Std. Error   t value Pr(>|t|)    
+price 1.005643   0.015029 66.915518        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 6.733453 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 861.448515 MSE: 45.339396 Root MSE: 6.733453 
+Multiple R-Squared: -2.21299 Adjusted R-Squared: -2.21299 
+
+
+WLS estimates for equation 2
+Model Formula: consump ~ price + trend
+
+            Estimate Std. Error  t value Pr(>|t|)    
+(Intercept) 93.67666  15.236697 6.148095  1.1e-05 ***
+price       0.062199   0.151251 0.411231 0.686041    
+trend       0.095282   0.151506 0.628896 0.537777    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 3.906985 on 17 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 17 
+SSR: 259.497022 MSE: 15.264531 Root MSE: 3.906985 
+Multiple R-Squared: 0.03214 Adjusted R-Squared: -0.081726 
+
+> fitwlsS2 <- systemfit( "WLS",
++    list( consump ~ price - 1, consump ~ trend - 1 ),
++    data = Kmenta )
+> print( summary( fitwlsS2 ) )
+
+systemfit results 
+method: WLS 
+
+            N DF       SSR       MSE     RMSE         R2     Adj R2
+equation 1 20 19   861.449   45.3394  6.73345   -2.21299   -2.21299
+equation 2 20 19 46508.922 2447.8380 49.47563 -172.46677 -172.46677
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   45.33940   -5.15473
+equation 2   -5.15473 2447.83799
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000 -0.0439252
+equation 2 -0.0439252  1.0000000
+
+The determinant of the residual covariance matrix: 110957
+OLS R-squared value of the system: -87.3399
+
+WLS estimates for equation 1
+Model Formula: consump ~ price - 1
+
+      Estimate Std. Error   t value Pr(>|t|)    
+price 1.005643   0.015029 66.915518        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 6.733453 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 861.448515 MSE: 45.339396 Root MSE: 6.733453 
+Multiple R-Squared: -2.21299 Adjusted R-Squared: -2.21299 
+
+
+WLS estimates for equation 2
+Model Formula: consump ~ trend - 1
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend  7.40487   0.923529 8.018018        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.47563 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 46508.921896 MSE: 2447.837995 Root MSE: 49.47563 
+Multiple R-Squared: -172.466772 Adjusted R-Squared: -172.466772 
+
+> fitwlsS3 <- systemfit( "WLS",
++    list( consump ~ trend - 1, price ~ trend - 1 ),
++    data = Kmenta )
+> print( summary( fitwlsS3 ) )
+
+systemfit results 
+method: WLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 46508.9 2447.84 49.4756 -172.4668 -172.4668
+equation 2 20 19 47028.1 2475.16 49.7510  -69.4803  -69.4803
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    2447.84    2439.23
+equation 2    2439.23    2475.16
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1    1.00000    0.98828
+equation 2    0.98828    1.00000
+
+The determinant of the residual covariance matrix: 108970
+OLS R-squared value of the system: -99.0005
+
+WLS estimates for equation 1
+Model Formula: consump ~ trend - 1
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend  7.40487   0.923529 8.018018        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.47563 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 46508.921896 MSE: 2447.837995 Root MSE: 49.47563 
+Multiple R-Squared: -172.466772 Adjusted R-Squared: -172.466772 
+
+
+WLS estimates for equation 2
+Model Formula: price ~ trend - 1
+
+      Estimate Std. Error  t value Pr(>|t|)    
+trend 7.318426   0.928669 7.880553        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.751015 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 47028.107165 MSE: 2475.163535 Root MSE: 49.751015 
+Multiple R-Squared: -69.480332 Adjusted R-Squared: -69.480332 
+
+> fitwlsS4 <- systemfit( "WLS",
++    list( consump ~ trend - 1, price ~ trend - 1 ),
++    data = Kmenta, R.restr = matrix( c( 1, -1 ), nrow = 1 ) )
+> print( summary( fitwlsS4 ) )
+
+systemfit results 
+method: WLS 
+
+            N DF     SSR     MSE    RMSE        R2    Adj R2
+equation 1 20 19 46514.2 2448.12 49.4785 -172.4865 -172.4865
+equation 2 20 19 47033.5 2475.45 49.7539  -69.4885  -69.4885
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1    2448.12    2438.95
+equation 2    2438.95    2475.45
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1   1.000000   0.988345
+equation 2   0.988345   1.000000
+
+The determinant of the residual covariance matrix: 111736
+OLS R-squared value of the system: -99.0119
+
+WLS estimates for equation 1
+Model Formula: consump ~ trend - 1
+
+      Estimate Std. Error   t value Pr(>|t|)    
+trend 7.361888   0.654881 11.241569        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.47845 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 46514.224144 MSE: 2448.11706 Root MSE: 49.47845 
+Multiple R-Squared: -172.486548 Adjusted R-Squared: -172.486548 
+
+
+WLS estimates for equation 2
+Model Formula: price ~ trend - 1
+
+      Estimate Std. Error   t value Pr(>|t|)    
+trend 7.361888   0.654881 11.241569        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 49.753883 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 47033.52844 MSE: 2475.448865 Root MSE: 49.753883 
+Multiple R-Squared: -69.488457 Adjusted R-Squared: -69.488457 
+
+> fitwlsS5 <- systemfit( "WLS",
++    list( consump ~ 1, price ~ 1 ),
++    data = Kmenta )
+> print( summary( fitwlsS5) )
+
+systemfit results 
+method: WLS 
+
+            N DF     SSR     MSE    RMSE R2 Adj R2
+equation 1 20 19 268.114 14.1113 3.75650  0      0
+equation 2 20 19 667.251 35.1185 5.92609  0      0
+
+The covariance matrix of the residuals
+           equation 1 equation 2
+equation 1   14.11128    2.18374
+equation 2    2.18374   35.11850
+
+The correlations of the residuals
+           equation 1 equation 2
+equation 1  1.0000000  0.0980957
+equation 2  0.0980957  1.0000000
+
+The determinant of the residual covariance matrix: 490.798
+OLS R-squared value of the system: 0
+
+WLS estimates for equation 1
+Model Formula: consump ~ 1
+
+            Estimate Std. Error    t value Pr(>|t|)    
+(Intercept) 100.8982   0.839979 120.119974        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 3.756498 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 268.114299 MSE: 14.111279 Root MSE: 3.756498 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
+
+WLS estimates for equation 2
+Model Formula: price ~ 1
+
+             Estimate Std. Error   t value Pr(>|t|)    
+(Intercept) 100.01905   1.325113 75.479627        0 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Residual standard error: 5.926086 on 19 degrees of freedom
+Number of observations: 20 Degrees of Freedom: 19 
+SSR: 667.251499 MSE: 35.1185 Root MSE: 5.926086 
+Multiple R-Squared: 0 Adjusted R-Squared: 0 
+
+> 
+> 
 > ## ****************** residuals **************************
 > print( residuals( fitwls1 ) )
        demand     supply

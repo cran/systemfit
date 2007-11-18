@@ -129,6 +129,29 @@ fitwlsi5e <- systemfit( "WLS", system, labels, data = Kmenta, rcovformula = 0,
 print( summary( fitwlsi5e ) )
 
 
+## *********** estimations with a single regressor ************
+fitwlsS1 <- systemfit( "WLS",
+   list( consump ~ price - 1, consump ~ price + trend ),
+   data = Kmenta )
+print( summary( fitwlsS1 ) )
+fitwlsS2 <- systemfit( "WLS",
+   list( consump ~ price - 1, consump ~ trend - 1 ),
+   data = Kmenta )
+print( summary( fitwlsS2 ) )
+fitwlsS3 <- systemfit( "WLS",
+   list( consump ~ trend - 1, price ~ trend - 1 ),
+   data = Kmenta )
+print( summary( fitwlsS3 ) )
+fitwlsS4 <- systemfit( "WLS",
+   list( consump ~ trend - 1, price ~ trend - 1 ),
+   data = Kmenta, R.restr = matrix( c( 1, -1 ), nrow = 1 ) )
+print( summary( fitwlsS4 ) )
+fitwlsS5 <- systemfit( "WLS",
+   list( consump ~ 1, price ~ 1 ),
+   data = Kmenta )
+print( summary( fitwlsS5) )
+
+
 ## ****************** residuals **************************
 print( residuals( fitwls1 ) )
 print( residuals( fitwls1$eq[[ 2 ]] ) )
