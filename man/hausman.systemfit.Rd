@@ -1,5 +1,5 @@
 
-%  $Id: hausman.systemfit.Rd 171 2006-02-20 07:45:38Z henningsena $
+%  $Id: hausman.systemfit.Rd 520 2007-12-06 22:50:28Z henningsena $
 
 \name{hausman.systemfit}
 \alias{hausman.systemfit}
@@ -67,22 +67,21 @@
 }
 
 \author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com},\cr
-  Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de} }
+  Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}
 }
 
 \seealso{\code{\link{systemfit}}}
 
 \examples{
 data( "Kmenta" )
-demand <- consump ~ price + income
-supply <- consump ~ price + farmPrice + trend
+eqDemand <- consump ~ price + income
+eqSupply <- consump ~ price + farmPrice + trend
 inst <- ~ income + farmPrice + trend
-labels <- list( "demand", "supply" )
-system <- list( demand, supply )
+system <- list( demand = eqDemand, supply = eqSupply )
 
 ## perform the estimations
-fit2sls <- systemfit( "2SLS", system, labels, inst, data = Kmenta )
-fit3sls <- systemfit( "3SLS", system, labels, inst, data = Kmenta )
+fit2sls <- systemfit( system, "2SLS", inst = inst, data = Kmenta )
+fit3sls <- systemfit( system, "3SLS", inst = inst, data = Kmenta )
 
 ## perform the Hausman test
 h <- hausman.systemfit( fit2sls, fit3sls )

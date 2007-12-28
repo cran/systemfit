@@ -1,4 +1,4 @@
-###   $Id: nlsystemfit.r 359 2007-05-14 10:51:47Z henningsena $
+###   $Id: nlsystemfit.r 133 2005-08-24 22:44:47Z hamannj $
 ###
 ###            Simultaneous Nonlinear Least Squares for R
 ###
@@ -131,7 +131,7 @@ knls <- function( theta, eqns, data, fitmethod="OLS", parmnames, instr=NULL, S=N
       moments <- rbind( moments, gmm.resids[t,] %x% z[t,] )
     }
     g <- length( eqns )                 # number of equations
-    k <- dim( instr )[[2]]
+    k <- dim( as.matrix( model.frame( inst ) ) )[[2]]
     gk <- g*k
     for( i in 1:gk ) {
       mn <- rbind( mn, mean( moments[,i] ) )

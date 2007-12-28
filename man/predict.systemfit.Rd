@@ -10,22 +10,32 @@
 }
 
 \usage{
-\method{predict}{systemfit}( object, data = object$data,
+\method{predict}{systemfit}( object, newdata = NULL,
                              se.fit = FALSE, se.pred = FALSE,
-                             interval = "none", level=0.95, ... )
+                             interval = "none", level=0.95,
+                             useDfSys = NULL, ... )
 
-\method{predict}{systemfit.equation}( object, data, ... )
+\method{predict}{systemfit.equation}( object, newdata = NULL,
+                             se.fit = FALSE, se.pred = FALSE,
+                             interval = "none", level=0.95,
+                             useDfSys = NULL, ... )
 }
 
 \arguments{
    \item{object}{an object of class \code{systemfit} or
       \code{systemfit.equation}.}
-   \item{data}{data frame in which to predict.}
+   \item{newdata}{An optional data frame in which to look for variables with
+      which to predict.  If it is \code{NULL}, the fitted values are returned.}
    \item{se.fit}{return the standard error of the fitted values?}
    \item{se.pred}{return the standard error of prediction?}
    \item{interval}{Type of interval calculation ("none", "confidence"
       or "prediction")}
    \item{level}{Tolerance/confidence level.}
+   \item{useDfSys}{logical. Use the degrees of freedom of the whole system
+      (in place of the degrees of freedom of the single equation)
+      to calculate the confidence or prediction intervals.
+      If it not specified (\code{NULL}), it is set to \code{TRUE}
+      if there are parameter restrictions and \code{FALSE} otherwise.}
    \item{...}{additional optional arguments.}
 }
 
@@ -43,14 +53,18 @@
 \value{
    \code{predict.systemfit} returns a dataframe that
    contains for each equation the predicted values
-   (e.g. "eq1.pred") and if requested
-   the standard errors of the fitted values (e.g. "eq1.se.fit"),
-   the standard errors of the prediction (e.g. "eq1.se.pred"),
-   and the lower (e.g. "eq1.lwr") and upper (e.g. "eq1.upr")
+   ("<eqnLable>.pred") and if requested
+   the standard errors of the fitted values ("<eqnLable>.se.fit"),
+   the standard errors of the prediction ("<eqnLable>.se.pred"),
+   and the lower ("<eqnLable>.lwr") and upper ("<eqnLable>.upr")
    limits of the confidence or prediction interval(s).
 
-   \code{predict.systemfit.equation} returns a vector of the predicted
-      values of a single equation.
+   \code{predict.systemfit.equation} returns a dataframe that
+   contains the predicted values ("fit") and if requested
+   the standard errors of the fitted values ("se.fit"),
+   the standard errors of the prediction ("se.pred"),
+   and the lower ("lwr") and upper ("upr")
+   limits of the confidence or prediction interval(s).
 }
 
 \references{
@@ -75,13 +89,12 @@
 
 \examples{
 data( "Kmenta" )
-demand <- consump ~ price + income
-supply <- consump ~ price + farmPrice + trend
-labels <- list( "demand", "supply" )
-system <- list( demand, supply )
+eqDemand <- consump ~ price + income
+eqSupply <- consump ~ price + farmPrice + trend
+system <- list( demand = eqDemand, supply = eqSupply )
 
 ## OLS estimation
-fitols <- systemfit("OLS", system, labels, data=Kmenta )
+fitols <- systemfit( system, data=Kmenta )
 
 ## predicted values and limits
 predict( fitols )

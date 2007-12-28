@@ -2,14 +2,21 @@ coef.systemfit          Coefficients of systemfit object
 confint.systemfit       Confidence intervals of coefficients
 correlation.systemfit   Correlation between Predictions from Equation i
                         and j
+createSystemfitModel    Create a Model for systemfit
 fitted.systemfit        Fitted values
-ftest.systemfit         F-test for Equation Systems
+formula.systemfit       Model Formulae of systemfit Objects
 GrunfeldGreene          Grunfeld Data as published by Greene (2003)
-GrunfeldTheil           Grunfeld Data as published in Theil (1971)
 hausman.systemfit       Hausman Test
 KleinI                  Klein Model I
 Kmenta                  Partly Artificial Data on the U. S. Economy
+linear.hypothesis.systemfit
+                        Test Linear Hypothesis
+logLik.systemfit        Log-Likelihood value of systemfit object
 lrtest.systemfit        Likelihood Ratio test for Equation Systems
+model.frame.systemfit   Extracting the Data of a systemfit Object
+model.matrix.systemfit
+                        Construct Design Matrices for Systems of
+                        Equations
 nlsystemfit             Nonlinear Equation System Estimation
 ppine                   Tree Growth Data for Ponderosa Pine
 predict.systemfit       Predictions from System Estimation
@@ -24,5 +31,6 @@ summary.nlsystemfit.system
                         Summary of nlsystemfit estimation
 summary.systemfit       Summary of systemfit estimation
 systemfit               Linear Equation System Estimation
+systemfit.control       Create list of control parameters for systemfit
+terms.systemfit         Model Terms of systemfit Objects
 vcov.systemfit          Variance covariance matrix of coefficients
-waldtest.systemfit      Wald-test for Equation Systems

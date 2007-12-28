@@ -25,14 +25,17 @@ A data frame containing 20 annual observations on 3 variables for 5 firms.
 There exist several different versions of this data set,
 and this version is considered incorrect
 (see \url{http://www.stanford.edu/~clint/bench/grunfeld.htm} for details).
-However, we provide this incorrect version to replicated the results
-published in Greene (2003).
+However, we provide this incorrect version to replicate the results
+published in Theil (1971) and Greene (2003).
+A correct version of this data set with 5 additional firms
+is available in the \code{Ecdat} package
+(data set \code{\link[Ecdat]{Grunfeld}}).
 }
 
 \source{
    Greene (2003), Appendix F, Data Sets Used in Applications, Table F13.1.
-
    \url{http://pages.stern.nyu.edu/~wgreene/Text/econometricanalysis.htm}
+   (a subset of this data set is available in Theil (1971), p. 296).
 }
 
 \references{
@@ -41,30 +44,50 @@ Upper Saddle River (NJ).
 
 Grunfeld, Y. (1958). \emph{The Determinants of Corporate Investment},
 Unpublished Ph.D. Dissertation, University of Chicago.
+
+Theil, Henri (1971). \emph{Principles of Econometrics},
+   John Wiley & Sons, New York.
 }
 
 \examples{
 ## Repeating the OLS and SUR estimations in Greene (2003, pp. 351)
 data( "GrunfeldGreene" )
+library( plm )
+pdata.frame( GrunfeldGreene, "firm", "year" )
 formulaGrunfeld <- invest ~ value + capital
 # OLS
-greeneOls <- systemfitClassic( "OLS", formulaGrunfeld, "firm", "year",
+greeneOls <- systemfit( formulaGrunfeld, "OLS",
    data = GrunfeldGreene )
 summary( greeneOls )
-sapply( greeneOls$eq, function(x){return(x$ssr/20)} ) # sigma^2
+sapply( greeneOls$eq, function(x){return(summary(x)$ssr/20)} ) # sigma^2
 # OLS Pooled
-greeneOlsPooled <- systemfitClassic( "OLS", formulaGrunfeld, "firm", "year",
+greeneOlsPooled <- systemfit( formulaGrunfeld, "OLS",
    data = GrunfeldGreene, pooled = TRUE )
 summary( greeneOlsPooled )
-sum( sapply( greeneOlsPooled$eq, function(x){return(x$ssr)}) )/97 # sigma^2
+sum( sapply( greeneOlsPooled$eq, function(x){return(summary(x)$ssr)}) )/97 # sigma^2
 # SUR
-greeneSur <- systemfitClassic( "SUR", formulaGrunfeld, "firm", "year",
-   data = GrunfeldGreene, rcovformula = 0 )
+greeneSur <- systemfit( formulaGrunfeld, "SUR",
+   data = GrunfeldGreene, methodResidCov = "noDfCor" )
 summary( greeneSur )
 # SUR Pooled
-greeneSurPooled <- systemfitClassic( "WSUR", formulaGrunfeld, "firm", "year",
-   data = GrunfeldGreene, pooled = TRUE, rcovformula = 0 )
+greeneSurPooled <- systemfit( formulaGrunfeld, "SUR",
+   data = GrunfeldGreene, pooled = TRUE, methodResidCov = "noDfCor",
+   residCovWeighted = TRUE )
 summary( greeneSurPooled )
+
+## Repeating the OLS and SUR estimations in Theil (1971, pp. 295, 300)
+GrunfeldTheil <- subset( GrunfeldGreene,
+   firm \%in\% c( "General Electric", "Westinghouse" ) )
+pdata.frame( GrunfeldTheil, "firm", "year" )
+formulaGrunfeld <- invest ~ value + capital
+# OLS
+theilOls <- systemfit( formulaGrunfeld, "OLS",
+   data = GrunfeldTheil )
+summary( theilOls )
+# SUR
+theilSur <- systemfit( formulaGrunfeld, "SUR",
+   data = GrunfeldTheil, methodResidCov = "noDfCor" )
+summary( theilSur )
 }
 
 \keyword{datasets}

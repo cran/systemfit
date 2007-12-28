@@ -1,46 +1,44 @@
-ftest.systemfit <- function( object, R.restr,
-   q.restr = rep( 0, nrow( R.restr ) ) ){
+.ftest.systemfit <- function( object, restrict.matrix,
+   restrict.rhs = NULL, vcov. = NULL ){
 
    coef <- coef( object )
-   vcov <- vcov( object )
+
+   # coefficient covariance matrix
+   if( is.null( vcov. ) ){
+      vcov <- vcov( object )
+   } else if( is.function( vcov. ) ){
+      vcov <- vcov.( object )
+   } else {
+      vcov <- vcov.
+   }
+
    resid <- unlist( residuals( object ) )
-   nEq   <- object$g
-   nObsEq <- object$n / nEq
-   if( is.null( object$rcovest ) ) {
+   nEq   <- length( object$eq )
+   nObsPerEq <- nrow( residuals( object ) )
+   if( is.null( object$residCovEst ) ) {
       rcov <- diag( nEq )
    } else {
-      rcov <- object$rcovest
+      rcov <- object$residCovEst
    }
 
    result <- list()
 
-   result$nRestr <- nrow( R.restr )
-   result$dfSys  <- object$df
+   result$nRestr <- nrow( restrict.matrix )
+   result$df.residual.sys  <- object$df.residual
 
-   numerator <- t( R.restr %*% coef - q.restr ) %*%
-      solve( R.restr %*% vcov %*% t( R.restr ) ) %*%
-      ( R.restr %*% coef - q.restr )
+   numerator <- t( restrict.matrix %*% coef - restrict.rhs ) %*%
+      solve( restrict.matrix %*% vcov %*% t( restrict.matrix ) ) %*%
+      ( restrict.matrix %*% coef - restrict.rhs )
 
    denominator <- t( resid ) %*%
-      ( solve( rcov ) %x% diag( nObsEq ) ) %*%
+      ( solve( rcov ) %x% diag( nObsPerEq ) ) %*%
       resid
    #print( denominator )
 
    result$statistic <- ( numerator / result$nRestr ) /
-      ( denominator / result$dfSys )
+      ( denominator / result$df.residual.sys )
 
-   result$p.value <- 1 - pf( result$statistic, result$nRestr, result$dfSys )
+   result$p.value <- 1 - pf( result$statistic, result$nRestr, result$df.residual.sys )
 
-   class( result ) <- "ftest.systemfit"
    return( result )
-}
-
-print.ftest.systemfit <- function( x, digits = 4, ... ){
-   cat( "\n", "F-test for linear parameter restrictions",
-      " in equation systems\n", sep = "" )
-   cat( "F-statistic:", formatC( x$statistic, digits = digits ), "\n" )
-   cat( "degrees of freedom of the numerator:", x$nRestr, "\n" )
-   cat( "degrees of freedom of the denominator:", x$dfSys, "\n" )
-   cat( "p-value:", formatC( x$p.value, digits = digits ), "\n\n" )
-   invisible( x )
 }

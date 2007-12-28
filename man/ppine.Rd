@@ -1,5 +1,5 @@
 
-% 	$Id: ppine.Rd 484 2007-10-10 07:45:49Z henningsena $	
+% 	$Id: ppine.Rd 486 2007-10-10 07:58:53Z henningsena $	
 
 
 \name{ppine}

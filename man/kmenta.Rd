@@ -1,5 +1,5 @@
 
-%  $Id: Kmenta.Rd 484 2007-10-10 07:45:49Z henningsena $
+%  $Id: Kmenta.Rd 486 2007-10-10 07:58:53Z henningsena $
 
 \name{Kmenta}
 \alias{Kmenta}
@@ -51,19 +51,19 @@ inst <- ~ income + farmPrice + trend
 system <- list( demand = eqDemand, supply = eqSupply )
 
 ## OLS estimation
-fitOls <- systemfit( "OLS", system, data = Kmenta )
+fitOls <- systemfit( system, data = Kmenta )
 summary( fitOls )
 
 ## 2SLS estimation
-fit2sls <- systemfit( "2SLS", system, inst = inst, data = Kmenta )
+fit2sls <- systemfit( system, "2SLS", inst = inst, data = Kmenta )
 summary( fit2sls )
 
 ## 3SLS estimation
-fit3sls <- systemfit( "3SLS", system, inst = inst, data = Kmenta )
+fit3sls <- systemfit( system, "3SLS", inst = inst, data = Kmenta )
 summary( fit3sls )
 
 ## I3LS estimation
-fitI3sls <- systemfit( "3SLS", system, inst = inst, data = Kmenta,
+fitI3sls <- systemfit( system, "3SLS", inst = inst, data = Kmenta,
    maxit = 250 )
 summary( fitI3sls )
 }

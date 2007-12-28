@@ -1,6 +1,14 @@
-systemfitClassic <- function( method, formula, eqnVar, timeVar, data,
-   pooled = FALSE, ... ) {
+.systemfitPanel <- function( formula, data, pooled ) {
 
+   if( class( data )[1] != "pdata.frame" ) {
+      stop( "argument 'data' must be of class 'pdata.frame'" )
+   }
+   eqnVar <- attributes( data )$indexes$id
+   timeVar <- attributes( data )$indexes$time
+
+   result <- list()
+
+   data[[ eqnVar ]] <- gsub( " |_", ".", data[[ eqnVar ]] )
    eqnLabels <- levels( as.factor( data[[ eqnVar ]] ) )
    nEqn <- length( eqnLabels )
    timeLabels <- levels( as.factor( data[[ timeVar ]] ) )
@@ -15,7 +23,7 @@ systemfitClassic <- function( method, formula, eqnVar, timeVar, data,
       exogVar <- formula[3]
       eqnData <- data[ data[[ eqnVar ]] == eqn, ]
       for( var in all.vars( formula ) ) {
-         newVar <- paste( var, eqn, sep = "." )
+         newVar <- paste( eqn, var, sep = "_" )
          newVar <- make.names( newVar )
          wideData[[ newVar ]] <- NA
          wideData[ make.names( eqnData[ , timeVar ] ), newVar ] <-
@@ -25,17 +33,19 @@ systemfitClassic <- function( method, formula, eqnVar, timeVar, data,
       }
       eqnSystem[[ eqnNo ]] <- as.formula( paste( endogVar, "~", exogVar ) )
    }
+   names( eqnSystem ) <- eqnLabels
    #reshape( data, idvar=timevar, timevar=eqnVar,direction="wide")
 
-   TX <- NULL
+   restrict.regMat <- NULL
    if( pooled ) {
       for( eqnNo in 1:nEqn ) {
-         TX <- rbind( TX, diag( 1, nRegressors ) )
+         restrict.regMat <- rbind( restrict.regMat, diag( 1, nRegressors ) )
       }
    }
 
-   result <- systemfit( method = method, eqns = eqnSystem,
-      eqnlabels = eqnLabels, data = wideData, TX = TX, ... )
+   result$eqnSystem <- eqnSystem
+   result$wideData  <- wideData
+   result$restrict.regMat <- restrict.regMat
 
    return( result )
 }

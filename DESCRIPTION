@@ -1,17 +1,17 @@
 Package: systemfit
-Version: 0.8-5
-Date: 2007/11/18
-Title: Simultaneous Equation Estimation Package
-Author: Jeff D. Hamann <jeff.hamann@forestinformatics.com> and
-        Arne Henningsen <ahenningsen@agric-econ.uni-kiel.de>
+Version: 1.0-1
+Date: 2007/12/28
+Title: Estimating Systems of Simultaneous Equations
+Author: Arne Henningsen <ahenningsen@agric-econ.uni-kiel.de> and
+   Jeff D. Hamann <jeff.hamann@forestinformatics.com>
 Maintainer: Arne Henningsen <ahenningsen@agric-econ.uni-kiel.de>
-Depends: R (>= 1.8.0)
+Depends: R (>= 1.8.0), Matrix, car, lmtest
+Suggests: plm, MASS
 Description: This package contains functions for fitting simultaneous
  systems of linear and nonlinear equations using Ordinary Least
  Squares (OLS), Weighted Least Squares (WLS), Seemingly Unrelated
  Regressions (SUR), Two-Stage Least Squares (2SLS), Weighted
- Two-Stage Least Squares (W2SLS), Three-Stage Least Squares (3SLS),
- and Weighted Three-Stage Least Squares (W3SLS).
-License: GPL version 2 or newer
-URL: http://www.systemfit.org, http://www.r-project.org, http://www.forestinformatics.com, http://www.arne-henningsen.de
-Packaged: Sun Nov 18 17:42:49 2007; suapm095
+ Two-Stage Least Squares (W2SLS), and Three-Stage Least Squares (3SLS).
+License: GPL (>= 2)
+URL: http://www.r-project.org, http://www.systemfit.org
+Packaged: Fri Dec 28 09:00:40 2007; suapm095

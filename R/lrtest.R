@@ -1,34 +1,46 @@
 ## Likelihood Ratio Test
-lrtest.systemfit <- function( resultc, resultu ) {
-  lrtest <- list()
-  if( resultc$method %in% c( "SUR", "WSUR" ) &
-      resultu$method %in% c( "SUR", "WSUR" ) ) {
-    n   <- resultu$eq[[1]]$n
-    lrtest$nRestr  <- resultu$ki - resultc$ki
-    if(resultc$rcovformula != resultu$rcovformula) {
-      stop( paste( "both estimations must use the same formula to calculate",
-                   "the residual covariance matrix!" ) )
-    }
-    if(resultc$rcovformula == 0) {
-      lrtest$statistic  <- n * ( log( resultc$drcov ) - log( resultu$drcov ) )
-    } else {
-      residc <- array(resultc$resids,c(n,resultc$g))
-      residu <- array(resultu$resids,c(n,resultu$g))
-      lrtest$statistic <- n * ( log( det( (t(residc) %*% residc)) ) -
-                         log( det( (t(residu) %*% residu))))
-    }
-    lrtest$p.value <- 1 - pchisq( lrtest$statistic, lrtest$nRestr )
-  }
-  class( lrtest ) <- "lrtest.systemfit"
-  return( lrtest )
-}
+lrtest.systemfit <- function( object, ... ) {
 
-print.lrtest.systemfit <- function( x, digits = 4, ... ){
-   cat( "\n", "Likelihood-Ratio-test for parameter restrictions",
-      " in equation systems\n", sep = "" )
-   cat( "LR-statistic:", formatC( x$statistic, digits = digits ), "\n" )
-   cat( "degrees of freedom:", x$nRestr, "\n" )
-   cat( "p-value:", formatC( x$p.value, digits = digits ), "\n\n" )
-   invisible( x )
-}
+   thisCall <- match.call()
 
+   if( class( object ) != "systemfit" ){
+      stop( "argument 'object' must be of class 'systemfit'" )
+   }
+   object$lrtest.systemfit.name <- deparse( substitute( object ) )
+   objectList <- list( ... )
+   if( length( objectList ) < 1 ){
+      stop( "at least one further argument ('...') must be provided" )
+   }
+   if( !all( lapply( objectList, class ) == "systemfit" ) ){
+      stop( "all further arguments ('...') must be of class 'systemfit'" )
+   }
+   dotsNames <- as.list( thisCall )[ -1 ]
+   dotsNames$object <- NULL
+   for( i in 1:length( objectList ) ){
+      objectList[[ i ]]$lrtest.systemfit.name <- deparse( dotsNames[[ i ]] )
+   }
+   extractName <- function( object ){
+      return( object$lrtest.systemfit.name )
+   }
+
+   result <- do.call( lrtest.default,
+      c( list( object = object ), objectList, list( name = extractName ) ) )
+
+   for( i in 2:nrow( result ) ){
+      if( ( result[ i, "#Df" ] - result[ i - 1, "#Df" ] ) *
+            ( result[ i, "LogLik" ] - result[ i - 1, "LogLik" ] ) < 0 ) {
+         if( result[ i, "LogLik" ] > result[ i - 1, "LogLik" ] ) {
+            compareLikelihood <- "larger"
+            compareDf <- "less"
+         } else {
+            compareLikelihood <- "smaller"
+            compareDf <- "more"
+         }
+         warning( "model '", i, "' has a ", compareLikelihood,
+            " log-likelihood value than the ", compareDf,
+            " restricted model '", i - 1, "'" )
+      }
+   }
+
+   return( result )
+}

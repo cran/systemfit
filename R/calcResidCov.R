@@ -1,6 +1,7 @@
 ## Calculate the residual covariance matrix
-.calcRCov <- function( resids, rcovformula, nObsEq = NULL, nCoefEq = NULL, xEq = NULL,
-      diag = FALSE, centered = FALSE, solvetol = .Machine$double.eps ) {
+.calcResidCov <- function( resids, methodResidCov, nObsEq = NULL,
+      nCoefEq = NULL, xEq = NULL, diag = FALSE, centered = FALSE,
+      useMatrix = FALSE, solvetol = .Machine$double.eps ) {
 
    eqNames <- NULL
    if( class( resids ) == "data.frame" ) {
@@ -19,12 +20,12 @@
    }
    for( i in 1:nEq ) {
       for( j in ifelse( diag, i, 1 ):ifelse( diag, i, nEq ) ) {
-         if( rcovformula == 0 ) {
+         if( methodResidCov == "noDfCor" ) {
             result[ i, j ] <- sum( residi[[i]] * residi[[j]] ) / nObsEq[i]
-         } else if( rcovformula == 1 || rcovformula == "geomean" ) {
+         } else if( methodResidCov == "geomean" ) {
             result[ i, j ] <- sum( residi[[i]] * residi[[j]] ) /
                sqrt( ( nObsEq[i] - nCoefEq[i] ) * ( nObsEq[j] - nCoefEq[j] ) )
-         } else if( rcovformula == 2 || rcovformula == "Theil" ) {
+         } else if( methodResidCov == "Theil" ) {
             #result[ i, j ] <- sum( residi[[i]] * residi[[j]] ) /
             #   ( nObsEq[i] - nCoefEq[i] - nCoefEq[j] + sum( diag(
             #   xEq[[i]] %*% solve( crossprod( xEq[[i]] ), tol=solvetol ) %*%
@@ -38,12 +39,12 @@
                solve( crossprod( xEq[[j]] ), tol=solvetol ) %*%
                crossprod( xEq[[j]], xEq[[i]] ) ) ) )
 
-         } else if( rcovformula == 3 || rcovformula == "max" ) {
+         } else if( methodResidCov == "max" ) {
             result[ i, j ] <- sum( residi[[i]] * residi[[j]] ) /
                ( nObsEq[i] - max( nCoefEq[i], nCoefEq[j] ) )
          } else {
-            stop( paste( "Argument 'rcovformula' must be either 0, 1,",
-                  "'geomean', 2, 'Theil', 3 or 'max'." ) )
+            stop( paste( "Argument 'methodResidCov' must be either 'noDfCor',",
+                  "'geomean', 'max', or 'Theil'." ) )
          }
       }
    }
@@ -51,20 +52,22 @@
       rownames( result ) <- eqNames
       colnames( result ) <- eqNames
    }
+
+   if( useMatrix ){
+      result <- as( result, "dspMatrix" )
+   }
    return( result )
 }
 
 ## Calculate Sigma squared
-.calcSigma2 <- function( resids, rcovformula, nObs, nCoef ) {
-   if( rcovformula == 0 ) {
+.calcSigma2 <- function( resids, methodResidCov, nObs, nCoef ) {
+   if( methodResidCov == "noDfCor" ) {
       result <- sum( resids^2 ) / nObs
-   } else if( rcovformula == 1 || rcovformula == "geomean" ||
-      rcovformula == 3 || rcovformula == "max") {
+   } else if( methodResidCov %in% c( "geomean", "max" ) ){
       result <- sum( resids^2 )/ ( nObs - nCoef )
    } else {
       stop( paste( "Sigma^2 can only be calculated if argument",
-         "'rcovformula' is either 0, 1, 'geomean', 3 or 'max'" ) )
+         "'methodResidCov' is either 'noDfCor', 'geomean', or 'max'" ) )
    }
-   return( result )
 }
 

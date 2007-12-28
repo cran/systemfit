@@ -1,5 +1,5 @@
 
-%  $Id: correlation.systemfit.Rd 171 2006-02-20 07:45:38Z henningsena $
+%  $Id: correlation.systemfit.Rd 474 2007-07-27 07:22:28Z henningsena $
 
 \name{correlation.systemfit}
 \alias{correlation.systemfit}
@@ -8,7 +8,7 @@
 
 \description{
   \code{correlation} returns a vector of the correlations
-  between the preditions of two equations in a set of equations. The
+  between the predictions of two equations in a set of equations. The
   correlation between the predictions is defined as,
 
   \deqn{
@@ -58,19 +58,18 @@ correlation.systemfit( results, eqni, eqnj )
 
 \examples{
 data( "Kmenta" )
-demand <- consump ~ price + income
-supply <- consump ~ price + farmPrice + trend
+eqDemand <- consump ~ price + income
+eqSupply <- consump ~ price + farmPrice + trend
 inst <- ~ income + farmPrice + trend
-labels <- list( "demand", "supply" )
-system <- list( demand, supply )
+system <- list( demand = eqDemand, supply = eqSupply )
 
 ## perform 2SLS on each of the equations in the system
-fit2sls <- systemfit( "2SLS", system, labels, inst, data = Kmenta )
+fit2sls <- systemfit( system, "2SLS", inst = inst, data = Kmenta )
 print( fit2sls )
 print( fit2sls$rcov )
 
 ## perform the 3SLS
-fit3sls <- systemfit( "3SLS", system, labels, inst, data = Kmenta )
+fit3sls <- systemfit( system, "3SLS", inst = inst, data = Kmenta )
 print( fit3sls )
 print( "covariance of residuals used for estimation (from 2sls)" )
 print( fit3sls$rcovest )

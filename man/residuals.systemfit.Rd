@@ -22,8 +22,8 @@
 }
 
 \value{
-   \code{residuals.systemfit} returns a matrix of residuals.
-   Each column contains the residuals of one equation.
+   \code{residuals.systemfit} returns a data.frame of residuals,
+   where each column contains the residuals of one equation.
 
    \code{residuals.systemfit.equation} returns a vector of residuals.
 }
@@ -37,13 +37,12 @@
 
 \examples{
 data( "Kmenta" )
-demand <- consump ~ price + income
-supply <- consump ~ price + farmPrice + trend
-labels <- list( "demand", "supply" )
-system <- list( demand, supply )
+eqDemand <- consump ~ price + income
+eqSupply <- consump ~ price + farmPrice + trend
+system <- list( demand = eqDemand, supply = eqSupply )
 
 ## perform OLS on each of the equations in the system
-fitols <- systemfit( "OLS", system, labels, data = Kmenta )
+fitols <- systemfit( system, data = Kmenta )
 
 ## residuals of all equations
 residuals( fitols )

@@ -1,0 +1,20 @@
+citHeader("To cite systemfit in publications use:")
+
+citEntry(
+   entry       = "Article",
+   title       = paste( "systemfit: A Package for Estimating Systems",
+                        "of Simultaneous Equations in R" ),
+   author      = personList( as.person( "Arne Henningsen" ),
+                             as.person( "Jeff D. Hamann" ) ),
+   journal     = "Journal of Statistical Software",
+   year        = "2007",
+   volume      = "23",
+   number      = "4",
+   pages       = "1--40",
+   url         = "http://www.jstatsoft.org/v23/i04/",
+   textVersion = paste( "Arne Henningsen and Jeff D. Hamann (2007).",
+                        "systemfit: A Package for Estimating Systems",
+                        "of Simultaneous Equations in R.",
+                        "Journal of Statistical Software 23(4), 1-40.",
+                        "URL http://www.jstatsoft.org/v23/i04/." )
+)

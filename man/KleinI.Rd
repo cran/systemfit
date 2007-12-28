@@ -51,21 +51,21 @@ eqInvest   <- invest ~ corpProf + corpProfLag + capitalLag
 eqPrivWage <- privWage ~ gnp + gnpLag + trend
 inst <- ~ govExp + taxes + govWage + trend + capitalLag + corpProfLag + gnpLag
 system <- list( Consumption = eqConsump, Investment = eqInvest,
-   "Private Wages" = eqPrivWage )
+   PrivateWages = eqPrivWage )
 # OLS
-kleinOls <- systemfit( "OLS", system, data = KleinI )
+kleinOls <- systemfit( system, data = KleinI )
 summary( kleinOls )
 # 2SLS
-klein2sls <- systemfit( "2SLS", system, inst = inst, data = KleinI,
-   rcovformula = 0 )
+klein2sls <- systemfit( system, "2SLS", inst = inst, data = KleinI,
+   methodResidCov = "noDfCor" )
 summary( klein2sls )
 # 3SLS
-klein3sls <- systemfit( "3SLS", system, inst = inst, data = KleinI,
-   rcovformula = 0 )
+klein3sls <- systemfit( system, "3SLS", inst = inst, data = KleinI,
+   methodResidCov = "noDfCor" )
 summary( klein3sls )
 # I3SLS
-kleinI3sls <- systemfit( "3SLS", system, inst = inst, data = KleinI,
-   rcovformula = 0, maxit = 500 )
+kleinI3sls <- systemfit( system, "3SLS", inst = inst, data = KleinI,
+   methodResidCov = "noDfCor", maxit = 500 )
 summary( kleinI3sls )
 }
 \keyword{datasets}

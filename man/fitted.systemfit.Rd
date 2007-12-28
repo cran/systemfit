@@ -21,7 +21,8 @@
 }
 
 \value{
-   \code{fitted.systemfit} returns a vector of all fitted values.
+   \code{fitted.systemfit} returns a data.frame of all fitted values,
+   where each column contains the fitted values of one equation.
 
    \code{fitted.systemfit.equation} returns a vector of the fitted values
       of a single equation.
@@ -36,13 +37,12 @@
 
 \examples{
 data( "Kmenta" )
-demand <- consump ~ price + income
-supply <- consump ~ price + farmPrice + trend
-labels <- list( "demand", "supply" )
-system <- list( demand, supply )
+eqDemand <- consump ~ price + income
+eqSupply <- consump ~ price + farmPrice + trend
+system <- list( demand = eqDemand, supply = eqSupply )
 
 ## perform OLS on each of the equations in the system
-fitols <- systemfit( "OLS", system, labels, data = Kmenta )
+fitols <- systemfit( system, data = Kmenta )
 
 ## all fitted values
 fitted( fitols )
