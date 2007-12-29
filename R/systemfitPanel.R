@@ -1,10 +1,11 @@
 .systemfitPanel <- function( formula, data, pooled ) {
 
-   if( class( data )[1] != "pdata.frame" ) {
-      stop( "argument 'data' must be of class 'pdata.frame'" )
+   if( class( data )[1] != "plm.dim" ) {
+      stop( "argument 'data' must be of class 'plm.dim'",
+         " (created with 'plm.data')" )
    }
-   eqnVar <- attributes( data )$indexes$id
-   timeVar <- attributes( data )$indexes$time
+   eqnVar <- names( data )[ 1 ]
+   timeVar <- names( data )[ 2 ]
 
    result <- list()
 

@@ -6,7 +6,7 @@ useMatrix <- FALSE
 data( "GrunfeldGreene" )
 GrunfeldTheil <- subset( GrunfeldGreene,
    firm %in% c( "General Electric", "Westinghouse" ) )
-pdata.frame( GrunfeldTheil, "firm", "year" )
+GrunfeldTheil <- plm.data( GrunfeldTheil, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 
 # OLS
@@ -54,7 +54,7 @@ terms( theilSur$eq[[ 2 ]] )
 
 
 ## Repeating the OLS and SUR estimations in Greene (2003, pp. 351)
-pdata.frame( GrunfeldGreene, "firm", "year" )
+GrunfeldGreene <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 
 # OLS

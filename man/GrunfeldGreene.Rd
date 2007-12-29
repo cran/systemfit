@@ -53,40 +53,40 @@ Theil, Henri (1971). \emph{Principles of Econometrics},
 ## Repeating the OLS and SUR estimations in Greene (2003, pp. 351)
 data( "GrunfeldGreene" )
 library( plm )
-pdata.frame( GrunfeldGreene, "firm", "year" )
+GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 # OLS
 greeneOls <- systemfit( formulaGrunfeld, "OLS",
-   data = GrunfeldGreene )
+   data = GGPanel )
 summary( greeneOls )
 sapply( greeneOls$eq, function(x){return(summary(x)$ssr/20)} ) # sigma^2
 # OLS Pooled
 greeneOlsPooled <- systemfit( formulaGrunfeld, "OLS",
-   data = GrunfeldGreene, pooled = TRUE )
+   data = GGPanel, pooled = TRUE )
 summary( greeneOlsPooled )
 sum( sapply( greeneOlsPooled$eq, function(x){return(summary(x)$ssr)}) )/97 # sigma^2
 # SUR
 greeneSur <- systemfit( formulaGrunfeld, "SUR",
-   data = GrunfeldGreene, methodResidCov = "noDfCor" )
+   data = GGPanel, methodResidCov = "noDfCor" )
 summary( greeneSur )
 # SUR Pooled
 greeneSurPooled <- systemfit( formulaGrunfeld, "SUR",
-   data = GrunfeldGreene, pooled = TRUE, methodResidCov = "noDfCor",
+   data = GGPanel, pooled = TRUE, methodResidCov = "noDfCor",
    residCovWeighted = TRUE )
 summary( greeneSurPooled )
 
 ## Repeating the OLS and SUR estimations in Theil (1971, pp. 295, 300)
 GrunfeldTheil <- subset( GrunfeldGreene,
    firm \%in\% c( "General Electric", "Westinghouse" ) )
-pdata.frame( GrunfeldTheil, "firm", "year" )
+GTPanel <- plm.data( GrunfeldTheil, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 # OLS
 theilOls <- systemfit( formulaGrunfeld, "OLS",
-   data = GrunfeldTheil )
+   data = GTPanel )
 summary( theilOls )
 # SUR
 theilSur <- systemfit( formulaGrunfeld, "SUR",
-   data = GrunfeldTheil, methodResidCov = "noDfCor" )
+   data = GTPanel, methodResidCov = "noDfCor" )
 summary( theilSur )
 }
 

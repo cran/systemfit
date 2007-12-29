@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 517 2007-12-05 11:37:34Z henningsena $
+%    $Id: systemfit.Rd 534 2007-12-29 15:19:54Z henningsena $
 
 
 \name{systemfit}
@@ -26,7 +26,8 @@ systemfit( formula, method = "OLS",
       (for single-equation models)
       or (typically) a list of objects of class \code{formula}
       (for multiple-equation models);
-      if argument \code{data} is of class \code{pdata.frame},
+      if argument \code{data} is of class \code{plm.dim}
+      (created with \code{plm.data}),
       this argument must be a single object of class \code{formula}
       that represents the formula to be estimated for all individuals.}
    \item{method}{the estimation method, one of "OLS", "WLS", "SUR",
@@ -37,7 +38,7 @@ systemfit( formula, method = "OLS",
       or a list of one-sided model formulas if different instruments should
       be used for the different equations (only needed for 2SLS, W2SLS, and
       3SLS estimations).}
-   \item{data}{an optional data frame (or pdata.frame for panel-like data)
+   \item{data}{an optional data frame
       containing the variables in the model.
       By default the variables are taken from the environment from which
       systemfit is called.}
@@ -63,8 +64,8 @@ systemfit( formula, method = "OLS",
 }
 
 \details{
-   If argument \code{data} is of class \code{pdata.frame}
-   (i.e. contains panel-like data in long format),
+   If argument \code{data} is of class \code{plm.dim}
+   (created with \code{plm.data} and thus, contains panel data in long format),
    argument \code{formula} must be a single equation
    that is applied to all individuals.
    In this case, argument \code{pooled} specifies
@@ -251,15 +252,15 @@ print( fit3sls )
 ## Repeating the SUR estimations in Greene (2003, p. 351)
 data( "GrunfeldGreene" )
 library( plm )
-pdata.frame( GrunfeldGreene, "firm", "year" )
+GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 # SUR
 greeneSur <- systemfit( formulaGrunfeld, "SUR",
-   data = GrunfeldGreene, methodResidCov = "noDfCor" )
+   data = GGPanel, methodResidCov = "noDfCor" )
 summary( greeneSur )
 # SUR Pooled
 greeneSurPooled <- systemfit( formulaGrunfeld, "SUR",
-   data = GrunfeldGreene, pooled = TRUE, methodResidCov = "noDfCor",
+   data = GGPanel, pooled = TRUE, methodResidCov = "noDfCor",
    residCovWeighted = TRUE )
 summary( greeneSurPooled )
 
