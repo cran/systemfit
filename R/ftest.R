@@ -30,10 +30,17 @@
       solve( restrict.matrix %*% vcov %*% t( restrict.matrix ) ) %*%
       ( restrict.matrix %*% coef - restrict.rhs )
 
-   denominator <- t( resid ) %*%
-      ( solve( rcov ) %x% diag( nObsPerEq ) ) %*%
-      resid
-   #print( denominator )
+   if( object$control$useMatrix ) {
+      resid <- matrix( resid, ncol = 1 )
+      resid <- as( resid, "dgCMatrix" )
+      rcov <- as( rcov, "dspMatrix" )
+
+      denominator <- as.numeric( .calcXtOmegaInv( xMat = resid, sigma = rcov,
+         nObsEq = nObsPerEq, useMatrix = TRUE ) %*% resid )
+   } else {
+      denominator <- crossprod( resid, solve( rcov ) %x% diag( nObsPerEq ) ) %*%
+         resid
+   }
 
    result$statistic <- ( numerator / result$nRestr ) /
       ( denominator / result$df.residual.sys )

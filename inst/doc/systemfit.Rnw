@@ -1,0 +1,2734 @@
+\documentclass[article,nojss]{jss}
+\usepackage{csquotes}
+\MakeOuterQuote{°}
+\usepackage{amsmath}
+\usepackage{float}
+
+% \usepackage{lineno}
+% 
+% \linenumbers
+
+\newcommand{\bHat}{\hat{\beta}}
+\newcommand{\COVHat}{\widehat{\COV}}
+\newcommand{\lHat}{\hat{\lambda}}
+\newcommand{\OHat}{\widehat{\Omega}}
+\newcommand{\SHat}{\widehat{\Sigma}}
+\newcommand{\sHat}{\hat{\sigma}}
+\newcommand{\uHat}{\hat{u}}
+\newcommand{\XHat}{\widehat{X}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\LR}{\mathit{LR}}
+\clubpenalty=10000
+\widowpenalty=10000
+\setlength{\emergencystretch}{3em}
+% \setlength{\overfullrule}{5pt}
+
+\newcommand{\codeD}[2]{\code{#1}\hspace{0pt}\code{.#2}}
+\newcommand{\codeDD}[3]{\code{#1}\hspace{0pt}\code{.#2}\hspace{0pt}\code{.#3}}
+\newcommand{\codeDDD}[4]{\code{#1}\hspace{0pt}\code{.#2}\hspace{0pt}%
+\code{.#3}\hspace{0pt}\code{.#4}}
+
+\hyphenation{systemfit}
+
+\author{Arne Henningsen\\University of Kiel
+   \And Jeff D.\ Hamann\\ Forest Informatics, Inc.}
+\Plainauthor{Arne Henningsen, Jeff D. Hamann}
+        
+\title{\pkg{systemfit}: A Package for Estimating Systems of Simultaneous Equations in \proglang{R}}
+\Plaintitle{systemfit: A Package for Estimating Systems of Simultaneous Equations in R}
+\Shorttitle{\pkg{systemfit}: Estimating Systems of Simultaneous Equations in \proglang{R}}
+
+%% an abstract and keywords
+\Abstract{
+This introduction to the \proglang{R} package \pkg{systemfit}
+is a slightly modified version of \cite{henningsen07a},
+published in the \emph{Journal of Statistical Software}.
+
+Many statistical analyses (e.g., in econometrics, biostatistics and
+experimental design) are based on models containing systems of
+structurally related equations.
+The \pkg{systemfit} package provides the capability
+to estimate systems of linear equations
+within the \proglang{R} programming environment.
+For instance, this package can be used for 
+``ordinary least squares'' (OLS),
+``seemingly unrelated regression'' (SUR),
+and the instrumental variable (IV) methods
+``two-stage least squares'' (2SLS) and
+``three-stage least squares'' (3SLS),
+where SUR and 3SLS estimations can optionally be iterated.
+Furthermore, the \pkg{systemfit} package provides tools
+for several statistical tests.
+It has been tested on a variety of datasets
+and its reliability is demonstrated.
+}
+
+\Keywords{\proglang{R}, system of simultaneous equations,
+  seemingly unrelated regression, two-stage least squares,
+  three-stage least squares, instrumental variables}
+\Plainkeywords{R, system of simultaneous equations,
+  seemingly unrelated regression, two-stage least squares,
+  three-stage least squares, instrumental variables}
+
+%% at least one keyword must be supplied
+
+
+%% publication information
+%% NOTE: This needs to filled out ONLY IF THE PAPER WAS ACCEPTED.
+%% If it was not (yet) accepted, leave them commented.
+\Volume{23}
+\Issue{4}
+\Month{December}
+\Year{2007}
+\Submitdate{2006-03-15}
+\Acceptdate{2007-10-24}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+   Arne Henningsen\\
+   Department of Agricultural Economics\\
+   University of Kiel\\
+   D-24098 Kiel, Germany\\
+   E-mail: \email{ahenningsen@agric-econ.uni-kiel.de}\\
+   URL: \url{http://www.uni-kiel.de/agrarpol/ahenningsen/}\\
+   \\
+   Jeff D.\ Hamann\\
+   Forest Informatics, Inc.\\
+   PO Box 1421\\
+   Corvallis, Oregon 97339-1421, United States of America\\
+   E-mail: \email{jeff.hamann@forestinformatics.com}\\
+   URL: \url{http://www.forestinformatics.com/}\\
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/1/31336-5053
+%% Fax: +43/1/31336-734
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+% initialisation stuff
+\SweaveOpts{engine=R}
+%\VignetteIndexEntry{Systemfit}
+%\VignetteDepends{systemfit,plm,sem}
+%\VignetteKeywords{R, system of simultaneous equations,
+% seemingly unrelated regression, two-stage least squares,
+% three-stage least squares, instrumental variables}
+%\VignettePackage{systemfit}
+<<echo=FALSE>>=
+options( prompt = "R> ", ctinue = "+  " )
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Many theoretical models that are econometrically estimated
+consist of more than one equation.
+The disturbance terms of these equations are likely
+to be contemporaneously correlated,
+because unconsidered factors
+that influence the disturbance term in one equation
+probably influence the disturbance terms in other equations, too.
+Ignoring this contemporaneous correlation
+and estimating these equations separately
+leads to inefficient estimates of the coefficients.
+However, estimating all equations simultaneously
+with a °generalized least squares° (GLS) estimator,
+which takes the covariance structure of the residuals into account,
+leads to efficient estimates.
+This estimation procedure is generally called
+°seemingly unrelated regression° \citep[SUR,][]{zellner62}.
+Another reason to estimate a system of equations simultaneously are
+cross-equation restrictions on the coefficients.%
+\footnote{
+Especially the economic theory suggests many cross-equation
+restrictions on the coefficients (e.g., the symmetry restriction in demand models).
+}
+Estimating the coefficients under cross-equation restrictions
+and testing these restrictions
+requires a simultaneous estimation approach.
+
+Furthermore, these models can contain variables
+that appear on the left-hand side in one equation
+and on the right-hand side of another equation.
+Ignoring the endogeneity of these variables can lead to inconsistent
+estimates.
+This simultaneity bias can be corrected for by
+applying a °two-stage least squares° (2SLS) estimation
+to each equation.
+Combining this estimation method with the SUR method results
+in a simultaneous estimation of the system of equations
+by the °three-stage least squares° (3SLS) method
+\citep{zellner62b}.
+
+% For all of the methods developed in the package, the disturbances of
+% the individual equations are assumed to be independent and identically
+% distributed (iid).  
+% In the future, we would like to add the ability to fit equations were
+% the disturbances are serially correlated (wikins 1969).
+
+The \pkg{systemfit} package provides the capability to estimate
+systems of linear equations in \proglang{R}
+\citep{r-project-07}.
+Currently, the estimation methods
+°ordinary least squares° (OLS),
+°weighted least squares° (WLS),
+°seemingly unrelated regression° (SUR),
+°two-stage least squares° (2SLS),
+°weighted two-stage least squares° (W2SLS), and
+°three-stage least squares° (3SLS)
+are implemented.%
+\footnote{
+In this context,
+the term °weighted° in °weighted least squares° (WLS) and
+°weighted two-stage least squares° (W2SLS) means
+that the \emph{equations} might have different weights
+and \emph{not}
+that the \emph{observations} have different weights.
+}
+The WLS, SUR, W2SLS, and 3SLS estimates can be based
+either on one-step (OLS or 2SLS) (co)variances
+or these estimations can be iterated,
+where the (co)variances are calculated from the estimates of the previous step.
+Furthermore,
+the \pkg{systemfit} package
+provides statistical tests for restrictions on the coefficients
+and for testing the consistency of the 3SLS estimation.
+
+Although systems of linear equations can be estimated
+with several other statistical and econometric software packages
+(e.g., \proglang{SAS}, \proglang{EViews}, \proglang{TSP}),
+\pkg{systemfit} has several advantages.
+First, all estimation procedures are publicly available in the source code.
+Second, the estimation algorithms can be easily modified to meet specific
+requirements.
+Third, the (advanced) user can control estimation details generally
+not available in other software packages by overriding reasonable defaults.
+
+% This paper is organized as follows:
+In Section~\ref{sec:statistics} we introduce the statistical
+background of estimating equation systems.
+The implementation of the statistical procedures in \proglang{R} is
+briefly explained in Section~\ref{sec:code}.
+Section~\ref{sec:Usage} demonstrates how to run
+\pkg{systemfit} and how some of the features presented in the second
+section can be used.
+In Section~\ref{sec:reliability} we replicate several textbook results
+with the \pkg{systemfit} package.
+Finally, a summary and outlook are presented in
+Section~\ref{sec:Summmary}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Statistical background}\label{sec:statistics}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this section we give a short overview of the statistical background
+that the \pkg{systemfit} package is based on.
+More detailed descriptions of simultaneous equations systems
+are available for instance in
+\citet[Chapter~7]{theil71},
+\citet[Part~4]{judge82},
+\citet[Part~5]{judge85},
+\citet{srivastava87},
+\citet[Chapters 14--15]{greene03}, and
+\citet[Chapter~10]{zivot06}.
+
+After introducing notations and assumptions,
+we provide the formulas to estimate systems of linear equations.
+We then demonstrate how to estimate coefficients under linear restrictions.
+Finally, we present additional relevant issues about estimation of
+equation systems.
+
+Consider a system of $G$ equations, where the $i$th equation is of
+the form 
+\begin{equation}
+   y_{i} = X_i \beta_i + u_i, \quad i = 1, 2, \ldots, G ,
+   \label{eq:model}
+\end{equation}
+where $y_i$ is a vector of the dependent variable,
+$X_i$ is a matrix of the exogenous variables,
+$\beta_i$ is the coefficient vector and
+$u_i$ is a vector of the disturbance terms of the $i$th equation.
+
+We can write the °stacked° system as
+\begin{equation}
+   \left[ \begin{array}{c}
+      y_1 \\ y_2\\ \vdots\\ y_G
+   \end{array} \right] = 
+   \left[ \begin{array}{cccc}
+      X_1 & 0 & \cdots & 0\\
+      0 & X_2 & \cdots & 0\\
+      \vdots & \vdots & \ddots & \vdots\\
+      0 & 0 & \cdots & X_G
+   \end{array}\right]
+   \left[ \begin{array}{c}
+      \beta_1 \\ \beta_2 \\ \vdots\\ \beta_G
+   \end{array} \right] +
+   \left[ \begin{array}{c}
+      u_1 \\ u_2 \\ \vdots\\ u_G
+   \end{array} \right]
+   \label{eq:model-array}
+\end{equation}
+
+or more simply as
+\begin{equation}
+   y = X \beta + u .
+   \label{eq:model-matrices}
+\end{equation}   
+
+We assume that there is no correlation of the disturbance terms 
+across observations, so that
+\begin{equation}
+   \E \left[ u_{it} \, u_{js} \right] = 0
+   \; \forall \; t \neq s ,
+\end{equation}
+where $i$ and $j$ indicate the equation number 
+and $t$ and $s$ denote the observation number,
+where the number of observations is the same for all equations.
+
+However, we explicitly allow for contemporaneous correlation, i.e.,
+\begin{equation}
+   \E \left[ u_{it} \, u_{jt} \right] = \sigma_{ij} .
+\end{equation}
+
+Thus, the covariance matrix of all disturbances is
+\begin{equation}
+   \E \left[ u \, u^\top \right] = \Omega = \Sigma \otimes I_T ,
+\end{equation}
+where $\Sigma = \left[ \sigma_{ij} \right]$ is the (contemporaneous)
+disturbance covariance matrix,
+$\otimes$ is the Kronecker product,
+$I_T$ is an identity matrix of dimension $T$,
+and $T$ is the number of observations in each equation.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Estimation with only exogenous regressors}
+\label{sec:Estimation-ols-wls-sur}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+If all regressors are exogenous,
+the system of equations (Equation~\ref{eq:model})
+can be consistently estimated by ordinary least squares (OLS),
+weighted least squares (WLS), and seemingly unrelated regression (SUR).
+These estimators can be obtained by
+\begin{equation}
+   \bHat = \left( X^\top \OHat^{-1} X \right)^{-1} X^\top \OHat^{-1} y .
+   \label{eq:ols-wls-sur}
+\end{equation}
+The covariance matrix of these estimators
+can be estimated by
+\begin{equation}
+   \COVHat \left[ \bHat \right] = \left( X^\top \OHat^{-1} X \right)^{-1} .
+   \label{eq:cov-ols-wls-sur}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Ordinary least squares (OLS)}
+
+The ordinary least squares (OLS) estimator is based on the assumption
+that the disturbance terms are not contemporaneously correlated
+$(\sigma_{ij} = 0 \; \forall \; i \neq j)$
+and have the same variance in each equation
+$( \sigma_i^2 = \sigma_j^2 \, \forall \, i, j)$.
+In this case, $\OHat$ in Equation~\ref{eq:ols-wls-sur}
+is equal to $I_{G \cdot T}$ and thus, cancels out.
+The OLS estimator is efficient,
+as long as the disturbances are not contemporaneously correlated.
+
+If the whole system is treated as one single equation,
+$\OHat$ in Equation~\ref{eq:cov-ols-wls-sur} is $\sHat^2 I_{G \cdot T}$,
+where $\sHat^2$ is an estimator for the variance of all disturbances
+$(\sigma^2 = \E [ u_{it}^2 ])$.
+If the disturbance terms of the individual equations
+are allowed to have different variances,
+$\OHat$ in Equation~\ref{eq:cov-ols-wls-sur} is $\SHat \otimes I_T$,
+where $\sHat_{ij} = 0 \; \forall \; i \neq j$ and
+$\sHat_{ii} = \sHat_i^2$ is the estimated variance
+of the disturbance term in the $i$th equation.
+
+If the estimated coefficients are not constrained by cross-equation restrictions,
+the simultaneous
+OLS estimation of the system leads to the same estimated coefficients
+as an equation-wise OLS estimation.
+The covariance matrix of the coefficients from an equation-wise
+OLS estimation is equal to the covariance matrix obtained
+by Equation~\ref{eq:cov-ols-wls-sur}
+with $\OHat$ equal to $\SHat \otimes I_T$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Weighted least squares (WLS)}
+
+The weighted least squares (WLS) estimator allows for different variances
+of the disturbance terms in the different equations
+$( \sigma_i^2 \neq \sigma_j^2 \, \forall \, i \neq j)$,
+but assumes
+that the disturbance terms are not contemporaneously correlated.
+In this case, $\OHat$ in Equations~\ref{eq:ols-wls-sur}
+and~\ref{eq:cov-ols-wls-sur}
+is $\SHat \otimes I_T$,
+where $\sHat_{ij} = 0 \; \forall \; i \neq j$ and
+$\sHat_{ii} = \sHat_i^2$ is the estimated variance
+of the disturbance terms in the $i$th equation.
+Theoretically, $\sHat_{ii}$ should be the variance of
+the (true) disturbances $( \sigma_{ii} )$.
+However, they are not known in most empirical applications.
+Therefore, true variances are generally replaced by estimated variances
+$( \sHat_{ii} )$
+that are calculated from the residuals of a first-step OLS estimation
+(see Section~\ref{sec:residcov}).%
+\footnote{%
+Note that $\OHat$ in Equation~\ref{eq:ols-wls-sur}
+is not the same $\OHat$ as in Equation~\ref{eq:cov-ols-wls-sur}.
+The first is calculated from the residuals of a first-step OLS estimation;
+the second is calculated from the residuals of this WLS estimation.
+The same applies to the SUR, W2SLS, and 3SLS estimations
+described in the following sections.
+}
+
+The WLS estimator is (asymptotically) efficient only
+if the disturbance terms are not contemporaneously correlated.
+If the estimated coefficients are not constrained by cross-equation restrictions,
+they are equal to OLS estimates.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Seemingly unrelated regression (SUR)}
+
+If the disturbances are contemporaneously correlated, a generalized
+least squares (GLS) estimation leads to an efficient estimator for the coefficients.
+In this case, the GLS estimator is generally called °seemingly unrelated regression°
+(SUR) estimator \citep{zellner62}.
+However, the true covariance matrix of the disturbance terms
+is generally unknown.
+The textbook solution for this problem is
+a feasible generalized least squares (FGLS) estimation.
+As the FGLS estimator is based on
+an estimated covariance matrix of the disturbance terms,
+it is only asymptotically efficient.
+In case of a SUR estimator, $\OHat$ in Equations~\ref{eq:ols-wls-sur}
+and~\ref{eq:cov-ols-wls-sur}
+is $\SHat \otimes I_T$,
+where $\SHat$ is the estimated covariance matrix of the disturbance terms.
+
+It should be noted that while an unbiased OLS or WLS estimation requires only that
+the regressors and the disturbance terms of each single 
+equation are uncorrelated
+$( \E \left[ u_i^\top X_i \right] = 0 \; \forall \; i )$,
+a consistent SUR estimation requires that all disturbance terms and all 
+regressors are uncorrelated
+$( \E \left[ u_i^\top X_j \right] = 0 \; \forall \; i, j )$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Estimation with endogenous regressors}
+\label{sec:Estimation-2sls-w2sls-3sls}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+If the regressors of one or more equations are correlated
+with the disturbances ($\E \left[ u_i^\top X_i \right] \neq 0$),
+OLS, WLS, and SUR estimates are biased.
+This can be circumvented by a
+two-stage least squares (2SLS),
+weighted two-stage least squares (W2SLS),
+or a three-stage least squares (3SLS) estimation
+with instrumental variables (IV).
+The instrumental variables for each equation $Z_i$ 
+can be either different or identical for all equations.
+They must not be correlated with
+the disturbance terms of the corresponding equation 
+($\E \left[ u_i^\top Z_i \right] = 0$).
+
+At the first stage new (°fitted°) regressors are obtained by
+\begin{equation}
+   \XHat_i = Z_i \left( Z_i^\top Z_i \right)^{-1} Z_i^\top X_i .
+\end{equation}
+Then, these °fitted° regressors are substituted for the original regressors
+in Equation~\ref{eq:ols-wls-sur}
+to obtain unbiased 2SLS, W2SLS, or 3SLS estimates of $\beta$ by
+\begin{equation}
+   \bHat
+   = \left( \XHat^\top \OHat^{-1} \XHat \right)^{-1} \XHat^\top \OHat^{-1} y ,
+   \label{eq:2sls-w2sls-3sls}
+\end{equation}
+where
+\begin{equation}
+   \XHat =
+   \left[ \begin{array}{cccc}
+      \XHat_1 & 0       & \cdots & 0\\
+      0       & \XHat_2 & \cdots & 0\\
+      \vdots  & \vdots  & \ddots & \vdots\\
+      0       & 0       & \cdots & \XHat_G
+   \end{array}\right] .
+\end{equation}
+An estimator of the covariance matrix of the estimated coefficients
+can be obtained from Equation~\ref{eq:cov-ols-wls-sur} analogously.
+Hence, we get
+\begin{equation}
+   \COVHat \left[ \bHat \right]
+   = \left( \XHat^\top \OHat^{-1} \XHat \right)^{-1} .
+   \label{eq:cov-2sls-w2sls-3sls}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Two-stage least squares (2SLS)}
+
+The two-stage least squares (2SLS) estimator
+is based on the same assumptions about the disturbance terms as the OLS estimator.
+Accordingly, $\OHat$ in Equation~\ref{eq:2sls-w2sls-3sls}
+is equal to $I_{G \cdot T}$ and thus, cancels out.
+Like for the OLS estimator,
+the whole system can be treated either as one single equation
+with $\OHat$ in Equation~\ref{eq:cov-2sls-w2sls-3sls}
+equal to $\sHat^2 I_{G \cdot T}$,
+or the disturbance terms of the individual equations
+are allowed to have different variances
+with $\OHat$ in Equation~\ref{eq:cov-2sls-w2sls-3sls}
+equal to $\SHat \otimes I_T$,
+where $\sHat_{ij} = 0 \; \forall \; i \neq j$ and
+$\sHat_{ii} = \sHat_i^2$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Weighted two-stage least squares (W2SLS)}
+
+The weighted two-stage least squares (W2SLS) estimator allows
+for different variances of the disturbance terms in the different equations.
+Hence, $\OHat$ in Equations~\ref{eq:2sls-w2sls-3sls}
+and~\ref{eq:cov-2sls-w2sls-3sls}
+is $\SHat \otimes I_T$,
+where $\sHat_{ij} = 0 \; \forall \; i \neq j$ and
+$\sHat_{ii} = \sHat_i^2$.
+If the estimated coefficients are not constrained by cross-equation restrictions,
+they are equal to 2SLS estimates.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Three-stage least squares (3SLS)}
+
+If the disturbances are contemporaneously correlated,
+a feasible generalized least squares (FGLS) version of the two-stage least squares
+estimation leads to consistent and asymptotically more efficient estimates.
+This estimation procedure is generally called °three-stage least
+squares° \citep[3SLS,][]{zellner62b}.
+The standard 3SLS estimator and its covariance matrix are obtained by
+Equations~\ref{eq:2sls-w2sls-3sls} and~\ref{eq:cov-2sls-w2sls-3sls}
+with $\OHat$ equal to $\SHat \otimes I_T$,
+where $\SHat$ is the estimated covariance matrix of the disturbance terms.
+
+While an unbiased 2SLS or W2SLS estimation requires only that
+the instrumental variables and the disturbance terms of each single 
+equation are uncorrelated
+$( \E \left[ u_i^\top Z_i \right]) = 0 \; \forall \; i )$,
+\cite{schmidt90} points out that the 3SLS estimator is only consistent
+if all disturbance terms and all instrumental variables are uncorrelated
+$( \E \left[ u_i^\top Z_j \right]) = 0 \; \forall \; i, j )$.
+Since there might be occasions where this cannot be avoided,
+\cite{schmidt90} analyses other approaches to obtain 3SLS estimators.
+
+One of these approaches based on instrumental variable estimation
+(3SLS-IV) is
+\begin{equation}
+   \bHat_\text{3SLS-IV} = \left( \XHat^\top \OHat^{-1} X
+   \right)^{-1} \XHat^\top \OHat^{-1} y .
+   \label{eq:3slsIv}
+\end{equation}
+An estimator of the covariance matrix of the estimated 3SLS-IV coefficients is
+\begin{equation}
+   \COVHat \left[ \bHat_\text{3SLS-IV} \right] = \left( \XHat^\top \OHat^{-1}
+   X \right)^{-1} .
+\end{equation}
+Another approach based on the generalized method of moments (GMM)
+estimator (3SLS-GMM) is
+\begin{equation}
+   \bHat_\text{3SLS-GMM} = \left( X^\top Z \left( Z^\top \OHat Z \right)^{-1}
+   Z^\top X \right)^{-1} X^\top Z \left( Z^\top \OHat Z \right)^{-1} Z^\top y
+   \label{eq:3slsGmm}
+\end{equation}
+with
+\begin{equation}
+   Z =
+   \left[ \begin{array}{cccc}
+      Z_1 & 0 & \cdots & 0\\
+      0 & Z_2 & \cdots & 0\\
+      \vdots & \vdots & \ddots & \vdots\\
+      0 & 0 & \cdots & Z_G
+   \end{array}\right] .
+\end{equation}
+An estimator of the covariance matrix of the estimated 3SLS-GMM coefficients is
+\begin{equation}
+   \COVHat \left[ \bHat_\text{3SLS-GMM} \right] =
+   \left( X^\top Z \left( Z^\top \OHat Z \right)^{-1} Z^\top X \right)^{-1} .
+\end{equation}
+A fourth approach developed by \cite{schmidt90} himself is
+\begin{equation}
+   \bHat_\text{3SLS-Schmidt} = \left( \XHat^\top \OHat^{-1} \XHat
+   \right)^{-1} \XHat^\top \OHat^{-1}
+   Z \left( Z^\top Z \right)^{-1} Z^\top y .
+   \label{eq:3slsSchmidt}
+\end{equation}
+An estimator of the covariance matrix of these estimated coefficients is
+\begin{align}
+   \COVHat \left[ \bHat_\text{3SLS-Schmidt} \right] = &
+   \left( \XHat^\top \OHat^{-1}  \XHat \right)^{-1}
+   \XHat^\top \OHat^{-1} Z \left( Z^\top Z \right)^{-1} Z^\top \OHat Z \\
+   & \left( Z^\top Z \right)^{-1} Z^\top \OHat^{-1} \XHat
+   \left( \XHat^\top \OHat^{-1}  \XHat \right)^{-1} .
+   \nonumber
+\end{align}
+The econometrics software \proglang{EViews} uses
+\begin{equation}
+   \bHat_\text{3SLS-EViews} = \bHat_\text{2SLS} +
+   \left( \XHat^\top \OHat^{-1} \XHat \right)^{-1}
+   \XHat^\top \OHat^{-1} \left( y - X \bHat_\text{2SLS} \right) ,
+   \label{eq:3slsEViews}
+\end{equation}
+where $\bHat_\text{2SLS}$ is the two-stage least squares estimator
+as defined above.
+\proglang{EViews} uses the standard 3SLS formula
+(Equation~\ref{eq:cov-2sls-w2sls-3sls}) to
+calculate an estimator of the covariance matrix of the estimated coefficients.
+
+
+If the same instrumental variables are used in all equations 
+($Z_1 = Z_2 = \ldots = Z_G$),
+all the above mentioned approaches lead to identical estimates.
+However, if this is not the case, the results depend on the 
+method used \citep{schmidt90}.
+The only reason to use different instruments for different equations
+is a correlation of the instruments of one equation with the
+disturbance terms of another equation.
+Otherwise, one could simply use all instruments in every equation
+\citep{schmidt90}.
+In this case, only the 3SLS-GMM (Equation~\ref{eq:3slsGmm})
+and the 3SLS estimator developed by \cite{schmidt90} 
+(Equation~\ref{eq:3slsSchmidt}) are consistent.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Estimation under linear restrictions on the coefficients}
+\label{sec:Restrictions}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In many empirical applications,
+it is desirable to estimate the coefficients under linear restrictions.
+For instance, in econometric demand and production analysis,
+it is common to estimate the coefficients
+under homogeneity and symmetry restrictions
+that are derived from the underlying theoretical model.
+
+There are two different methods to estimate the coefficients
+under linear restrictions.
+First, a matrix $M$ can be specified that
+\begin{equation}
+   \beta = M \cdot \beta^\text{M} \label{eq:T-restr} ,
+\end{equation}
+where $\beta^\text{M}$ is a vector of restricted (linear independent) coefficients,
+and $M$ is a matrix with the number of rows equal to the number of
+unrestricted coefficients ($\beta$) and
+the number of columns equal to the number of restricted coefficients
+($\beta^\text{M}$).
+$M$ can be used to map each unrestricted coefficient to one or more
+restricted coefficients.
+
+The second method to estimate the coefficients under linear restrictions
+constrains the coefficients by
+\begin{equation}
+   R \beta^\text{R} = q ,
+   \label{eq:restr-R}
+\end{equation}
+where $\beta^\text{R}$ is the vector of the restricted coefficients,
+and $R$ and $q$ are a matrix and vector, respectively,
+that specify the restrictions \citep[see][p.~100]{greene03}.
+Each linear independent restriction is represented by one row of $R$
+and the corresponding element of~$q$.
+
+The first method is less flexible than the second%
+\footnote{
+While restrictions like $\beta_1 = 2 \beta_2$ can be specified by
+both methods,
+restrictions like $\beta_1 + \beta_2 = 4$ can be specified only
+by the second method.
+}, 
+but is preferable if the coefficients are estimated
+under many equality constraints across different equations of the system.
+Of course, these restrictions can be also specified using
+the latter method.
+However, while the latter method increases the dimension of the 
+matrices to be inverted during estimation, the first reduces it. 
+Thus, in some cases the latter way leads to estimation problems
+(e.g., (near) singularity of the matrices to be inverted),
+while the first does not.
+
+These two methods can be combined.
+In this case, the restrictions specified using the latter method are
+imposed on the linear independent coefficients
+that are restricted by the first method, so that
+\begin{equation}
+   R \beta^\text{MR} = q ,
+\end{equation}
+where $\beta^\text{MR}$ is the vector of the restricted $\beta^\text{M}$ coefficients.
+
+
+\subsubsection{Calculation of restricted estimators}
+
+If the first method (Equation~\ref{eq:T-restr}) is chosen
+to estimate the coefficients under these restrictions,
+the matrix of regressors $X$ is (post-)\hspace{0pt}multiplied
+by the $M$ matrix,
+so that
+\begin{equation}
+    X^\text{M} = X \cdot M .
+\end{equation}
+Then, $X^\text{M}$ is substituted for $X$ and a standard estimation as described
+in the previous section is done
+(Equations~\ref{eq:ols-wls-sur}--\ref{eq:3slsEViews}).
+This results in the linear independent coefficient estimates $\bHat^\text{M}$ and
+their covariance matrix.
+The original coefficients can be obtained by Equation~\ref{eq:T-restr}
+and the estimated covariance matrix of the original coefficients
+can be obtained by
+\begin{equation}
+   \COVHat \left[ \bHat \right]
+   = M \cdot \COVHat \left[ \bHat^\text{M} \right] \cdot M^\top .
+\end{equation}
+
+The implementation of the second method to estimate the coefficients
+under linear restrictions (Equation~\ref{eq:restr-R})
+is described for each estimation method in the following sections.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Restricted OLS, WLS, and SUR estimation}
+
+The OLS, WLS, and SUR estimators restricted by $R \beta^\text{R} = q$ can be obtained by
+\begin{equation}
+   \left[ \begin{array}{c}
+      \bHat^\text{R} \\[0.2em] \lHat
+   \end{array} \right]
+   =
+   \left[ \begin{array}{cc}
+      X^\top \OHat^{-1} X & R^\top \\
+      R & 0
+   \end{array} \right]^{-1}
+   \cdot
+   \left[ \begin{array}{c}
+      X^\top \OHat^{-1} y \\ q
+   \end{array} \right] ,
+   \label{eq:ols-wls-sur-r}
+\end{equation}
+where $\lambda$ is a vector of the Lagrangean multipliers of the restrictions
+and $\OHat$ is defined as in Section~\ref{sec:Estimation-ols-wls-sur}.
+An estimator of the covariance matrix of the estimated coefficients is
+\begin{equation}
+   \COVHat
+   \left[ \begin{array}{c}
+      \bHat^\text{R} \\[0.2em] \lHat
+   \end{array} \right] 
+   = 
+   \left[ \begin{array}{cc}
+      X^\top \OHat^{-1} X & R^\top \\
+      R & 0
+   \end{array} \right]^{-1} .
+   \label{eq:cov-ols-wls-sur-r}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Restricted 2SLS, W2SLS, and 3SLS estimation}
+
+The 2SLS, W2SLS, and standard 3SLS estimators
+restricted by $R \beta^\text{R} = q$ can be obtained by
+\begin{equation}
+   \left[ \begin{array}{c}
+      \bHat^\text{R} \\[0.2em] \lHat
+   \end{array} \right]
+   =
+   \left[ \begin{array}{cc}
+      \XHat^\top \OHat^{-1} \XHat & R^\top \\
+      R & 0
+   \end{array} \right]^{-1}
+   \cdot
+   \left[ \begin{array}{c}
+      \XHat^\top \OHat^{-1} y \\ q
+   \end{array} \right] ,
+   \label{eq:2sls-w2sls-3sls-r}
+\end{equation}
+where $\OHat$ is defined as in Section~\ref{sec:Estimation-2sls-w2sls-3sls}.
+An estimator of the covariance matrix of the estimated coefficients is
+\begin{equation}
+   \COVHat
+   \left[ \begin{array}{c}
+      \bHat^\text{R} \\[0.2em] \lHat
+   \end{array} \right] 
+   = 
+   \left[ \begin{array}{cc}
+      \XHat^\top \OHat^{-1} \XHat & R^\top \\
+      R & 0
+   \end{array} \right]^{-1} .
+   \label{eq:cov-2sls-w2sls-3sls-r}
+\end{equation}
+
+The 3SLS-IV estimator restricted by $R \beta^\text{R} = q$ can be obtained by
+\begin{equation}
+   \left[ \begin{array}{c}
+      \bHat^\text{R}_\text{3SLS-IV} \\[0.2em] \lHat
+   \end{array} \right]
+   =
+   \left[ \begin{array}{cc}
+      \XHat^\top \OHat^{-1} X & R^\top \\
+      R & 0
+   \end{array} \right]^{-1}
+   \cdot
+   \left[ \begin{array}{c}
+      \XHat^\top \OHat^{-1} y \\ q
+   \end{array} \right] ,
+   \label{eq:3slsIvR}
+\end{equation}
+where
+\begin{equation}
+   \COVHat
+   \left[ \begin{array}{c}
+      \bHat^\text{R}_\text{3SLS-IV} \\[0.2em] \lHat
+   \end{array} \right] 
+   = 
+   \left[ \begin{array}{cc}
+      \XHat^\top \OHat^{-1} X & R^\top \\
+      R & 0
+   \end{array} \right]^{-1} .
+\end{equation}
+The restricted 3SLS-GMM estimator can be obtained by
+\begin{equation}
+   \left[ \begin{array}{c}
+      \bHat^\text{R}_\text{3SLS-GMM} \\[0.2em] \lHat
+   \end{array} \right]
+   =
+   \left[ \begin{array}{cc}
+      X^\top Z \left( Z^\top \OHat Z \right)^{-1} Z^\top X & R^\top \\
+      R & 0
+   \end{array} \right]^{-1}
+   \cdot
+   \left[ \begin{array}{c}
+      X^\top Z \left( Z \OHat Z \right)^{-1} Z^\top y \\ q
+   \end{array} \right] ,
+   \label{eq:3slsGmmR}
+\end{equation}
+where
+\begin{equation}
+   \COVHat
+   \left[ \begin{array}{c}
+      \bHat^\text{R}_\text{3SLS-GMM} \\[0.2em] \lHat
+   \end{array} \right] 
+   = 
+   \left[ \begin{array}{cc}
+      X^\top Z \left( Z^\top \OHat Z \right)^{-1} Z^\top X & R^\top \\
+      R & 0
+   \end{array} \right]^{-1} .
+\end{equation}
+The restricted 3SLS estimator based on the suggestion of
+\cite{schmidt90} is
+\begin{equation}
+   \left[ \begin{array}{c}
+      \bHat^\text{R}_\text{3SLS-Schmidt} \\[0.2em] \lHat
+   \end{array} \right]
+   =
+   \left[ \begin{array}{cc}
+      \XHat^\top \OHat^{-1} \XHat & R^\top \\
+      R & 0
+   \end{array} \right]^{-1}
+   \cdot
+   \left[ \begin{array}{c}
+      \XHat^\top \OHat^{-1} Z \left( Z^\top Z \right)^{-1} Z^\top y \\ q
+   \end{array} \right] ,
+   \label{eq:3slsSchmidtR}
+\end{equation}
+where
+\begin{eqnarray}
+   \COVHat
+   \left[ \begin{array}{c}
+      \bHat^\text{R}_\text{3SLS-Schmidt} \\[0.2em] \lHat
+   \end{array} \right] 
+   & = & 
+   \left[ \begin{array}{cc}
+      \XHat^\top \OHat^{-1} \XHat & R^\top \\
+      R & 0
+   \end{array} \right]^{-1}
+   \\
+   & & \cdot
+   \left[ \begin{array}{cc}
+      \XHat^\top \OHat^{-1} Z \left( Z^\top Z \right)^{-1} Z^\top \OHat
+      Z \left( Z^\top Z \right)^{-1} Z^\top \OHat^{-1} \XHat & 0^\top \\
+      0 & 0
+   \end{array} \right]^{-1}
+   \nonumber \\
+   & & \cdot
+   \left[ \begin{array}{cc}
+      \XHat^\top \OHat^{-1} \XHat & R^\top \\
+      R & 0
+   \end{array} \right]^{-1} .
+   \nonumber
+\end{eqnarray}
+The econometrics software \proglang{EViews} calculates the restricted 3SLS estimator by
+\begin{equation}
+   \left[ \begin{array}{c}
+      \bHat^\text{R}_\text{3SLS-EViews} \\[0.2em] \lHat
+   \end{array} \right]
+   =
+   \left[ \begin{array}{cc}
+      \XHat^\top \OHat^{-1} \XHat & R^\top \\
+      R & 0
+   \end{array} \right]^{-1}
+   \cdot
+   \left[ \begin{array}{c}
+      \XHat^\top \OHat^{-1} \left( y - X \bHat^\text{R}_\text{2SLS} \right)
+      \\ q 
+   \end{array} \right] ,
+   \label{eq:3slsEViewsR}
+\end{equation}
+where $\bHat^\text{R}_\text{2SLS}$ is the restricted 2SLS estimator calculated
+by Equation~\ref{eq:2sls-w2sls-3sls-r}.
+\proglang{EViews} uses the standard formula of the restricted 3SLS
+estimator (Equation~\ref{eq:cov-2sls-w2sls-3sls-r}) to calculate an estimator
+for the covariance matrix of the estimated coefficients.
+
+
+If the same instrumental variables are used in all equations 
+($Z_1 = Z_2 = \ldots = Z_G$),
+all the above mentioned approaches lead to identical coefficient estimates
+and identical covariance matrices of the estimated coefficients.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Other issues and tools}\label{sec:Other}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Residual covariance matrix}\label{sec:residcov}
+
+Since the (true) disturbances ($u_i$) of the estimated equations
+are generally not known,
+their covariance matrix cannot be determined.
+Therefore, this covariance matrix is generally calculated from
+estimated residuals ($\uHat_i$)
+that are obtained from a first-step OLS or 2SLS estimation.
+Then, in a second step, the estimated residual covariance matrix
+can be employed for a WLS, SUR, W2SLS, or 3SLS estimation.
+In many cases, the residual covariance matrix is calculated by
+\begin{equation}
+   \sHat_{ij} = \frac{ \uHat_i^\top \uHat_j }{ T },
+   \label{eq:rcovNoDfCor}
+\end{equation}
+where $T$ is the number of observations in each equation.
+However, in finite samples this estimator is biased,
+because it is not corrected for degrees of freedom.
+The usual single-equation procedure to correct for degrees of freedom
+cannot always be applied, because the number of regressors in each equation
+might differ.
+Two alternative approaches to calculate the residual covariance
+matrix are
+\begin{equation}
+   \sHat_{ij} = \frac{ \uHat_i^\top \uHat_j }
+   { \sqrt{ \left( T - K_i \right) \cdot \left( T - K_j \right) } }
+   \label{eq:rcovGeomean}
+\end{equation}
+and
+\begin{equation}
+   \sHat_{ij} = \frac{ \uHat_i^\top \uHat_j }
+   { T - \max \left( K_i , K_j \right) } \; ,
+   \label{eq:rcovMax}
+\end{equation}
+where $K_i$ and $K_j$ are the number of regressors in equation
+$i$ and $j$, respectively.
+However, these formulas yield unbiased estimators only if $K_i = K_j$
+\citep[p.~469]{judge85}.
+% Greene (2003, p. 344) says that the second is unbiased if i = j or K_i = K_j,
+% whereas the first is unbiased only if i = j. 
+% However, if K_i = K_j the first and the second are equal.
+% Why is the first biased if K_i = K_j ???????????
+
+
+A further approach to obtain a residual covariance
+matrix is
+\begin{eqnarray}
+   \sHat_{ij} & = &
+   \frac{ \uHat_i^\top \uHat_j }
+   { T - K_i - K_j + \tr \left[ X_i \left( X_i^\top X_i \right)^{-1}
+   X_i^\top X_j \left( X_j^\top X_j \right)^{-1} X_j^\top \right] }
+   \label{eq:rcovTheil} \\
+   & = &
+   \frac{ \uHat_i^\top \uHat_j }
+   { T - K_i - K_j + \tr \left[ \left( X_i^\top X_i \right)^{-1}
+   X_i^\top X_j \left( X_j^\top X_j \right)^{-1} X_j^\top X_i \right] }
+\end{eqnarray} 
+\citep[p.~309]{zellner62c}.
+This yields an unbiased estimator for all elements of $\Sigma$,
+but even if $\SHat$ is an unbiased estimator of $\Sigma$,
+its inverse $\SHat^{-1}$ is not an unbiased estimator
+of $\Sigma^{-1}$ \citep[p.~322]{theil71}.
+Furthermore, the covariance matrix calculated by Equation~\ref{eq:rcovTheil}
+is not necessarily positive semidefinite \citep[p.~322]{theil71}.
+Hence, °it is doubtful whether [this formula] is really superior to 
+[Equation~\ref{eq:rcovNoDfCor}]° \citep[p.~322]{theil71}.
+
+
+The WLS, SUR, W2SLS and 3SLS coefficient estimates are consistent
+if the residual covariance matrix is calculated
+using the residuals from a first-step OLS or 2SLS estimation.
+There exists also an alternative slightly different approach
+that consists of three steps.%
+\footnote{
+For instance, this approach is applied by
+the command \code{TSCS} of the software \proglang{LIMDEP} that carries out SUR estimations
+in which all coefficient vectors are constrained to be equal
+\citep{greene06}.
+}
+In a first step, an OLS or 2SLS estimation is applied to obtain residuals
+to calculate a (first-step) residual covariance matrix.
+In a second step, the first-step residual covariance matrix
+is used to estimate the model by WLS or W2SLS
+and new residuals are obtained to calculate
+a (second-step) residual covariance matrix.
+Finally, in the third step,
+the second-step residual covariance matrix is used
+to estimate the model by SUR or 3SLS.
+If the estimated coefficients are not constrained by cross-equation restrictions,
+OLS and WLS estimates as well as 2SLS and W2SLS estimates are identical.
+Hence, in this case both approaches generate the same results.
+
+It is also possible to iterate WLS, SUR, W2SLS and 3SLS estimations.
+At each iteration the residual covariance matrix is calculated
+from the residuals of the previous iteration.
+If Equation~\ref{eq:rcovNoDfCor} is applied to calculate the
+residual covariance matrix,
+an iterated SUR estimation converges to maximum
+likelihood \citep[p.~345]{greene03}.
+
+In some uncommon cases,
+for instance in pooled estimations,
+where the coefficients are restricted to be equal in all equations,
+the means of the residuals of each equation are not equal to zero
+$( \overline{ \uHat }_i \neq 0 )$.
+Therefore, it might be argued
+that the residual covariance matrix should be calculated
+by subtracting the means from the residuals
+and substituting $\uHat_i - \overline{ \uHat }_i$
+for $\uHat_i$ in Equations~\ref{eq:rcovNoDfCor}--\ref{eq:rcovTheil}.
+
+If the coefficients are estimated under any restrictions,
+the residual covariance matrix
+for a WLS, SUR, W2SLS, or 3SLS estimation
+can be obtained either from a restricted or from an unrestricted
+first-step estimation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Degrees of freedom}
+\label{sec:degreesOfFreedom}
+
+To our knowledge the question about how to determine the degrees
+of freedom for single-coefficient $t$ tests is not comprehensively
+discussed in the literature.
+While sometimes the degrees of freedom of the entire system
+(total number of observations in all equations minus
+total number of estimated coefficients)
+are applied,
+in other cases the degrees of freedom of each single equation
+(number of observations in the equations minus
+number of estimated coefficients in the equation)
+are used.
+Asymptotically, this distinction does not make a difference.
+However, in many empirical applications, the number of observations
+of each equation is rather small, and
+therefore, it matters.
+
+If a system of equations is estimated by an unrestricted OLS and
+the covariance matrix of the coefficients is calculated
+with $\OHat$ in Equation~\ref{eq:cov-ols-wls-sur}
+equal to $\SHat \otimes I_T$,
+the estimated coefficients and their standard errors are identical
+to an equation-wise OLS estimation.
+In this case, it is reasonable to use the degrees of freedom of
+each single equation,
+because this yields the same $P$ values as the equation-wise
+OLS estimation.
+
+In contrast, if a system of equations is estimated with many
+cross-equation restrictions and
+the covariance matrix of an OLS estimation is calculated
+with $\OHat$ in Equation~\ref{eq:cov-ols-wls-sur}
+equal to $\sHat^2 I_{G \cdot T}$,
+the system estimation is similar to a single equation estimation.
+Therefore, in this case, it seems to be reasonable to use the degrees
+of freedom of the entire system.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Goodness of fit}
+
+The goodness of fit of each single equation can be measured by the
+traditional $R^2$ values
+\begin{equation}
+   R_i^2 = 1 - \frac{ \uHat_i^\top \uHat_i }
+   { ( y_i - \overline{y_i} )^\top ( y_i - \overline{y_i} ) } \; ,
+\end{equation}
+where $R_i^2$ is the $R^2$ value of the $i$th equation
+and $\overline{y_i}$ is the mean value of $y_i$.
+
+The goodness of fit of the whole system can be measured by the
+McElroy's $R^2$ value 
+% also: \citep[p.~345]{greene03}
+\begin{equation}
+   R_*^2 = 1 - \frac{ \uHat^\top \OHat^{-1} \uHat }
+   { y^\top \left( \SHat^{-1} \otimes
+   \left( I_T - \frac{\iota \iota^\top}{T} \right) \right) y } ,
+\end{equation}
+where $\iota$ is a column vector of $T$ ones \citep{mcelroy77}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Testing linear restrictions}
+\label{sec:testingRestrictions}
+
+Linear restrictions can be tested by an $F$ test, two Wald tests and
+a likelihood ratio (LR) test.
+
+The $F$ statistic for systems of equations is
+\begin{equation}
+F = \frac{
+   ( R \bHat - q )^\top
+   ( R ( X^\top ( \Sigma \otimes I )^{-1} X )^{-1} R^\top )^{-1}
+   ( R \bHat - q ) /
+   j
+}{
+   \uHat^\top ( \Sigma \otimes I )^{-1} \uHat /
+   ( G \cdot T - K )
+} \; ,
+\label{eq:f-test}
+\end{equation}
+where $j$ is the number of restrictions,
+$K$ is the total number of estimated coefficients,
+and all other variables are as defined before
+\citep[p.~314]{theil71}.
+Under the null hypothesis, $F$ is $F$ distributed
+with $j$ and $G \cdot T - K$ degrees of freedom.
+
+However, $F$ in Equation~\ref{eq:f-test} cannot be computed,
+because $\Sigma$ is generally unknown.
+As a solution, \citet[p.~314]{theil71} proposes
+to replace the unknown $\Sigma$ in Equation~\ref{eq:f-test}
+by the estimated covariance matrix $\SHat$.
+\begin{equation}
+\hat{F} = \frac{
+   ( R \bHat - q )^\top
+   ( R ( X^\top ( \SHat \otimes I )^{-1} X )^{-1} R^\top )^{-1}
+   ( R \bHat - q ) /
+   j
+}{
+   \uHat^\top ( \SHat \otimes I )^{-1} \uHat /
+   ( G \cdot T - K )
+}
+\label{eq:f-test-theil}
+\end{equation}
+Asymptotically, $\hat{F}$ has the same distribution as $F$
+in Equation~\ref{eq:f-test},
+because the numerator of Equation~\ref{eq:f-test-theil}
+converges in probability to the numerator of Equation~\ref{eq:f-test}
+and the denominator of Equation~\ref{eq:f-test-theil}
+converges in probability to the denominator of Equation~\ref{eq:f-test}
+\citep[p.~402]{theil71}.
+
+Furthermore, the denominators of both Equations~\ref{eq:f-test}
+and~\ref{eq:f-test-theil} converge in probability to~$1$.
+Taking this into account and applying Equation~\ref{eq:cov-ols-wls-sur},
+we obtain the usual $F$~statistic of the Wald test.
+\begin{equation}
+\hat{\hat{F}} = \frac{
+   ( R \bHat - q )^\top
+   ( R \, \COVHat \left[ \bHat \right] R^\top )^{-1}
+   ( R \bHat - q )
+}{
+   j
+}
+\label{eq:f-test-wald}
+\end{equation}
+Under the null hypotheses, also $\hat{\hat{F}}$ is
+asymptotically $F$ distributed
+with $j$ and $G \cdot T - K$ degrees of freedom.
+
+Multiplying Equation~\ref{eq:f-test-wald} with $j$,
+we obtain the usual $\chi^2$ statistic for the Wald test
+\begin{equation}
+W =
+   ( R \bHat - q )^\top
+   ( R \, \COVHat [ \bHat ] \, R^\top )^{-1}
+   ( R \bHat - q ) .
+\label{eq:chi2-test-wald}
+\end{equation}
+Asymptotically, $W$ has a $\chi^2$
+distribution with $j$ degrees of freedom
+under the null hypothesis
+\citep[p.~347]{greene03}.
+
+The likelihood-ratio (LR) statistic for systems of equations is
+\begin{equation}
+\LR = T \cdot \left(
+   \log \left| \SHat_r \right|
+   - \log \left| \SHat_u \right|
+   \right) ,
+\label{eq:lr-test}
+\end{equation}
+where $T$ is the number of observations per equation, and 
+$\SHat_r$ and $\SHat_u$ are
+the residual covariance matrices calculated by Equation~\ref{eq:rcovNoDfCor}
+of the restricted and unrestricted estimation, respectively.
+Asymptotically, $\LR$ has a $\chi^2$
+distribution with $j$ degrees of freedom
+under the null hypothesis
+\citep[p.~349]{greene03}.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Hausman test}
+\label{sec:hausman}
+
+\citet{hausman78} developed a test for misspecification.
+The null hypothesis of the test is
+that the instrumental variables of each equation are
+uncorrelated with the disturbance terms of all other equations
+($\E \left[ u_i^\top Z_j \right] = 0 \, \forall \, i \neq j$).
+Under this null hypothesis, both the 2SLS and the 3SLS estimator are consistent,
+but the 3SLS estimator is (asymptotically) more efficient.
+Under the alternative hypothesis, the 2SLS estimator is consistent
+but the 3SLS estimator is inconsistent,
+i.e., the instrumental variables of each equation are
+uncorrelated with the disturbances of the same equation
+($\E \left[ u_i^\top Z_i \right] = 0 \, \forall \, i$),
+but the instrumental variables of at least one equation
+are correlated with the disturbances of another equation
+($\E \left[ u_i^\top Z_j \right] \neq 0 \, \exists \, i \neq j$).
+The Hausman test statistic is
+\begin{equation}
+  m = \left( \bHat_\text{2SLS} - \bHat_\text{3SLS} \right)^\top
+      \left( \COVHat \left[ \bHat_\text{2SLS} \right] -
+             \COVHat \left[ \bHat_\text{3SLS} \right] \right)
+      \left( \bHat_\text{2SLS} - \bHat_\text{3SLS} \right) ,
+\label{eq:hausman}
+\end{equation}
+where $\bHat_\text{2SLS}$ and $\COVHat \left[ \bHat_\text{2SLS} \right]$ are the estimated
+coefficient and covariance matrix from a 2SLS estimation, and
+$\bHat_\text{3SLS}$ and $\COVHat \left[ \bHat_\text{3SLS} \right]$ are the estimated
+coefficients and covariance matrix from a 3SLS estimation.
+Under the null hypothesis, this test statistic has a
+$\chi^2$ distribution with degrees of freedom equal to the number of
+estimated coefficients.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Source code}\label{sec:code}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The source code of the \pkg{systemfit} package is publicly available
+for download from the Comprehensive \proglang{R} Archive Network (CRAN,
+\url{http://CRAN.R-project.org/}).
+The basic functionality of this package is provided by the
+function \code{systemfit}.
+Moreover, this package provides
+tools for statistical tests,
+functions (methods) to show, extract or calculate results,
+some convenience functions,
+and internal helper functions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection[The basic function systemfit]{The basic function \code{systemfit}}
+
+The \code{systemfit} function estimates systems of linear equations
+by different estimation methods.
+Where possible,
+the user interface and the returned object of this function
+follow the function \code{lm}
+--- the basic tool for linear regressions in \proglang{R} ---
+to make the usage of \code{systemfit} as easy as possible
+for \proglang{R} users.
+
+The econometric estimation is done by applying
+the formulas in Sections~\ref{sec:Estimation-ols-wls-sur}
+and~\ref{sec:Estimation-2sls-w2sls-3sls}
+or --- if the coefficients are estimate under linear restrictions ---
+by the formulas in Section~\ref{sec:Restrictions}.
+If the restrictions on the coefficients are specified symbolically,
+function \code{makeHypothesis} of the \pkg{car} package \citep{r-car-1.2-1, fox02a}
+is used to create the restriction matrix.
+
+The \code{systemfit} function returns a list of class \code{systemfit}
+that contains the results that belong to the entire system of equations.
+One special element of this list is called \code{eq},
+which is a list that contains one object for each estimated equation.
+These objects are lists of class \codeD{systemfit}{equation}
+and contain the results that belong only to the regarding equation.
+A complete description is available in the documentation of this function
+that is included in the package.
+A comparison of the elements returned by \code{lm} and by \code{systemfit}
+is available in appendix~\ref{sec:returned-object}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Statistical tests}
+
+The \codeD{linear}{hypothesis} and
+\code{lrtest} methods for \code{systemfit} objects
+as well as the function \codeD{hausman}{systemfit}
+apply the statistical tests described in
+Sections~\ref{sec:testingRestrictions} and~\ref{sec:hausman}.
+
+The \codeD{linear}{hypothesis} method for {systemfit} objects
+can be used to test linear restrictions on the estimated coefficients
+by \citeauthor{theil71}'s $F$ test or by usual Wald tests.
+Internally, \citeauthor{theil71}'s $F$ statistic is computed
+by the hidden function \codeD{.ftest}{systemfit}
+and the Wald tests are computed by
+the default \codeD{linear}{hypothesis} method of the \pkg{car} package
+\citep{r-car-1.2-1, fox02a}.
+The \code{lrtest} method for \code{systemfit} objects is a wrapper function
+to the default \code{lrtest} method of the \pkg{lmtest} package
+\citep{r-lmtest},
+which computes the likelihood-ratio (LR) test statistic.
+All these functions return an object of class \code{anova}
+that contains --- amongst others ---
+the empirical test statistic, the degrees of freedom,
+and the corresponding $P$ value.
+
+The function \codeD{hausman}{systemfit}
+tests the consistency of the 3SLS estimator.
+It returns an object of class \code{htest},
+which contains --- amongst others ---
+the empirical test statistic,
+the degrees of freedom, and the $P$ value.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Other methods and functions}
+
+The \pkg{systemfit} package provides several methods
+for objects both of classes \code{systemfit}
+and \codeD{systemfit}{equation}:
+\code{print} methods print the estimation results,
+\code{summary} methods calculate summary results,
+\code{confint} methods compute confidence intervals for the coefficients,
+\code{predict} methods calculate predicted values,
+\code{coef} methods extract the estimated coefficients,
+\code{vcov} methods extract their covariance matrix,
+\code{fitted} methods extract the fitted values,
+\code{residuals} methods extract the residuals,
+\code{formula} methods extract the formula(s),
+\code{terms} methods extract the model terms,
+\codeD{model}{frame} methods extract the model frame,
+and \codeD{model}{matrix} methods extract the model matrix.
+Some methods can be applied to objects of class \code{systemfit} only:
+a \code{correlation} method calculates
+the correlations between the predictions of two equations,
+an \code{se.ratio} method computes the ratios of the standard errors
+of the predictions between two models,
+and a \code{logLik} method extracts the log likelihood value.
+The package provides \code{print} methods
+to print objects of classes
+\codeD{summary}{systemfit}, \codeDD{summary}{systemfit}{equation},
+and \codeD{confint}{systemfit}
+that are returned by the above mentioned \code{summary}
+and \code{confint} methods.
+There exist also two \code{coef} methods
+to extract the estimated coefficients,
+their standard errors, $t$ values, and $P$ values
+from objects of classes
+\codeD{summary}{systemfit} and \codeDD{summary}{systemfit}{equation}.%
+\footnote{%
+There does not exist a special method to extract
+the degrees of freedom of the residuals from \code{systemfit} objects,
+because the default method of \code{df.residual}
+works for these objects.
+}
+
+The convenience function
+\code{createSystemfitModel} creates a model for \code{systemfit}
+by random numbers;
+\codeD{systemfit}{control} sets suitable default values
+for the technical control parameters for \code{systemfit}.
+
+Finally, the package includes some internal (hidden) helper functions:
+\codeD{.prepareData}{systemfit},
+\code{.stackMatList}, and \code{.prepareWmatrix}
+for preparing the data matrices;
+\code{.calcXtOmegaInv} and \code{.calcGLS}
+for calculating the GLS estimator;
+\code{.calcResidCov} and \code{.calcSigma2}
+for calculating the (co)variances of the residuals;
+and \codeD{.ftest}{systemfit}
+for calculating \citeauthor{theil71}'s $F$ statistic.
+If \code{systemfit} is applied to
+a (classical) °seemingly unrelated regression° analysis with panel data,
+it calls the hidden internal function \code{.systemfitPanel},
+which reshapes the data, creates the formulas to be estimated,
+and --- if requested --- specifies restrictions
+to ensure that the coefficients of all individuals are equal.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Efficiency of computations}
+\label{sec:code-efficiency}
+We have followed \cite{bates04} to make the code of \pkg{systemfit}
+faster and more stable.
+First, if a formula contains an inverse of a matrix
+that is post-multiplied by a vector or matrix,
+we use \code{solve(A,b)} instead of \code{solve(A) \%*\% b}.
+Second, we calculate crossproducts
+by \code{crossprod(X)} or \code{crossprod(X,y)}
+instead of \code{t(X) \%*\% X} or \code{t(X) \%*\% y},
+respectively.
+
+The matrix $\Omega^{-1}$ that is used to compute the estimated
+coefficients and their covariance matrix is of size
+$( G \cdot T ) \times ( G \cdot T )$
+(see Sections~\ref{sec:Estimation-ols-wls-sur},
+\ref{sec:Estimation-2sls-w2sls-3sls}, and~\ref{sec:Restrictions}).
+In case of large data sets, $\Omega^{-1}$ becomes computationally infeasible.
+Therefore, we use the following transformation and compute $X^\top \Omega^{-1}$
+by dividing the $X$ matrix into submatrices,
+doing some calculations with these submatrices,
+adding up some of these submatrices, and
+finally putting the submatrices together, so that
+\begin{equation}
+X^\top \Omega^{-1}
+%= X^\top \left( \Sigma^{-1} \otimes I \right)
+= \sum_{i=1} \left[ \begin{array}{c}
+   \sigma^{1i} {X^1} \\
+   \sigma^{2i} {X^2} \\
+   \vdots \\
+   \sigma^{Gi} {X^G} \\
+\end{array} \right]^\top ,
+\label{eq:omegaInv}
+\end{equation}
+where $\sigma^{ij}$ are the elements of the matrix $\Sigma^{-1}$,
+and $X^i$ is a submatrix of $X$ that contains the rows
+that belong to the $i$'s equation.
+This computation is done inside the internal (hidden) function
+\code{.calcXtOmegaInv}.
+
+Since version 1.0, the \code{systemfit} function by default
+uses the \pkg{Matrix} package \citep{r-matrix-07}
+for all computations where matrices are involved.
+The \pkg{Matrix} package provides classes for different types of matrices.
+For instance, we choose class \code{dgeMatrix}
+(°real matrices in general storage mode°),
+for matrices $X_i$ in Equation~\ref{eq:model-array},
+class \code{dgCMatrix} (°general, numeric, sparse matrices
+in the (sorted) compressed sparse column format°)
+for matrix $X$ in Equation~\ref{eq:model-matrices},
+and class \code{dspMatrix}
+(°symmetric real matrices in packed storage (one triangle only)°)
+for the residual covariance matrix $\SHat$.
+If the \pkg{Matrix} package is used,
+the possibly huge matrix $\Omega^{-1}$ is no longer a problem,
+because it is a sparse matrix
+that can be stored in a compressed format (class \code{dgCMatrix}).
+Hence, we no longer need the algorithm in Equation~\ref{eq:omegaInv}.
+We have tested different ways to calculate a GLS estimator
+like in Equation~\ref{eq:ols-wls-sur}
+and we found
+that the following code is the fastest:
+<<eval=FALSE>>=
+sigmaInv <- solve( residCov )
+xtOmegaInv <- crossprod( xMat, kronecker( sigmaInv, Diagonal( nObs ) ) )
+coef <- solve( xtOmegaInv %*% xMat, xtOmegaInv %*%  yVec )
+@
+In this code snippet,
+\code{residCov} is the residual covariance matrix $\SHat$,
+\code{nObs} is the number of observations in each equation $T$,
+\code{xMat} is the matrix $X$ and
+\code{yVec} is the vector $y$ in Equation~\ref{eq:ols-wls-sur}.
+
+By default, the \code{systemfit} function uses the \pkg{Matrix} package
+to perform GLS estimations,
+because using this package considerably decreases
+the computation time for many common models.
+However, the estimation of small models with small data sets
+gets slower by using the \pkg{Matrix} package
+(see appendix~\ref{sec:timings}).
+While this increase in computation time
+is often imperceptible to human beings,
+it might matter in some cases
+such as iterated estimations or Monte Carlo studies.
+Therefore, the user can opt for not using the \pkg{Matrix} package,
+but Equation~\ref{eq:omegaInv} with standard \proglang{R} matrices.
+
+
+\subsection[Overlap with other functions and packages in R]
+   {Overlap with other functions and packages in \proglang{R}}
+
+Single-equation models can be fitted in \proglang{R}
+by OLS with function \code{lm} (package \pkg{stats})
+and by 2SLS with function \code{tsls}
+(package \pkg{sem}, \citealp{r-sem-0.9-8}).
+This is also possible with the \code{systemfit} function,
+but \code{systemfit} is specialized in estimating systems of equation,
+i.e., more than one equation.
+Its capability to estimate single-equation models is just a side-effect.
+
+Function \code{sem} (package \pkg{sem}, \citealp{r-sem-0.9-8})
+can be used to estimate structural equation models in \proglang{R}
+by limited information maximum likelihood (LIML)
+and full information maximum likelihood (FIML)
+assuming normal or multinormal errors, respectively.
+A special feature of this function is the estimation
+of models with unobserved (°latent°) variables,
+which is not possible with \code{systemfit}.
+While \code{sem} cannot be used to consistently estimate
+systems of simultaneous equations with some endogenous regressors,
+it can be used to estimate systems of equations,
+where all regressors are exogenous.
+However, the latter is rather cumbersome
+(see appendix~\ref{sec:sem}).
+Hence, \code{systemfit} is the only function in \proglang{R}
+that can be used to estimate systems of simultaneous equations
+and it is the most convenient function to estimate
+systems of equations with purely exogenous regressors.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Using systemfit]{Using \pkg{systemfit}}\label{sec:Usage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this section we demonstrate how to use the \pkg{systemfit} package.
+First, we show the standard usage of \code{systemfit} by a simple example.
+Second, several options that can be specified by the user are presented.
+Then, the usage of \code{systemfit}
+for a (classical) °seemingly unrelated regression° analysis
+with panel data is described.
+Finally, we demonstrate how to apply some statistical tests.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection[Standard usage of systemfit]{Standard usage of \code{systemfit}}
+\label{sec:standard-usage}
+
+As described in the previous section,
+systems of equations can be econometrically estimated
+with the function \code{systemfit}.
+The only mandatory argument is \code{formula}.
+Typically, it is a list of formulas to be estimated,
+but it may also be a single formula for estimating a single-equation model.
+Each formula is a standard regression formula in \proglang{R}
+(see documentation of \code{formula}).
+
+The following demonstration uses an example taken from
+\citet[p.~685]{kmenta86}.
+We want to estimate a small model of the US food market:
+\begin{align}
+\texttt{consump} & = \beta_1 + \beta_2 \cdot \texttt{price}
+   + \beta_3 \cdot \texttt{income} \\
+\texttt{consump} & = \beta_4 + \beta_5 \cdot \texttt{price}
+   + \beta_6 \cdot \texttt{farmPrice} + \beta_7 \cdot \texttt{trend}
+\end{align}
+The first equation represents the demand side of the food market.
+Variable \code{consump} (food consumption per capita) is the dependent variable.
+The regressors are \code{price} (ratio of food prices to general consumer prices)
+and \code{income} (disposable income) as well as a constant.
+The second equation specifies the supply side of the food market.
+Variable \code{consump} is the dependent variable of this equation as well.
+The regressors are again \code{price} (ratio of food prices to general 
+consumer prices) and a constant as well as 
+\code{farmPrice} (ratio of preceding year's prices received by farmers
+to general consumer prices) and 
+\code{trend} (a time trend in years).
+These equations can be estimated by OLS in \proglang{R} by
+<<systemfit_usage>>=
+library( "systemfit" )
+data( "Kmenta" )
+attach( Kmenta )
+eqDemand <- consump ~ price + income
+eqSupply <- consump ~ price + farmPrice + trend
+eqSystem <- list( demand = eqDemand, supply = eqSupply )
+fitols <- systemfit( eqSystem )
+print( fitols )
+@
+
+The first line loads the \pkg{systemfit} package.
+The second line loads example data that are included with the package.
+They are attached to the \proglang{R} search path in line three.
+In the fourth and fifth line, the demand and supply equations are specified,
+respectively.%
+\footnote{
+A regression constant is always implied if not explicitly omitted.
+}
+In the sixth line, these equations are concatenated into a list and
+are labeled \code{demand} and \code{supply}, respectively.%
+\footnote{
+If no labels are provided, the equations are numbered consecutively
+( \code{eq1}, \code{eq2}, \ldots ).
+}
+Finally, in the last two lines, the regression is performed
+and the estimation results are printed.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection[User options of systemfit]{User options of \code{systemfit}}
+\label{sec:user-options}
+
+The user can modify the default estimation method by providing
+additional optional arguments,
+e.g., to specify instrumental variables
+or restrictions on the coefficients.
+All optional arguments are described in the following:
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Estimation method}
+
+The optional argument \code{method} is a string
+that determines the estimation method.
+It must be either \code{"OLS"}, \code{"WLS"}, \code{"SUR"},
+\code{"2SLS"}, \code{"W2SLS"}, or \code{"3SLS"}.
+These methods correspond to the estimation methods
+described in Sections~\ref{sec:Estimation-ols-wls-sur},
+\ref{sec:Estimation-2sls-w2sls-3sls}, and~\ref{sec:Restrictions}.
+The following command estimates the model described above as
+°seemingly unrelated regression°.
+<<systemfit_usage>>=
+fitsur <- systemfit( eqSystem, method = "SUR" )
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Instrumental variables}
+The instruments for a 2SLS, W2SLS or 3SLS estimation can be specified
+by the argument \code{inst}.
+If the same instruments should be used for all equations,
+\code{inst} must be a one-sided formula.%
+\footnote{
+A one-sided formula is a standard formula in \proglang{R}
+without a dependent variable.}
+If different instruments should be used for each equation,
+\code{inst} must be a list that contains a one-sided formula
+for each equation.
+The following example uses instrumental variables
+to estimate the model described above
+by °three-stage least squares° (3SLS).
+While the first command specifies the same instruments for all equations,
+the second uses different instruments:
+<<systemfit_usage>>=
+fit3sls  <- systemfit( eqSystem, method = "3SLS",
+   inst = ~ income + farmPrice + trend )
+fit3sls2 <- systemfit( eqSystem, method = "3SLS",
+   inst = list( ~ farmPrice + trend, ~ income + farmPrice + trend ) )
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Data}
+Having all data in the global environment or attached to the search path
+is often inconvenient.
+Therefore, \code{systemfit} has the argument \code{data}
+to specify a data frame
+that contains the variables of the model.
+In the following example, we use this argument to specify
+that the data for the estimation
+should be taken from the data frame \code{Kmenta}.
+Hence, we no longer need to attach this data frame before calling \code{systemfit}:
+<<systemfit_usage>>=
+fitsur <- systemfit( eqSystem, method = "SUR", data = Kmenta )
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Restrictions on the coefficients}
+As outlined in Section~\ref{sec:Restrictions}, restrictions on the coefficients
+can be specified in two ways.
+One way is to use the matrix $R$ and the vector $q$
+(see Section~\ref{sec:Restrictions}).
+These restrictions can be specified symbolically
+by argument \codeD{restrict}{matrix}
+as in the generic function
+\codeD{linear}{hypothesis} of the \pkg{car} package \citep{r-car-1.2-1, fox02a}.
+This argument must be a vector of character strings,
+where each element represents one linear restriction,
+and each element must be either a linear combination of coefficients,
+or a linear equation in the coefficients
+(see documentation of function \codeD{linear}{hypothesis}
+in the \pkg{car} package, \citealp{r-car-1.2-1, fox02a}).
+We illustrate this by estimating the model under
+the restriction $\beta_2 + \beta_6 = 0$.
+Since the name of $\beta_2$
+(coefficient of variable \code{price} in equation \code{demand})
+is \code{demand\_price}
+and the name of $\beta_6$
+(coefficient of variable \code{farmPrice} in equation \code{supply})
+is \code{supply\_farmPrice},
+this restriction can be specified by
+<<systemfit_usage,keep.source=TRUE>>=
+restrict <- "demand_price + supply_farmPrice = 0"
+fitsurRmat <- systemfit(eqSystem, method = "SUR",
+   restrict.matrix = restrict)
+@
+\label{code:Rmat}
+
+Alternatively, the restrictions via matrix $R$ and vector $q$
+can be specified numerically.
+The matrix $R$ can be specified with argument \codeD{restrict}{matrix}
+and the vector $q$ with argument \codeD{restrict}{rhs}.
+<<systemfit_usage,keep.source=TRUE>>=
+Rmat <- matrix(0, nrow = 1, ncol = 7)
+Rmat[1, 2] <- 1
+Rmat[1, 6] <- 1
+qvec <- c(0)
+fitsurRmatNum <- systemfit(eqSystem, method = "SUR",
+   restrict.matrix = Rmat, restrict.rhs = qvec)
+@
+The first line creates a $1 \times 7$ matrix of zeros,
+where 1 is the number of restrictions and
+7 is the number of unrestricted coefficients.
+The following two lines specify this matrix in a way
+that the multiplication with the coefficient vector
+results in $ \beta_2 + \beta_6 $.
+The fourth line creates a vector with a single element
+that contains the right hand side of the restriction, i.e., zero.
+Finally the coefficients are estimated under the restriction
+$\beta_2 + \beta_6 = 0$.
+
+The other way to specify restrictions on the coefficients is to modify the regressor matrix
+by post-multiplying it with a matrix, say $M$
+(see Section~\ref{sec:Restrictions}).
+This kind of restriction can be specified
+by setting argument \codeD{restrict}{regMat} equal to the matrix $M$.
+We convert the restriction specified above to $\beta_2 = - \beta_6$,
+and set $\beta_1 = \beta^\text{M}_1$, \ldots, $\beta_5 = \beta^\text{M}_5$,
+$\beta_6 = - \beta^\text{M}_2$, and $\beta_7 =  \beta^\text{M}_6$.
+We can do this in \proglang{R} by
+<<systemfit_usage,keep.source=TRUE>>=
+modRegMat <- matrix(0, nrow = 7, ncol = 6)
+modRegMat[1:5, 1:5] <- diag(5)
+modRegMat[6, 2] <- -1
+modRegMat[7, 6] <- 1
+fitsurRegMat <- systemfit(eqSystem, method = "SUR",
+   restrict.regMat = modRegMat)
+@
+The first line creates a $7 \times 6$ matrix of zeros,
+where 7 is the number of unrestricted coefficients and
+6 is the number of restricted coefficients.
+The following three lines specify the matrix $M$ (\code{modRegMat})
+as described before.
+Finally the coefficients are estimated under the restriction
+$\beta^\text{M}_2 = \beta_2 = - \beta_6$.
+
+Of course, the estimation results do not depend on the method
+that was used to specify this restriction:
+<<systemfit_usage>>=
+all.equal( coef( fitsurRmat ), coef( fitsurRmatNum ) )
+all.equal( coef( fitsurRmat ), coef( fitsurRegMat ) )
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Iteration control}
+The estimation methods WLS, SUR, W2SLS and 3SLS need a
+covariance matrix of the residuals
+that can be calculated from a first-step OLS or 2SLS estimation
+(see Section~\ref{sec:residcov}).
+This procedure can be iterated and at each iteration the covariance
+matrix is calculated from the previous step estimation.
+This iteration is repeated until the maximum number of iterations
+is reached or the coefficient estimates have converged.
+The maximum number of iterations is specified by argument \code{maxiter}.
+Its default value is one, which means no iteration.
+The convergence criterion is
+\begin{equation}
+   \sqrt{ \frac{ \sum_i (\beta_{i,g} - \beta_{i,g-1})^2 }
+   { \sum_i \beta_{i,g-1}^2 }}
+      < \texttt{tol} ,
+\end{equation}
+where $\beta_{i,g}$ is the $i$th coefficient of the $g$th iteration.
+The default value of the convergence criterion (argument \code{tol})
+is $10^{-5}$.
+
+In the following example,
+we estimate the model described above by iterated SUR:
+<<systemfit_usage>>=
+fitsurit <- systemfit( eqSystem, method = "SUR", maxiter = 500 )
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Residual covariance matrix}
+It was explained in Section~\ref{sec:residcov} that several different
+methods have been proposed to calculate the residual
+covariance matrix.
+The user can specify, which method \code{systemfit} should use.
+Possible values of the argument \code{methodResidCov} are presented in
+Table~\ref{tab:methodResidCov}.
+By default, \code{systemfit} uses Equation~\ref{eq:rcovGeomean}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+argument & equation \\
+\code{methodResidCov} & \\
+\hline
+\code{"noDfCor"} & \ref{eq:rcovNoDfCor} \\
+\hline
+\code{"geomean"} & \ref{eq:rcovGeomean} \\
+\hline
+\code{"max"}     & \ref{eq:rcovMax} \\
+\hline
+\code{"Theil"}   & \ref{eq:rcovTheil} \\
+\hline
+\end{tabular}
+\caption{Possible values of argument \code{methodResidCov}}
+\label{tab:methodResidCov}
+\end{table}
+
+Furthermore, the user can specify
+whether the means should be subtracted from the residuals
+before Equations~\ref{eq:rcovNoDfCor}, \ref{eq:rcovGeomean}, \ref{eq:rcovMax},
+or~\ref{eq:rcovTheil} are applied
+to calculate the residual covariance matrix
+(see Section~\ref{sec:residcov}).
+The corresponding argument is called \code{centerResiduals}.
+It must be either \code{TRUE} (subtract the means) or
+\code{FALSE} (take the unmodified residuals).
+The default value of \code{centerResiduals} is \code{FALSE}.
+
+Moreover, if the coefficients are estimated under restrictions,
+the user can use argument \code{residCovRestricted} to specify
+whether the residual covariance matrix
+for a WLS, SUR, W2SLS, or 3SLS estimation
+should be obtained from a restricted or from an unrestricted
+first-step estimation
+(see Section~\ref{sec:residcov}).
+If this argument is \code{TRUE} (the default),
+the residual covariance matrix is obtained from a restricted
+OLS or 2SLS estimation.
+If it is \code{FALSE},
+the residual covariance matrix is obtained from an unrestricted
+first-step estimation.
+
+Finally, argument \code{residCovWeighted} can be used to decide,
+whether the residual covariance matrix for a SUR (3SLS) estimation
+should be obtained from a WLS (W2SLS) estimation
+instead of from an OLS (2SLS) estimation
+(see Section~\ref{sec:residcov}).
+By default, \code{residCovWeighted} is \code{FALSE},
+which means that the residuals of an OLS (2SLS) estimation are used
+to compute the residual covariance matrix.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{3SLS formula}
+As discussed in Sections~\ref{sec:Estimation-2sls-w2sls-3sls} and~\ref{sec:Restrictions},
+there exist several different
+methods to perform a 3SLS estimation.
+The user can specify the method by argument \code{method3sls}.
+Possible values are presented in Table~\ref{tab:method3sls}.
+The default value is \code{"GLS"}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+argument           & equation       & equation \\
+\code{method3sls} & (unrestricted) & (restricted) \\
+\hline
+\code{"GLS"}     & \ref{eq:2sls-w2sls-3sls} & \ref{eq:2sls-w2sls-3sls-r} \\
+\hline
+\code{"IV"}      & \ref{eq:3slsIv}      & \ref{eq:3slsIvR} \\
+\hline
+\code{"GMM"}     & \ref{eq:3slsGmm}     & \ref{eq:3slsGmmR} \\
+\hline
+\code{"Schmidt"} & \ref{eq:3slsSchmidt} & \ref{eq:3slsSchmidtR} \\
+\hline
+\code{"EViews"}  & \ref{eq:3slsEViews}  & \ref{eq:3slsEViewsR} \\
+\hline
+\end{tabular}
+\caption{Possible values of argument \code{method3sls}}
+\label{tab:method3sls}
+\end{table}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Sigma squared}
+In case of OLS or 2SLS estimations, argument \code{singleEqSigma}
+can be used to specify,
+whether different $\sigma^2$s for each single equation
+or the same $\sigma^2$ for all equations should be used.
+If argument \code{singleEqSigma} is \code{TRUE},
+$\OHat$ in Equation~\ref{eq:cov-ols-wls-sur} or~\ref{eq:cov-2sls-w2sls-3sls}
+is set to $\SHat \otimes I_T$.
+In contrast, if argument \code{singleEqSigma} is \code{FALSE},
+$\OHat$ in Equation~\ref{eq:cov-ols-wls-sur} or~\ref{eq:cov-2sls-w2sls-3sls}
+is set to $\sHat^2 I_{G \cdot T}$.
+In case of an unrestricted regression,
+argument \code{singleEqSigma} is \code{TRUE} by default.
+However, if the coefficients are estimated under restrictions,
+this argument is \code{FALSE} by default.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{System options}
+Furthermore, two options regarding some internal calculations are available.
+First, argument \code{solvetol} specifies the tolerance level
+for detecting linear dependencies when inverting a matrix or
+calculating a determinant (using functions \code{solve} and \code{det}).
+The default value depends on the used computer system and is equal to the
+default tolerance level of \code{solve} and \code{det}.
+
+Second, argument \code{useMatrix} specifies
+whether the \pkg{Matrix} package \citep{r-matrix-07}
+should be used for all computations where matrices are involved
+(see Section~\ref{sec:code-efficiency}).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Returned data objects}
+
+Finally, the user can decide
+whether \code{systemfit} should return some data objects.
+Argument \code{model} indicates
+whether a data frame with the data of the model
+should be returned.
+Its default value is \code{TRUE},
+i.e., the model frame is returned.
+Arguments \code{x}, \code{y},
+and \code{z} specify
+whether the model matrices ($X_i$),
+the responses ($y_i$), and the matrices of instrumental variables ($Z_i$),
+respectively, should be returned.
+These three arguments are \code{FALSE} by default,
+i.e., these data objects are not returned.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection[Summary results with summary.systemfit]
+   {Summary results with \code{summary.systemfit}}
+
+The \code{summary} method can be used
+to compute and print summary results of objects
+returned by \code{systemfit}.
+<<systemfit_usage>>=
+summary( fitsur )
+@
+First, the estimation method is reported
+and a few summary statistics for the entire system
+and for each equation are given.
+Then, the covariance matrix used for estimation
+and the covariance matrix as well as the correlation matrix
+of the (final) residuals are printed.
+Finally, the estimation results of each equation are reported:
+the formula of the estimated equation,
+the estimated coefficients, their standard errors, $t$ values, $P$ values
+and codes indicating their statistical significance,
+as well as some other statistics like
+the standard error of the residuals and
+the $R^2$ value of the equation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection[Degrees of freedom for t tests]
+   {Degrees of freedom for $t$ tests}
+
+The \code{summary} method for \code{systemfit} objects has an optional argument \code{useDfSys}.
+It selects the approach
+that is applied by \code{systemfit}
+to determine the degrees of freedom of $t$ tests of the estimated coefficients
+(Section~\ref{sec:degreesOfFreedom}).
+If argument \code{useDfSys} is \code{TRUE},
+the degrees of freedom of the whole system are taken.
+In contrast, if \code{useDfSys} is \code{FALSE},
+the degrees of freedom of the single equation are taken.
+If the coefficients are estimated under restrictions,
+argument \code{useDfSys} is \code{TRUE} by default.
+However, if no restrictions on the coefficient are specified,
+the default value of \code{useDfSys} is \code{FALSE}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Reduce amount of printed output}
+
+The optional arguments \code{residCov} and \code{equations}
+can be used reduce the amount of the printed output.
+Argument \code{residCov} specifies
+whether the covariance matrix and
+the correlation matrix
+of the residuals are printed.
+Argument \code{equations} specifies
+whether summary results of each equation are printed.
+By default, both arguments are \code{TRUE}.
+The following command returns a sparse summary output:
+<<systemfit_usage>>=
+summary( fitsur, residCov = FALSE, equations = FALSE )
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Panel data}
+
+The \code{systemfit} function can also be used
+for a (classical) °seemingly unrelated regression° analysis
+with panel data.
+For this type of analysis,
+the data must be provided in a transformed data frame of class \codeD{plm}{dim}%
+\footnote{
+Generally, panel data can be either in °long format°
+(different individuals are arranged below each other)
+or in °wide format°
+(different individuals are arranged next to each other).
+For this analysis, the data must be in °long format°.
+}
+which can be created with the function \codeD{plm}{data}
+from the \proglang{R} package \pkg{plm}
+\citep{r-plm-0.3-1}.
+In contrast to the previously described usage of \code{systemfit},
+argument \code{formula} must be a single equation (object of class \code{formula}).
+This formula is estimated for all individuals.
+
+We demonstrate the application of \code{systemfit}
+to panel data
+using an example taken from \citet[p.~340]{greene03}
+that is based on \citet{grunfeld58}.
+We want to estimate a model for gross investment of 5 US firms
+in the years 1935--1954:
+\begin{equation}
+\texttt{invest}_{it} = \beta_1 + \beta_2 \cdot \texttt{value}_{it} +
+   \beta_3 \cdot \texttt{capital}_{it}
+\end{equation}
+where \code{invest} is the gross investment of firm $i$ in year $t$,
+\code{value} is the market value of the firm at the end of the
+previous year, and
+\code{capital} is the capital stock of the firm at the end of the
+previous year.
+
+This model can be estimated by
+<<systemfit_usage>>=
+data( "GrunfeldGreene" )
+library( "plm" )
+GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
+greeneSur <- systemfit( invest ~ value + capital, method = "SUR",
+   data = GGPanel )
+@
+The first line loads the example data set \code{GrunfeldGreene}
+that is included in the \pkg{systemfit} package.
+The second line loads the \pkg{plm} package
+and the following line specifies a data frame of class \codeD{plm}{dim},
+where the variables \code{firm} and \code{year} indicate
+the individual (cross-section) and time identifier, respectively.
+Finally, a seemingly unrelated regression is performed.
+
+The optional argument \code{pooled} is a logical variable indicating
+whether the coefficients are restricted to be equal for all
+individuals.
+By default, this argument is set to \code{FALSE}.
+The following command does a seemingly unrelated regression
+of the same model as before,
+but with coefficients restricted to be equal for all individuals.
+<<systemfit_usage>>=
+greeneSurPooled <- systemfit( invest ~ value + capital, method = "SUR",
+   data = GGPanel, pooled = TRUE )
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Testing linear restrictions}
+
+As described in Section~\ref{sec:testingRestrictions},
+linear restrictions can be tested by an $F$ test, two Wald tests and
+an LR test.
+The \pkg{systemfit} package provides
+the method \codeD{linear}{hypothesis} for the $F$ and Wald tests
+as well as the method \code{lrtest} for LR tests.
+
+We will now test the restriction $\beta_2 = -\beta_6$
+that was specified by the matrix \code{Rmat} and the vector \code{qvec}
+in the example above (p.~\pageref{code:Rmat}).
+<<systemfit_usage>>=
+linear.hypothesis( fitsur, Rmat, qvec, test = "FT" )
+
+linear.hypothesis( fitsur, Rmat, qvec, test = "F" )
+
+linear.hypothesis( fitsur, Rmat, qvec, test = "Chisq" )
+
+lrtest( fitsurRmat, fitsur )
+@
+The linear restrictions are tested by \citeauthor{theil71}'s $F$ test
+(Equation~\ref{eq:f-test-theil}) first,
+second by the $F$ statistic of a Wald test
+(Equation~\ref{eq:f-test-wald}),
+third by the $\chi^2$ statistic of a Wald test
+(Equation~\ref{eq:chi2-test-wald}),
+and finally by an LR test
+(Equation~\ref{eq:lr-test}).
+
+The first argument of the \codeD{linear}{hypothesis} method for \code{systemfit} objects
+must be an unrestricted regression
+returned by \code{systemfit}.
+The second and third arguments are the restriction matrix $R$ and
+the optional vector $q$, as described in Section~\ref{sec:Restrictions}.
+Analogously to the argument \codeD{restrict}{matrix}
+of the \code{systemfit} function,
+the restrictions can be specified either in matrix form or symbolically.
+The optional argument \code{test} must be
+a character string, \code{"FT"}, \code{"F"}, or \code{"Chisq"},
+specifying whether to compute
+\citeauthor{theil71}'s finite-sample $F$ test
+(with approximate $F$ distribution)
+the finite-sample Wald test (with approximate $F$ distribution)
+or the large-sample Wald test (with asymptotic $\chi^2$ distribution).
+
+All arguments of the \code{lrtest} method for \code{systemfit} objects
+must be fitted model objects returned by \code{systemfit}.
+It consecutively compares all provided fitted model objects.
+
+All tests print a short description of the test
+and the tested model objects first.
+Then, a small table is printed,
+where each row belongs to one (unrestricted or restricted) model.
+The second row reports (amongst others)
+the degree(s) of freedom of the test,
+the empirical test statistic,
+and the marginal level of significance ($P$ value).
+Although all tests check the same hypothesis,
+there is some variation of the $P$ values.
+However, all tests suggest the same decision:
+The null hypothesis $\beta_2 = -\beta_6$ cannot be rejected at any
+reasonable level of significance.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Hausman test}
+A Hausman test, which is described in Section~\ref{sec:hausman},
+can be carried out with following commands:
+<<systemfit_usage>>=
+fit2sls  <- systemfit( eqSystem, method = "2SLS",
+   inst = ~ income + farmPrice + trend, data = Kmenta )
+fit3sls <- systemfit( eqSystem, method = "3SLS",
+   inst = ~ income + farmPrice + trend, data = Kmenta )
+hausman.systemfit( fit2sls, fit3sls )
+@
+<<echo=FALSE>>=
+hausmantest <- hausman.systemfit( fit2sls, fit3sls )
+@
+First of all, the model is estimated by 2SLS and then by 3SLS.
+Finally, in the last line
+the test is carried out by the command \codeD{hausman}{systemfit}.
+This function requires two arguments:
+the result of a 2SLS estimation and
+the result of a 3SLS estimation.
+The Hausman test statistic is
+\Sexpr{round( hausmantest$statistic, digits = 3)},
+which has a $\chi^2$ distribution
+with \Sexpr{hausmantest$parameter} degrees of freedom
+under the null hypothesis.
+The corresponding $P$ value is
+\Sexpr{round( hausmantest$p.value, digits = 3 )}.
+This shows that the null hypothesis is not rejected
+at any reasonable level of significance.
+Hence, we can assume that the 3SLS estimator is consistent.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Replication of textbook results}\label{sec:reliability}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this section, we reproduce results from several textbook examples
+using the \pkg{systemfit} package for several reasons.
+First, a comparison of \pkg{systemfit}'s results
+with results published in the literature
+confirms the reliability of the \pkg{systemfit} package.
+Second, this section helps teachers and students
+become familiar with using the \pkg{systemfit} package.
+Third, the section encourages reproducible research,
+which should be a general goal in scientific analysis
+\citep{buckheit95,schwab00}.
+For instance, by preparing this section,
+the exact estimation methods of the replicated analyses have been discovered
+and a few errors in \citet{greene03} have been found
+\citep[see][]{greene06a}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection[Kmenta (1986): Example on p. 685 (food market)]
+   {Kmenta (1986): Example on p.~685 (food market)}
+
+First, we reproduce an example taken from \citet[p.~685]{kmenta86}.
+The data are available from Table~13-1 (p.~687),
+and the results are presented in Table~13-2 (p.~712) of this book.
+
+Before starting the estimation,
+we load the data and specify the two formulas of the model
+as well as the instrumental variables.
+Then the equation system is estimated by OLS, 2SLS, 3SLS, and
+iterated 3SLS.
+After each estimation, we provide the commands
+to print the estimated coefficients.
+<<systemfit_replication,echo=FALSE>>=
+library( "systemfit" )
+@
+<<systemfit_replication,results=hide>>=
+data( "Kmenta" )
+eqDemand <- consump ~ price + income
+eqSupply <- consump ~ price + farmPrice + trend
+inst <- ~ income + farmPrice + trend
+system <- list( demand = eqDemand, supply = eqSupply )
+@
+OLS estimation:
+<<systemfit_replication,results=hide>>=
+fitOls <- systemfit( system, data = Kmenta )
+round( coef( summary( fitOls ) ), digits = 4 )
+@
+2SLS estimation:
+<<systemfit_replication,results=hide>>=
+fit2sls <- systemfit( system, method = "2SLS", inst = inst, data = Kmenta )
+round( coef( summary( fit2sls ) ), digits = 4 )
+@
+3SLS estimation:
+<<systemfit_replication,results=hide>>=
+fit3sls <- systemfit( system, method = "3SLS", inst = inst, data = Kmenta )
+round( coef( summary( fit3sls ) ), digits = 4 )
+@
+Iterated 3SLS estimation:
+<<systemfit_replication,results=hide>>=
+fitI3sls <- systemfit( system, method = "3SLS", inst = inst, data = Kmenta,
+   maxit = 250 )
+round( coef( summary( fitI3sls ) ), digits = 4 )
+@
+
+The above commands return exactly the same
+coefficients and standard errors as published in \citet[p.~712]{kmenta86}
+except for two minor exceptions:
+two standard errors of the 2SLS estimation deviate by $0.0001$.
+However, this difference is likely due to rounding errors
+in \code{systemfit} or \citet{kmenta86} and
+is so small that it empirically does not matter.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Greene (2003): Example 15.1 (Klein's model I)}
+\label{sec:KleinsModel}
+
+Second, we try to replicate Klein's °Model I° \citep{klein50}
+that is described in \citet[p.~381]{greene03}.
+The data are available from the online complements to \citet{greene03},
+Table~F15.1
+(\url{http://pages.stern.nyu.edu/~wgreene/Text/tables/TableF15-1.txt}),
+and the estimation results are presented in Table~15.3 (p.~412).
+
+Initially, the data are loaded and three equations
+as well as the instrumental variables are specified.
+As in the example before, the equation system is estimated by
+OLS, 2SLS, 3SLS, and iterated 3SLS, and
+commands to print the estimated coefficients are presented.
+<<systemfit_replication>>=
+data( "KleinI" )
+eqConsump  <- consump ~ corpProf + corpProfLag + wages
+eqInvest   <- invest ~ corpProf + corpProfLag + capitalLag
+eqPrivWage <- privWage ~ gnp + gnpLag + trend
+inst <- ~ govExp + taxes + govWage + trend + capitalLag + corpProfLag + gnpLag
+system <- list( Consumption = eqConsump, Investment = eqInvest,
+   PrivateWages = eqPrivWage )
+@
+OLS estimation:
+<<systemfit_replication,results=hide>>=
+kleinOls <- systemfit( system, data = KleinI )
+round( coef( summary( kleinOls ) ), digits = 3 )
+@
+2SLS estimation:
+<<systemfit_replication,results=hide>>=
+klein2sls <- systemfit( system, method = "2SLS", inst = inst, data = KleinI,
+   methodResidCov = "noDfCor" )
+round( coef( summary( klein2sls ) ), digits = 3 )
+@
+3SLS estimation:
+<<systemfit_replication,results=hide>>=
+klein3sls <- systemfit( system, method = "3SLS", inst = inst, data = KleinI,
+   methodResidCov = "noDfCor" )
+round( coef( summary( klein3sls ) ), digits = 3 )
+@
+iterated 3SLS estimation:
+<<systemfit_replication,results=hide>>=
+kleinI3sls <- systemfit( system, method = "3SLS", inst = inst, data = KleinI,
+   methodResidCov = "noDfCor", maxit = 500 )
+round( coef( summary( kleinI3sls ) ), digits = 3 )
+@
+
+Again, these commands return almost the same results
+as published in \citet{greene03}.%
+\footnote{
+There are two typos in Table~15.3 (p.~412).
+Please take a look at the errata
+\citep{greene06a}.
+}
+There are only two minor deviations,
+where these values differ merely in the last digit.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Greene (2003): Example 14.1 (Grunfeld's investment data)}
+\label{sec:grunfeld-greene}
+
+Third, we reproduce Example~14.1 of \citet[p.~340]{greene03}
+that is based on \citet{grunfeld58}.
+The data are available from the online complements to \citet{greene03},
+Table~F13.1
+(\url{http://pages.stern.nyu.edu/~wgreene/Text/tables/TableF13-1.txt}).
+Several different versions of the °Grunfeld° data set can be found,
+whereas the version of \citet{greene03}
+is considered incorrect \citep{cummins01}.
+However, we use this incorrect version to replicate the results
+in \citet{greene03}, Tables~14.1 and~14.2 (p.~351).%
+\footnote{
+A correct version of this data set with five additional firms
+is available as data set \code{Grunfeld} in the \pkg{Ecdat} package
+\citep{r-Ecdat-0.1-5}.
+}
+
+First, we load the data and the \pkg{plm} package,
+indicate the individual (cross-section) and time identifiers,
+and specify the formula to be estimated.
+Then, the system is estimated by OLS, pooled OLS, SUR, and pooled SUR.
+After each estimation, we show the commands to print the estimated coefficients,
+the $\sigma^2$ values of the OLS estimations, and
+the residual covariance matrix as well as the residual correlation matrix
+of the SUR estimations.
+<<systemfit_replication>>=
+data( "GrunfeldGreene" )
+library( "plm" )
+GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
+formulaGrunfeld <- invest ~ value + capital
+@
+OLS estimation (Table 14.2):
+<<systemfit_replication,results=hide>>=
+greeneOls <- systemfit( formulaGrunfeld,
+   data = GGPanel )
+round( coef( summary( greeneOls ) ), digits = 4 )
+round( sapply( greeneOls$eq, function(x){return(summary(x)$ssr/20)} ), digits = 3 )
+@
+pooled OLS (Table 14.2):
+<<systemfit_replication,results=hide>>=
+greeneOlsPooled <- systemfit( formulaGrunfeld,
+   data = GGPanel, pooled = TRUE )
+round( coef( summary( greeneOlsPooled$eq[[1]] ) ), digits = 4 ) #$
+sum( sapply( greeneOlsPooled$eq, function(x){return(summary(x)$ssr)}) )/100
+@
+SUR estimation (Table~14.1):
+<<systemfit_replication,results=hide>>=
+greeneSur <- systemfit( formulaGrunfeld, method = "SUR",
+   data = GGPanel, methodResidCov = "noDfCor" )
+round( coef( summary( greeneSur ) ), digits = 4 )
+round( greeneSur$residCov, digits = 3 ) #$
+round( summary( greeneSur )$residCor, digits = 3 ) #$
+@
+pooled SUR estimation (Table~14.1):
+<<systemfit_replication,results=hide>>=
+greeneSurPooled <- systemfit( formulaGrunfeld, method = "SUR",
+   data = GGPanel, pooled = TRUE, methodResidCov = "noDfCor",
+   residCovWeighted = TRUE )
+round( coef( summary( greeneSurPooled$eq[[1]] ) ), digits = 4 ) #$
+
+round( greeneSurPooled$residCov, digits = 3 ) #$
+round( cov( residuals( greeneSurPooled ) ), digits = 3 )
+round( summary( greeneSurPooled )$residCor, digits = 3 ) #$
+@
+
+These commands return
+nearly the same results as published in \citet{greene03}.%
+\footnote{
+There are several typos and errors in Table~14.1 (p.~412).
+Please take a look at the errata of this book
+\citep{greene06a}.
+}
+We present two different commands to print
+the residual covariance matrix of the pooled SUR estimation.
+The first calculates the covariance matrix without centering the residuals
+(see Section~\ref{sec:residcov});
+the returned values are equal to those published in \citet[p.~351]{greene03}.
+The second command calculates the residual covariance matrix
+after centering the residuals;
+these returned values are equal to those published in the errata
+\citep{greene06a}.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection[Theil (1971): Example on p. 295ff (Grunfeld's investment data)]
+   {Theil (1971): Example on p.~295ff (Grunfeld's investment data)}
+
+Finally, we estimate an example taken from \citet[p.~295ff]{theil71}
+that is also based on \citet{grunfeld58}.
+The data are available in Table~7.1 of \citet[p.~296]{theil71}.
+They are a subset of the data set published by \citet{greene03}
+(see Section~\ref{sec:grunfeld-greene}).
+
+After extracting the data from the \code{GrunfeldGreene} data set,
+the individual (cross-section) and time identifiers are indicated.
+Then, the formula is specified,
+and the model is estimated by OLS and SUR.
+Commands to print the estimated coefficients are reported
+after each estimation.
+<<systemfit_replication>>=
+GrunfeldTheil <- subset( GrunfeldGreene,
+   firm %in% c( "General Electric", "Westinghouse" ) )
+GTPanel <- plm.data( GrunfeldTheil, c( "firm", "year" ) )
+formulaGrunfeld <- invest ~ value + capital
+@
+OLS estimation (page 295)
+<<systemfit_replication,results=hide>>=
+theilOls <- systemfit( formulaGrunfeld,
+   data = GTPanel )
+round( coef( summary( theilOls ) ), digits = 3 )
+@
+SUR estimation (page 300)
+<<systemfit_replication,results=hide>>=
+theilSur <- systemfit( formulaGrunfeld, method = "SUR",
+   data = GTPanel, methodResidCov = "noDfCor" )
+round( coef( summary( theilSur ) ), digits = 3 )
+@
+
+These commands
+return exactly the same results as published in
+\citet[pp.~295, 300]{theil71}.
+
+Now, we apply an $F$ test to check whether the slope parameters are equal
+for General Electric and Westinghouse (pages~313--315).
+Then we re-estimate the model under these restrictions on the coefficients.
+
+$F$ test (page 313--315)%
+\footnote{%
+The same restriction can be specified also symbolically by
+\code{RMatrix <- c("General.Electric\_value = Westinghouse\_value",
+"General.Electric\_capital = Westinghouse\_capital")}
+}
+<<systemfit_replication,results=hide>>=
+RMatrix <- rbind( c( 0, 1, 0, 0, -1, 0 ), c( 0, 0, 1, 0, 0, -1 ) )
+linear.hypothesis( theilSur, RMatrix )
+@
+
+Restricted SUR estimation (page~316)
+<<systemfit_replication,results=hide,keep.source=TRUE>>=
+theilSurRestr <- systemfit(formulaGrunfeld, method = "SUR",
+   data = GTPanel, methodResidCov = "noDfCor", restrict.matrix = RMatrix,
+   residCovRestricted = FALSE)
+round(coef(summary(theilSurRestr)), digits = 3)
+@
+
+The method \codeD{linear}{hypothesis} returns the same value of the $F$ statistic
+as published in \citet[p.~315]{theil71}.
+Hence, we arrive at the the same conclusion:
+we accept the null hypothesis (restrictions on the coefficients are true)
+at the 5~percent significance level.
+
+Also the results of the restricted SUR estimation are identical
+to the results published in
+\citet[p.~316]{theil71}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summary and outlook}\label{sec:Summmary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nopagebreak
+In this article, we have described some of the basic features of the
+\pkg{systemfit} package for estimating systems of linear
+equations.
+Many details of the estimation can be controlled by the user.
+Furthermore, the package provides some statistical tests
+for restrictions on the coefficients and consistency of 3SLS estimation.
+It has been tested on a variety of datasets and has produced satisfactory
+for a few years.
+While the \pkg{systemfit} package performs the basic fitting methods,
+more sophisticated tools exist.
+We hope to implement missing functionalities
+in the near future.
+% Some of these are discussed in the following.
+
+\subsubsection*{Unbalanced datasets}
+Currently, the \pkg{systemfit} package requires
+that all equations have the same number of observations.
+However, many data sets have unbalanced observations.%
+\footnote{
+For instance,
+forestry datasets typically contain many observations of inexpensive
+variables (stem diameter, tree count) and few expensive variables such
+as stem height or volume.
+}
+Simply dropping data points that do not contain observations for all
+equations may reduce the number of observations considerably, and
+thus, the information utilized in the estimation.
+Hence, it is our intention to include the capability for estimations
+with unbalanced data sets as described in \citet{schmidt77} in future
+releases of \pkg{systemfit}.
+
+\subsubsection*{Serial correlation and heteroscedasticity}
+For all of the methods developed in the package, the disturbances of
+the individual equations are assumed to be independent and identically
+distributed (iid).
+The package could be enhanced by the inclusion of methods to fit
+equations with serially correlated and heteroscedastic disturbances
+\citep{parks67}. 
+
+\subsubsection*{Estimation methods}
+In the future, we wish to include more sophisticated estimation
+methods such as limited information maximum likelihood (LIML),
+full information maximum likelihood (FIML), generalized methods of
+moments (GMM) and spatial econometric methods
+\citep{paelinck79,anselin88}.
+
+\subsubsection*{Non-linear estimation}
+Finally, the \pkg{systemfit} package provides a function to estimate
+systems of non-linear equations.
+However, the function \code{nlsystemfit} is currently under
+development and the results are not yet always reliable due to
+convergence difficulties.
+
+
+\section*{Acknowledgments}
+We thank Achim Zeileis, John Fox, Ott Toomet, William H.\ Greene,
+two anonymous referees
+and several users of \pkg{systemfit}
+for their comments and suggestions
+that helped us to improve the \pkg{systemfit} package as well as this paper.
+Of course, any remaining errors are the authors'.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{systemfit} % a subset of my big bibtex file
+%\bibliography{agrarpol}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+
+\begin{appendix}
+
+
+\section[Object returned by systemfit]{Object returned by \code{systemfit}}
+\label{sec:returned-object}
+
+\code{systemfit} returns a list of class \code{systemfit}
+that contains the results that belong to the entire system
+of equations.
+One special element of this list is called \code{eq}.
+It is a list that contains one object for each estimated equation.
+These objects are of the class \codeD{systemfit}{equation}
+and contain the results that belong only to the regarding equation.
+
+
+\begin{table}[htbp]
+\centering
+\setlength{\tabcolsep}{4mm}
+{\ttfamily
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{\code{lm}} & \textbf{\code{systemfit}} & \textbf{\code{systemfit.equation}} \\
+\hline
+coefficients    & coefficients   & coefficients \\
+                & coefCov        & coefCov \\
+fitted.values   &                & fitted.values \\
+residuals       &                & residuals \\
+                & residCov       & \\
+                & residCovEst    & \\
+rank            & rank           & rank \\
+                &                & rank.sys \\
+                &                & nCoef.sys \\
+df.residual     & df.residual    & df.residual \\
+                &                & df.residual.sys \\
+call            & call           & \\
+terms           &                & terms \\
+                &                & inst \\
+weights         &                & \\
+contrasts       &                & \\
+xlevels         &                & \\
+offset          &                & \\
+model\textnormal{*} &            & model\textnormal{*} \\
+x\textnormal{**} &               & x\textnormal{**} \\
+y\textnormal{**} &               & y\textnormal{**} \\
+                &                & z\textnormal{**} \\
+                & iter           & \\
+                & eq             & \\
+                &                & eqnLabel \\
+                &                & eqnNo \\
+                & method         & method \\
+                & panelLike      & \\
+                & restrict.matrix& \\
+                & restrict.rhs   & \\
+                & restrict.regMat& \\
+                & control        & \\
+\hline
+\end{tabular}
+}
+\caption{Elements returned by \code{systemfit} and \code{lm}
+(* if requested by the user with default \code{TRUE},
+** if requested by the user with default \code{FALSE}).}
+\label{tab:compare-lm}
+\end{table}
+
+
+The elements returned by \code{systemfit}
+are similar to those returned by \code{lm},
+the basic tool for linear regressions in \proglang{R}.
+While some counterparts of elements returned by \code{lm}
+can be found directly in objects of class \code{systemfit},
+other counterparts are available for each equation
+in objects of class \codeD{systemfit}{equation}.
+This is demonstrated in Table~\ref{tab:compare-lm}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Computation times}\label{sec:timings}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Theoretically, one would expect
+that the calculations with the \pkg{Matrix} package are
+faster and more robust than calculations with the traditional method.
+To test this hypothesis, we use function \code{createSystemfitModel}
+to create a medium-sized multi-equation model with 8~equations,
+10~regressors in each equation (without constant),
+and 750~observations.
+Then, we estimated this model with and without using the \pkg{Matrix} package.
+Finally, the results are compared.
+<<systemfit_timings>>=
+library( "systemfit" )
+set.seed( 1 )
+systemfitModel <- createSystemfitModel( nEq = 8, nReg = 10, nObs = 750 )
+system.time(
+   fitMatrix <- systemfit( systemfitModel$formula, method = "SUR",
+      data = systemfitModel$data )
+)
+system.time(
+   fitTrad <- systemfit( systemfitModel$formula, method = "SUR",
+      data = systemfitModel$data, useMatrix = FALSE )
+)
+all.equal( fitMatrix, fitTrad )
+@
+The returned computation times clearly show
+that using the \pkg{Matrix} package makes the estimation faster.
+The comparison of the estimation results shows
+that both methods return the same results.
+The only differences between the returned objects
+are --- as expected --- the \code{call}
+and the stored control variable \code{useMatrix}.
+
+However, the estimation of rather small models is much slower
+with the \pkg{Matrix} package than without this package.
+Moreover, the differences in computation time accumulate,
+if the estimation is iterated.
+<<systemfit_timings>>=
+smallModel <- createSystemfitModel( nEq = 3, nReg = 4, nObs = 50 )
+system.time(
+   fitSmallMatrix <- systemfit( smallModel$formula, method = "SUR",
+      data = smallModel$data, maxit = 500 )
+)
+system.time(
+   fitSmallTrad <- systemfit( smallModel$formula, method = "SUR",
+      data = smallModel$data, maxit = 500, useMatrix = FALSE )
+)
+all.equal( fitSmallMatrix, fitSmallTrad )
+@
+As mentioned above, the usage of the \pkg{Matrix} package
+clearly increases the computation times
+for iterated (SUR) estimations of small models with small data sets.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Estimating systems of equations with sem]
+   {Estimating systems of equations with \code{sem}}
+\label{sec:sem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<<echo=FALSE>>=
+options( width = 75 )
+@
+
+This section compares the commands to estimate a system of equations
+by \code{sem} and \code{systemfit}.
+This comparison uses Klein's °Model I° (see Section~\ref{sec:KleinsModel}).
+Before starting the estimation,
+we load the \pkg{sem} and \pkg{systemfit} package
+as well as the required data set.
+<<systemfit_sem>>=
+library( "sem" )
+library( "systemfit" )
+data( "KleinI" )
+@
+
+First, we estimate the system by limited information maximum likelihood
+(LIML) with \code{sem}:
+<<systemfit_sem,keep.source = TRUE>>=
+limlRam <- matrix(c(
+   "consump  <-  corpProf",    "consump_corpProf",    NA,
+   "consump  <-  corpProfLag", "consump_corpProfLag", NA,
+   "consump  <-  wages",       "consump_wages",       NA,
+   "invest   <-  corpProf",    "invest_corpProf",     NA,
+   "invest   <-  corpProfLag", "invest_corpProfLag",  NA,
+   "invest   <-  capitalLag",  "invest_capitalLag",   NA,
+   "privWage <-  gnp",         "privWage_gnp",        NA,
+   "privWage <-  gnpLag",      "privWage_gnpLag",     NA,
+   "privWage <-  trend",       "privWage_trend",      NA,
+   "consump  <-> consump",     "s11", NA,
+   "privWage <-> privWage",    "s22", NA,
+   "invest   <-> invest",      "s33", NA),
+   ncol = 3, byrow = TRUE)
+class(limlRam) <- "mod"
+exogVar <- c("corpProf", "corpProfLag", "wages", "capitalLag", "trend",
+   "gnp", "gnpLag")
+endogVar <- c("consump", "invest", "privWage")
+allVar <- c(exogVar, endogVar)
+
+limlResult <- sem(ram = limlRam, S = cov(KleinI[ -1, allVar ]),
+   N = (nrow(KleinI) - 1), fixed.x = exogVar)
+print(limlResult)
+@
+
+Theoretically, the LIML results should be identical to OLS results.
+Therefore, we re-estimate this model by OLS with \code{systemfit}.
+<<systemfit_sem,keep.source=TRUE>>=
+eqConsump <- consump ~ corpProf + corpProfLag + wages
+eqInvest <- invest ~ corpProf + corpProfLag + capitalLag
+eqPrivWage <- privWage ~ gnp + gnpLag + trend
+system <- list(consump = eqConsump, invest = eqInvest,
+   privWage = eqPrivWage)
+olsResult <- systemfit(system, data = KleinI)
+print(olsResult)
+@
+As expected, the results are identical.
+
+Now, we estimate the system by full information maximum likelihood
+(FIML) with \code{sem}:
+<<systemfit_sem,keep.source = TRUE>>=
+fimlRam <- rbind(limlRam,
+   c("consump  <-> invest",   "s12", NA),
+   c("consump  <-> privWage", "s13", NA),
+   c("privWage <-> invest",   "s23", NA))
+class(fimlRam) <- "mod"
+
+fimlResult <- sem(ram = fimlRam, S = cov(KleinI[ -1, allVar ]),
+   N = (nrow(KleinI) - 1), fixed.x = exogVar)
+print(fimlResult)
+@
+
+Theoretically, results of an iterated SUR estimation should
+converge to FIML results.
+Therefore, we re-estimate this model by iterated SUR with \code{systemfit}.
+<<systemfit_sem>>=
+surResult <- systemfit( system, method = "SUR", data = KleinI,
+   methodResidCov = "noDfCor", maxit = 500 )
+print( surResult )
+@
+As expected, the results are rather similar.
+
+
+\end{appendix}
+
+\end{document}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
+

@@ -19,9 +19,9 @@
    \item{object}{an object of class \code{systemfit} or
       \code{systemfit.equation}.}
    \item{modified.regMat}{logical. If \code{TRUE},
-      the covariance matrix of the parameters of the modified regressor matrix
+      the covariance matrix of the coefficients of the modified regressor matrix
       (original regressor matrix post-multiplied by \code{restrict.regMat})
-      rather than the covariance matrix of the parameters
+      rather than the covariance matrix of the coefficients
       of the original regressor matrix
       is returned.}
    \item{\dots}{other arguments.}

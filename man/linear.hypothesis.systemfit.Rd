@@ -4,7 +4,7 @@
 \title{Test Linear Hypothesis}
 
 \description{
-   Testing linear hypothesis on parameters of a system of equations
+   Testing linear hypothesis on the coefficients of a system of equations
    by an F-test or Wald-test.
 }
 

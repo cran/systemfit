@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 534 2007-12-29 15:19:54Z henningsena $
+%    $Id: systemfit.Rd 549 2008-09-12 08:25:33Z henningsena $
 
 
 \name{systemfit}
@@ -43,17 +43,20 @@ systemfit( formula, method = "OLS",
       By default the variables are taken from the environment from which
       systemfit is called.}
    \item{restrict.matrix}{an optional j x k matrix to impose linear
-      restrictions on the parameters by \code{restrict.matrix} * \eqn{b} = \code{restrict.rhs}
-      (j = number of restrictions, k = number of all parameters,
-      \eqn{b} = vector of all parameters)
+      restrictions on the coefficients by \code{restrict.matrix} * \eqn{b} = \code{restrict.rhs}
+      (j = number of restrictions, k = number of all coefficients,
+      \eqn{b} = vector of all coefficients)
       or a character vector giving the restrictions in symbolic form
       (see documentation of \code{\link[car]{linear.hypothesis}}
-      in package "car" for details).}
+      in package "car" for details).
+      The number and the names of the coefficients can be obtained
+      by estimating the system without restrictions and applying
+      the \code{coef} method to the returned object.}
    \item{restrict.rhs}{an optional vector with j elements to impose linear
       restrictions (see \code{restrict.matrix}); default is a vector
       that contains j zeros.}
    \item{restrict.regMat}{an optional matrix to impose restrictions
-      on the parameters by post-multiplying the regressor matrix
+      on the coefficients by post-multiplying the regressor matrix
       with this matrix (see details).}
    \item{control}{list of control parameters.
       The default is constructed by the function \code{\link{systemfit.control}}.
@@ -76,21 +79,21 @@ systemfit( formula, method = "OLS",
    the regressor matrix \eqn{X} is post-multiplied by this matrix:
    \eqn{X^{*} = X \cdot} \code{restrict.regMat}.
    Then, this modified regressor matrix \eqn{X^{*}} is used for the
-   estimation of the parameter vector \eqn{b^{*}}.
-   This means that the parameters of the original regressors (\eqn{X}),
+   estimation of the coefficient vector \eqn{b^{*}}.
+   This means that the coefficients of the original regressors (\eqn{X}),
    vector \eqn{b},
    can be represented by \eqn{b =} \code{restrict.regMat} \eqn{\cdot b^{*}}.
    If \code{restrict.regMat} is a non-singular quadratic matrix,
-   there are no parameter restrictions imposed,
-   but the parameters \eqn{b^{*}} are linear combinations of
-   the original parameters \eqn{b}.
+   there are no restrictions on the coefficients imposed,
+   but the coefficients \eqn{b^{*}} are linear combinations of
+   the original coefficients \eqn{b}.
    If \code{restrict.regMat} has less columns than rows,
-   linear restrictions are imposed on the parameters \eqn{b}.
+   linear restrictions are imposed on the coefficients \eqn{b}.
    However, imposing linear restrictions
    by the \code{restrict.regMat} matrix is less flexible than
    by providing the matrix \code{restrict.matrix} and the
    vector \code{restrict.rhs}.
-   The advantage of imposing restrictions on the parameters
+   The advantage of imposing restrictions on the coefficients
    by the matrix \code{restrict.regMat} is that the matrix,
    which has to be inverted during the estimation,
    gets smaller by this procedure, while it gets larger
@@ -123,7 +126,7 @@ systemfit( formula, method = "OLS",
   \item{restrict.matrix}{the restriction matrix.}
   \item{restrict.rhs}{the restriction vector.}
   \item{restrict.regMat}{matrix used to impose restrictions
-      on the parameters by post-multiplying the regressor matrix
+      on the coefficients by post-multiplying the regressor matrix
       with this matrix.}
   \item{control}{list of control parameters used for the estimation.}
   \item{panelLike}{logical. Was this an analysis with panel-like data?}
@@ -209,7 +212,7 @@ print( fitols2b )
 # test whether both restricted estimators are identical
 all.equal( coef( fitols2 ), coef( fitols2b ) )
 
-## OLS with parameter restriction by modifying the regressor matrix
+## OLS with restrictions on the coefficients by modifying the regressor matrix
 ## with argument restrict.regMat
 modReg <- matrix( 0, 7, 6 )
 colnames( modReg ) <- c( "demIntercept", "demPrice", "demIncome",

@@ -48,7 +48,7 @@ systemfit.control(
       single equation to calculate the covariance matrix and the
       standard errors of the coefficients (only OLS and 2SLS)?
       If \code{singleEqSigma} is \code{NULL}, it is automatically determined:
-      It is set to \code{TRUE}, if there are any parameter restrictions imposed,
+      It is set to \code{TRUE}, if restrictions on the coefficients are imposed,
       and it is set to \code{FALSE} otherwise.}
    \item{useMatrix}{logical. Use package \code{Matrix} for matrix calculations?}
    \item{solvetol}{tolerance level for detecting linear dependencies

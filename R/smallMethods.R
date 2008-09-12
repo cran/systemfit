@@ -185,7 +185,11 @@ model.frame.systemfit <- function( formula, ... ){
       if( i == 1 ) {
          result <- mfi
       } else {
-         result <- cbind( result, mfi[ , ! names( mfi ) %in% names( result ) ] )
+         for( j in 1:ncol( mfi ) ) {
+            if( ! names( mfi )[ j ] %in% names( result ) ) {
+               result[[ names( mfi )[ j ] ]] <- mfi[ , j ]
+            }
+         }
       }
    }
    return( result )

@@ -1,5 +1,5 @@
 
-%  $Id: nlsystemfit.Rd 126 2005-03-18 15:25:32Z henningsena $
+%  $Id: nlsystemfit.Rd 548 2008-09-12 08:22:23Z henningsena $
 
 
 \name{nlsystemfit}
@@ -25,7 +25,7 @@
   \item{method}{the estimation method, one of "OLS", "SUR", "2SLS",
     "3SLS".}
   \item{eqns}{a list of structural equations to be estimated.}
-  \item{startvals}{a list of starting parameter values for the minimization.}
+  \item{startvals}{a list of starting values for the coefficients.}
   \item{eqnlabels}{an optional list of character vectors of names
     for the equation labels.}
   \item{inst}{one-sided model formula specifying instrumental variables
@@ -53,7 +53,7 @@
   \deqn{z_{t} = Z( x_t )}
 
   where \eqn{\epsilon_{t}} are the residuals from the y observations and
-  the function evaluated at the parameter estimates.
+  the function evaluated at the coefficient estimates.
 
   The objective functions for the methods are:
 
@@ -75,7 +75,7 @@
   variance-covariance matrix between the equations
   (\eqn{\hat{\sigma}_{ij} = (\hat{e}_i' \hat{e}_j) /
     \sqrt{(T - k_i)*(T - k_j)}}), X is matrix of the
-  partial derivates with respect to the parameters, W is a matrix of the
+  partial derivates with respect to the coefficients, W is a matrix of the
   instrument variables \eqn{Z(Z'Z)^{-1}Z}, Z is a matrix of the
   instrument variables, and I is an nxn identity matrix.
 
@@ -89,10 +89,10 @@
   function will be called with the \code{typsize} argument set the
   absolute values of the starting values for the OLS and 2SLS
   methods. For the SUR and 3SLS methods, the \code{typsize} argument is
-  set to the absolute values of the resulting OLS and 2SLS parameter
+  set to the absolute values of the resulting OLS and 2SLS coefficient
   estimates from the nlm result structre. In addition, the starting
   values for the SUR and 3SLS methods are obtained from the OLS and 2SLS
-  parameter estimates to shorten the number of iterations. The number of
+  coefficient estimates to shorten the number of iterations. The number of
   iterations reported in the summary are only those used in the last
   call to nlm, thus the number of iterations in the OLS portion of the
   SUR fit and the 2SLS portion of the 3SLS fit are not included.

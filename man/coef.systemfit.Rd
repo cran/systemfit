@@ -25,9 +25,9 @@
       \code{systemfit.equation}, \code{summary.systemfit}, or
       \code{summary.systemfit.equation}.}
    \item{modified.regMat}{logical. If \code{TRUE},
-      the parameters of the modified regressor matrix
+      the coefficients of the modified regressor matrix
       (original regressor matrix post-multiplied by \code{restrict.regMat})
-      rather than the parameters of the original regressor matrix
+      rather than the coefficients of the original regressor matrix
       are returned.}
    \item{\dots}{other arguments.}
 }

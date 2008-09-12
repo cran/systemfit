@@ -1,5 +1,5 @@
 
-%  $Id: lrtest.systemfit.Rd 411 2007-06-27 14:26:25Z henningsena $
+%  $Id: lrtest.systemfit.Rd 548 2008-09-12 08:22:23Z henningsena $
 
 \name{lrtest.systemfit}
 \alias{lrtest.systemfit}
@@ -7,7 +7,7 @@
 \title{Likelihood Ratio test for Equation Systems}
 
 \description{
-   Testing linear hypothesis on parameters of a system of equations
+   Testing linear hypothesis on the coefficients of a system of equations
    by a Likelihood Ratio test.
 }
 

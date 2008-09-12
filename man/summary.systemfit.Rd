@@ -31,9 +31,9 @@
       \code{summary.systemfit.equation}.}
    \item{useDfSys}{logical. Use the degrees of freedom of the whole system
       (in place of the degrees of freedom of the single equation)
-      to calculate prob values for the t-test of individual parameters.
+      to calculate prob values for the t-test of individual coefficients.
       If it not specified (\code{NULL}), it is set to \code{TRUE}
-      if there are parameter restrictions and \code{FALSE} otherwise.}
+      if restrictions on the coefficients are imposed and \code{FALSE} otherwise.}
    \item{digits}{number of digits to print.}
    \item{residCov}{logical. If \code{TRUE},
       the residual correlation matrix, the residual covariance matrix,

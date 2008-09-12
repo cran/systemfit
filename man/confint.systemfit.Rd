@@ -24,7 +24,7 @@
       (in place of the degrees of freedom of the single equation)
       to calculate the confidence intervals of the coefficients.
       If it not specified (\code{NULL}), it is set to \code{TRUE}
-      if there are parameter restrictions and \code{FALSE} otherwise.}
+      if restrictions on the coefficients are imposed and \code{FALSE} otherwise.}
    \item{\dots}{other arguments.}
 }
 
