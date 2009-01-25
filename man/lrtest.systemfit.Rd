@@ -1,5 +1,5 @@
 
-%  $Id: lrtest.systemfit.Rd 548 2008-09-12 08:22:23Z henningsena $
+%  $Id: lrtest.systemfit.Rd 986 2008-10-16 07:57:24Z arne $
 
 \name{lrtest.systemfit}
 \alias{lrtest.systemfit}
@@ -57,7 +57,7 @@
   \emph{Econometric Analysis, Fifth Edition}, Prentice Hall.
 }
 
-\author{Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}}
+\author{Arne Henningsen \email{arne.henningsen@googlemail.com}}
 
 \seealso{\code{\link{systemfit}}, \code{\link[lmtest]{lrtest}}
    (package "lmtest"),

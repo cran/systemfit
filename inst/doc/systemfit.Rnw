@@ -89,8 +89,8 @@ and its reliability is demonstrated.
    Department of Agricultural Economics\\
    University of Kiel\\
    D-24098 Kiel, Germany\\
-   E-mail: \email{ahenningsen@agric-econ.uni-kiel.de}\\
-   URL: \url{http://www.uni-kiel.de/agrarpol/ahenningsen/}\\
+   E-mail: \email{arne.henningsen@googlemail.com}\\
+   URL: \url{http://www.arne-henningsen.name/}\\
    \\
    Jeff D.\ Hamann\\
    Forest Informatics, Inc.\\
@@ -115,7 +115,7 @@ and its reliability is demonstrated.
 % initialisation stuff
 \SweaveOpts{engine=R}
 %\VignetteIndexEntry{Systemfit}
-%\VignetteDepends{systemfit,plm,sem}
+%\VignetteDepends{plm,sem}
 %\VignetteKeywords{R, system of simultaneous equations,
 % seemingly unrelated regression, two-stage least squares,
 % three-stage least squares, instrumental variables}

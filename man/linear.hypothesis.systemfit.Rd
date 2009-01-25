@@ -99,7 +99,7 @@
    \emph{Principles of Econometrics}, John Wiley & Sons, New York.
 }
 
-\author{Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}}
+\author{Arne Henningsen \email{arne.henningsen@googlemail.com}}
 
 \seealso{\code{\link{systemfit}}, \code{\link[car]{linear.hypothesis}}
    (package "car"),

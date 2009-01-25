@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 549 2008-09-12 08:25:33Z henningsena $
+%    $Id: systemfit.Rd 990 2008-12-17 23:04:12Z arne $
 
 
 \name{systemfit}
@@ -98,6 +98,13 @@ systemfit( formula, method = "OLS",
    which has to be inverted during the estimation,
    gets smaller by this procedure, while it gets larger
    if the restrictions are imposed by \code{restrict.matrix} and \code{restrict.rhs}.
+
+   In the context of multi-equation models, 
+   the term \dQuote{weighted} in \dQuote{weighted least squares} (WLS) and
+   \dQuote{weighted two-stage least squares} (W2SLS) means
+   that the \emph{equations} might have different weights
+   and \emph{not}
+   that the \emph{observations} have different weights.
 }
 
 \value{
@@ -176,8 +183,8 @@ systemfit( formula, method = "OLS",
   \emph{Principles of Econometrics}, Wiley, New York.
 }
 
-\author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com},\cr
-  Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}
+\author{Arne Henningsen \email{arne.henningsen@googlemail.com},\cr
+  Jeff D. Hamann \email{jeff.hamann@forestinformatics.com}
 }
 
 \seealso{\code{\link{lm}} and \code{\link{nlsystemfit}}}

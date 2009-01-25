@@ -1,6 +1,6 @@
 
-R version 2.6.1 (2007-11-26)
-Copyright (C) 2007 The R Foundation for Statistical Computing
+R version 2.8.0 (2008-10-20)
+Copyright (C) 2008 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -19,9 +19,34 @@ Type 'q()' to quit R.
 > library( systemfit )
 Loading required package: Matrix
 Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+
+	The following object(s) are masked from package:stats :
+
+	 xtabs 
+
+
+	The following object(s) are masked from package:base :
+
+	 colMeans,
+	 colSums,
+	 rcond,
+	 rowMeans,
+	 rowSums 
+
 Loading required package: car
 Loading required package: lmtest
 Loading required package: zoo
+
+Attaching package: 'zoo'
+
+
+	The following object(s) are masked from package:base :
+
+	 as.Date.numeric 
+
 > data( "Kmenta" )
 > useMatrix <- FALSE
 > 
@@ -3180,6 +3205,11 @@ Multiple R-Squared: 0.234546 Adjusted R-Squared: 0.091024
 > fitsurS1 <- systemfit(
 +    list( price ~ consump - 1, farmPrice ~ consump + trend ), "SUR",
 +    data = Kmenta )
+Warning message:
+Ambiguous method selection for "crossprod", target "dgCMatrix#dgTMatrix" (the first of the signatures shown will be used)
+    Matrix#ANY
+    ANY#Matrix
+ 
 > print( summary( fitsurS1 ) )
 
 systemfit results 
@@ -5144,7 +5174,7 @@ income        -0.015167 -0.001697  0.001896
 > 
 > print( round( vcov( fitsurio5wr2 ), digits = 6 ) )
                    demand_(Intercept) demand_price demand_income
-demand_(Intercept)          51.319596    -0.579747      0.070528
+demand_(Intercept)          51.319595    -0.579747      0.070528
 demand_price                -0.579747     0.006646     -0.000872
 demand_income                0.070528    -0.000872      0.000171
 supply_(Intercept)          51.551829    -0.583025      0.072036
@@ -5169,7 +5199,7 @@ supply_farmPrice       0.000138
 supply_trend           0.000171
 > print( round( vcov( fitsurio5wr2, modified.regMat = TRUE ), digits = 6 ) )
           C1        C2        C3        C4        C5        C6
-C1 51.319596 -0.579747  0.070528 51.551829 -0.579747  0.061658
+C1 51.319595 -0.579747  0.070528 51.551829 -0.579747  0.061658
 C2 -0.579747  0.006646 -0.000872 -0.583025  0.006646 -0.000751
 C3  0.070528 -0.000872  0.000171  0.072036 -0.000872  0.000138
 C4 51.551829 -0.583025  0.072036 52.210946 -0.583025  0.058794

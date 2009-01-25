@@ -28,7 +28,7 @@
       the specified formula of the respective equation.
 }
 
-\author{Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}}
+\author{Arne Henningsen \email{arne.henningsen@googlemail.com}}
 
 \seealso{
    \code{\link{systemfit}}, \code{\link{model.matrix}}, and

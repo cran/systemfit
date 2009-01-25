@@ -46,25 +46,25 @@
 
 \value{
    Applying \code{summary} on an object of class \code{systemfit}
-   returns a list of class \code{summary.}\hspace{0pt}\code{systemfit}.
+   returns a list of class \code{summary.systemfit}.
    Applying \code{summary} on an object of class
-   \code{systemfit.}\hspace{0pt}\code{equation}
+   \code{systemfit.equation}
    returns a list of class
-   \code{summary.}\hspace{0pt}\code{systemfit.}\hspace{0pt}\code{equation}.
-   An object of class \code{summary.}\hspace{0pt}\code{systemfit}
+   \code{summary.systemfit.equation}.
+   An object of class \code{summary.systemfit}
    contains all results that belong to the whole system.
    This list contains one special object: \code{eq}.
    This is a list and contains objects of class
-   \code{summary.}\hspace{0pt}\code{systemfit.}\hspace{0pt}\code{equation}.
+   \code{summary.systemfit.equation}.
    These objects contain the results that belong to each of the eatimated equations.
 
-   The objects of classes \code{summary.}\hspace{0pt}\code{systemfit} and
-   \code{summary.}\hspace{0pt}\code{systemfit.}\hspace{0pt}\code{equation}
+   The objects of classes \code{summary.systemfit} and
+   \code{summary.systemfit.equation}
    have the following components
    (elements that are marked with a \eqn{*} are available only in objects of
-   class \code{summary.}\hspace{0pt}\code{systemfit};
+   class \code{summary.systemfit};
    elements that are marked with a \eqn{+} are available only in objects of
-   class \code{summary.}\hspace{0pt}\code{systemfit.}\hspace{0pt}\code{equation}):
+   class \code{summary.systemfit.equation}):
 
    \item{method}{estimation method.}
    \item{residuals}{residuals.}
@@ -96,7 +96,7 @@
 }
 
 \author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com},\cr
-   Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de} }
+   Arne Henningsen \email{arne.henningsen@googlemail.com}}
 
 \seealso{\code{\link{systemfit}}, \code{\link{print.systemfit}}}
 

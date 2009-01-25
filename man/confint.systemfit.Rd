@@ -35,7 +35,7 @@
    (1-level)/2 and 1 - (1-level)/2 in \% (by default 2.5\% and 97.5\%).
 }
 
-\author{Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}}
+\author{Arne Henningsen \email{arne.henningsen@googlemail.com}}
 
 \seealso{
    \code{\link{systemfit}},

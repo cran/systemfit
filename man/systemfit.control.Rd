@@ -129,7 +129,7 @@ systemfit.control(
 }
 
 \author{
-  Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de}
+  Arne Henningsen \email{arne.henningsen@googlemail.com}
 }
 
 \seealso{\code{\link{systemfit}}}

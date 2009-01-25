@@ -1,6 +1,6 @@
 
-R version 2.6.1 (2007-11-26)
-Copyright (C) 2007 The R Foundation for Statistical Computing
+R version 2.8.0 (2008-10-20)
+Copyright (C) 2008 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -19,9 +19,34 @@ Type 'q()' to quit R.
 > library( systemfit )
 Loading required package: Matrix
 Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+
+	The following object(s) are masked from package:stats :
+
+	 xtabs 
+
+
+	The following object(s) are masked from package:base :
+
+	 colMeans,
+	 colSums,
+	 rcond,
+	 rowMeans,
+	 rowSums 
+
 Loading required package: car
 Loading required package: lmtest
 Loading required package: zoo
+
+Attaching package: 'zoo'
+
+
+	The following object(s) are masked from package:base :
+
+	 as.Date.numeric 
+
 > data( "Kmenta" )
 > useMatrix <- FALSE
 > 
@@ -2106,6 +2131,11 @@ Multiple R-Squared: 0.625829 Adjusted R-Squared: 0.555672
 > fit2slsS1 <- systemfit(
 +    list( consump ~ price - 1, price ~ consump + trend ), "2SLS",
 +    data = Kmenta, inst = ~ farmPrice + trend + income )
+Warning message:
+Ambiguous method selection for "crossprod", target "dgCMatrix#dtTMatrix" (the first of the signatures shown will be used)
+    Matrix#ANY
+    ANY#Matrix
+ 
 > print( summary( fit2slsS1 ) )
 
 systemfit results 
@@ -2158,6 +2188,11 @@ Number of observations: 20 Degrees of Freedom: 17
 SSR: 682.257396 MSE: 40.132788 Root MSE: 6.335044 
 Multiple R-Squared: -0.022489 Adjusted R-Squared: -0.142782 
 
+Warning message:
+Ambiguous method selection for "crossprod", target "dgCMatrix#dgTMatrix" (the first of the signatures shown will be used)
+    Matrix#ANY
+    ANY#Matrix
+ 
 > fit2slsS2 <- systemfit(
 +    list( consump ~ price - 1, consump ~ trend - 1 ), "2SLS",
 +    data = Kmenta, inst = ~ farmPrice + price + income )

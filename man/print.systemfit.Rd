@@ -1,5 +1,5 @@
 
-%    $Id: print.systemfit.Rd 353 2007-03-28 14:26:11Z henningsena $
+%    $Id: print.systemfit.Rd 986 2008-10-16 07:57:24Z arne $
 
 \name{print.systemfit}
 \alias{print.systemfit}
@@ -25,7 +25,7 @@
 }
 
 \author{Jeff D. Hamann \email{jeff.hamann@forestinformatics.com},\cr
-   Arne Henningsen \email{ahenningsen@agric-econ.uni-kiel.de} }
+   Arne Henningsen \email{arne.henningsen@googlemail.com}}
 
 \seealso{\code{\link{systemfit}}, \code{\link{summary.systemfit}}}
 
