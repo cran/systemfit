@@ -203,23 +203,24 @@ print( summary( fitols5rs ) )
 ## *********** estimations with a single regressor ************
 fitolsS1 <- systemfit(
    list( consump ~ price - 1, consump ~ price + trend ), "OLS",
-   data = Kmenta )
+   data = Kmenta, useMatrix = useMatrix )
 print( summary( fitolsS1 ) )
 fitolsS2 <- systemfit(
    list( consump ~ price - 1, consump ~ trend - 1 ), "OLS",
-   data = Kmenta )
+   data = Kmenta, useMatrix = useMatrix )
 print( summary( fitolsS2 ) )
 fitolsS3 <- systemfit(
    list( consump ~ trend - 1, price ~ trend - 1 ), "OLS",
-   data = Kmenta )
+   data = Kmenta, useMatrix = useMatrix )
 print( summary( fitolsS3 ) )
 fitolsS4 <- systemfit(
    list( consump ~ trend - 1, price ~ trend - 1 ), "OLS",
-   data = Kmenta, restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ) )
+   data = Kmenta, restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ),
+   useMatrix = useMatrix )
 print( summary( fitolsS4 ) )
 fitolsS5 <- systemfit(
    list( consump ~ 1, farmPrice ~ 1 ), "OLS",
-   data = Kmenta )
+   data = Kmenta, useMatrix = useMatrix )
 print( summary( fitolsS5 ) )
 
 

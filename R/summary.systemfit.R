@@ -10,9 +10,14 @@ summary.systemfit <- function( object, useDfSys = NULL,
    # number of equations
    nEq <- length( object$eq )
    # number of observations per equation
-   nObsPerEq <- nrow( residuals( object ) )
+   nObsEq <- rep( NA, nEq )
+   validObsEq <- matrix( NA, nrow = nrow( residuals( object ) ), ncol = nEq )
+   for( i in 1:nEq ) {
+      nObsEq[ i ] <- length( residuals( object$eq[[ i ]], na.rm = TRUE ) )
+      validObsEq[ , i ] <- !is.na( residuals( object$eq[[ i ]] ) )
+   }
    # total number of observations
-   nObs <- nObsPerEq * nEq
+   nObs <- sum( nObsEq )
 
    # preparing objects that will be returned
    result <- list()
@@ -26,7 +31,7 @@ summary.systemfit <- function( object, useDfSys = NULL,
    if( !is.null( result$residCovEst ) ) {
       dimnames( result$residCovEst ) <- dimnames( result$residCov )
    }
-   result$residCor <- cor( residuals( object ) )
+   result$residCor <- cor( residuals( object ), use = "na.or.complete" )
    dimnames( result$residCor ) <- dimnames( result$residCov )
    result$detResidCov <- det( object$residCov, tol = object$control$solvetol )
 
@@ -70,20 +75,20 @@ summary.systemfit <- function( object, useDfSys = NULL,
    }
 
    # R^2 values
-   nObsEq <- rep( nObsPerEq, nEq )
    resid <- NULL
    response <- NULL
    responseMinusMean <- NULL
    for( i in 1:length( object$eq ) ) {
-      resid <- c( resid, residuals( object$eq[[ i ]] ) )
-      responseEqI <- fitted( object$eq[[ i ]] ) + residuals( object$eq[[ i ]] )
+      resid <- c( resid, residuals( object$eq[[ i ]], na.rm = TRUE ) )
+      responseEqI <- fitted( object$eq[[ i ]], na.rm = TRUE ) +
+         residuals( object$eq[[ i ]], na.rm = TRUE )
       response <- c( response, responseEqI )
       responseMinusMean <- c( responseMinusMean,
          responseEqI - mean( responseEqI ) )
    }
 
    # OLS R^2 value of the entire system
-   rss <- sum( residuals( object )^2 )
+   rss <- sum( resid^2 )
    tss <- sum( responseMinusMean^2 )
    result$ols.r.squared <- 1 - rss / tss
 
@@ -96,18 +101,18 @@ summary.systemfit <- function( object, useDfSys = NULL,
       xMat <- as( xMat, "dgCMatrix" )
    }
    rtOmega <- .calcXtOmegaInv( xMat = xMat,
-      sigma = object$residCov, nObsEq = nObsEq,
+      sigma = object$residCov, validObsEq = validObsEq,
       solvetol = object$control$solvetol,
       useMatrix = object$control$useMatrix )
    yCov <- .calcResidCov( response, methodResidCov = "noDfCor",
-      nObsEq = nObsEq, centered = TRUE,
+      validObsEq = validObsEq, centered = TRUE,
       solvetol = object$control$solvetol )
    residCovInv <- solve( object$residCov, tol = object$control$solvetol )
    denominator <- 0
    for( i in 1:length( object$eq ) ) {
       for( j in 1:length( object$eq ) ) {
          denominator <- denominator + residCovInv[ i, j ] * yCov[ i, j ] *
-            nObsPerEq
+            ( nObsEq[ i ] * nObsEq[ j ] )^0.5
       }
    }
    result$mcelroy.r.squared <- drop( 1 - ( rtOmega %*% resid ) / denominator )
@@ -216,7 +221,7 @@ summary.systemfit.equation <- function( object, useDfSys = NULL, ... ) {
    }
 
    # number of observations in this equation
-   nObs <- length( residuals( object ) )
+   nObs <- length( residuals( object, na.rm = TRUE ) )
 
    # preparing objects that will be returned
    result <- list()
@@ -227,7 +232,7 @@ summary.systemfit.equation <- function( object, useDfSys = NULL, ... ) {
    result$method <- object$method
    result$residuals <- object$residuals
 
-   # coefficients, standard errors, ... 
+   # coefficients, standard errors, ...
    result$coefCov <- object$coefCov
    coef <- object$coefficients
    stdEr <- diag( result$coefCov )^0.5  # standard errors
@@ -241,12 +246,12 @@ summary.systemfit.equation <- function( object, useDfSys = NULL, ... ) {
    colnames( result$coefficients ) <- c( "Estimate", "Std. Error",
       "t value", "Pr(>|t|)" )
    result$df <- c( length( coef( object ) ), nObs - length( coef( object ) ) )
-   result$ssr <- sum( residuals( object )^2 )
+   result$ssr <- sum( residuals( object, na.rm = TRUE )^2 )
    result$sigma <- sqrt( result$ssr / df.residual( object ) )
 
    # R^2 values
-   response <- fitted( object ) + residuals( object )
-   rss <- sum( residuals( object )^2 )
+   response <- fitted( object, na.rm = TRUE ) + residuals( object, na.rm = TRUE )
+   rss <- sum( residuals( object, na.rm = TRUE )^2 )
    tss <- sum( ( response - mean( response ) )^2 )
    result$r.squared <- 1 - rss / tss
    result$adj.r.squared <- 1 - ( ( nObs - 1 ) / object$df.residual ) *

@@ -317,23 +317,24 @@ summary( fitsuri5wr2 )
 ## *********** estimations with a single regressor ************
 fitsurS1 <- systemfit(
    list( price ~ consump - 1, farmPrice ~ consump + trend ), "SUR",
-   data = Kmenta )
+   data = Kmenta, useMatrix = useMatrix )
 print( summary( fitsurS1 ) )
 fitsurS2 <- systemfit(
    list( consump ~ price - 1, consump ~ trend - 1 ), "SUR",
-   data = Kmenta )
+   data = Kmenta, useMatrix = useMatrix )
 print( summary( fitsurS2 ) )
 fitsurS3 <- systemfit(
    list( consump ~ trend - 1, price ~ trend - 1 ), "SUR",
-   data = Kmenta )
+   data = Kmenta, useMatrix = useMatrix )
 print( summary( fitsurS3 ) )
 fitsurS4 <- systemfit(
    list( consump ~ trend - 1, price ~ trend - 1 ), "SUR",
-   data = Kmenta, restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ) )
+   data = Kmenta, restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ),
+   useMatrix = useMatrix )
 print( summary( fitsurS4 ) )
 fitsurS5 <- systemfit(
    list( consump ~ 1, price ~ 1 ), "SUR",
-   data = Kmenta )
+   data = Kmenta, useMatrix = useMatrix )
 print( summary( fitsurS5 ) )
 
 

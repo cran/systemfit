@@ -232,24 +232,24 @@ print( summary( fit2slsd3r ) )
 ## *********** estimations with a single regressor ************
 fit2slsS1 <- systemfit(
    list( consump ~ price - 1, price ~ consump + trend ), "2SLS",
-   data = Kmenta, inst = ~ farmPrice + trend + income )
+   data = Kmenta, inst = ~ farmPrice + trend + income, useMatrix = useMatrix )
 print( summary( fit2slsS1 ) )
 fit2slsS2 <- systemfit(
    list( consump ~ price - 1, consump ~ trend - 1 ), "2SLS",
-   data = Kmenta, inst = ~ farmPrice + price + income )
+   data = Kmenta, inst = ~ farmPrice + price + income, useMatrix = useMatrix )
 print( summary( fit2slsS2 ) )
 fit2slsS3 <- systemfit(
    list( consump ~ trend - 1, price ~ trend - 1 ), "2SLS",
-   data = Kmenta, inst = instlist )
+   data = Kmenta, inst = instlist, useMatrix = useMatrix )
 print( summary( fit2slsS3 ) )
 fit2slsS4 <- systemfit(
    list( consump ~ trend - 1, price ~ trend - 1 ), "2SLS",
    data = Kmenta, inst = ~ farmPrice + trend + income,
-   restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ) )
+   restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ), useMatrix = useMatrix )
 print( summary( fit2slsS4 ) )
 fit2slsS5 <- systemfit(
    list( consump ~ 1, price ~ 1 ), "2SLS",
-   data = Kmenta, inst = ~ farmPrice )
+   data = Kmenta, inst = ~ farmPrice, useMatrix = useMatrix )
 print( summary( fit2slsS1 ) )
 
 

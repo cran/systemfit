@@ -1,6 +1,6 @@
 
-R version 2.8.0 (2008-10-20)
-Copyright (C) 2008 The R Foundation for Statistical Computing
+R version 2.9.0 (2009-04-17)
+Copyright (C) 2009 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -30,11 +30,7 @@ Attaching package: 'Matrix'
 
 	The following object(s) are masked from package:base :
 
-	 colMeans,
-	 colSums,
-	 rcond,
-	 rowMeans,
-	 rowSums 
+	 rcond 
 
 Loading required package: car
 Loading required package: lmtest
@@ -131,7 +127,7 @@ Hausman = 2.9831, df = 7, p-value = 0.8866
 > 
 > ## ********************* estimations with methodResidCov = 0 **************
 > fit2sls2r <- systemfit( eqSystem, "2SLS", data = Kmenta, restrict.matrix = restrm,
-+    inst = inst, methodResidCov = "noDfCor" )
++    inst = inst, methodResidCov = "noDfCor", useMatrix = useMatrix )
 > fit3sls2r <- systemfit( eqSystem, "3SLS", data = Kmenta, restrict.matrix = restrm,
 +    inst = inst, methodResidCov = "noDfCor", useMatrix = useMatrix )
 > # print( hausman.systemfit( fit2sls2r, fit3sls2r ) )

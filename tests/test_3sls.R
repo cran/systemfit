@@ -169,24 +169,24 @@ for( i in seq( along = formulas ) ) {
    ## *********** estimations with a single regressor ************
    fit3sls[[ i ]]$S1 <- systemfit(
       list( farmPrice ~ consump - 1, price ~ consump + trend ), "3SLS",
-      data = Kmenta, inst = ~ trend + income )
+      data = Kmenta, inst = ~ trend + income, useMatrix = useMatrix )
    print( summary( fit3sls[[ i ]]$S1 ) )
    fit3sls[[ i ]]$S2 <- systemfit(
       list( consump ~ farmPrice - 1, consump ~ trend - 1 ), "3SLS",
-      data = Kmenta, inst = ~ price + income )
+      data = Kmenta, inst = ~ price + income, useMatrix = useMatrix )
    print( summary( fit3sls[[ i ]]$S2 ) )
    fit3sls[[ i ]]$S3 <- systemfit(
       list( consump ~ trend - 1, farmPrice ~ trend - 1 ), "3SLS",
-      data = Kmenta, inst = instlist )
+      data = Kmenta, inst = instlist, useMatrix = useMatrix )
    print( summary( fit3sls[[ i ]]$S3 ) )
    fit3sls[[ i ]]$S4 <- systemfit(
       list( consump ~ farmPrice - 1, price ~ trend - 1 ), "3SLS",
       data = Kmenta, inst = ~ farmPrice + trend + income,
-      restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ) )
+      restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ), useMatrix = useMatrix )
    print( summary( fit3sls[[ i ]]$S4 ) )
    fit3sls[[ i ]]$S5 <- systemfit(
       list( consump ~ 1, price ~ 1 ), "3SLS",
-      data = Kmenta, inst = ~ income )
+      data = Kmenta, inst = ~ income, useMatrix = useMatrix )
    print( summary( fit3sls[[ i ]]$S5 ) )
 }
 

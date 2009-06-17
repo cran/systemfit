@@ -1,4 +1,4 @@
-###   $Id: systemfit.R 534 2007-12-29 15:19:54Z henningsena $
+###   $Id: systemfit.R 1031 2009-06-17 16:14:50Z arne $
 ###
 ###            Simultaneous Equation Estimation for R
 ###
@@ -149,7 +149,7 @@ systemfit <- function(  formula,
 
    results$call <- match.call() # get the original call
 
-   # prepare data
+   ## prepare y vectors and X matrices for each equation
    modelFrame <- .prepareData.systemfit( data )
    # list of terms objects of each equation
    termsEq <- list()
@@ -159,24 +159,16 @@ systemfit <- function(  formula,
    evalModelFrameEq <- list()
    # list for vectors of endogenous variables in each equation
    yVecEq  <- list()
-   # stacked endogenous variables of all equations
-   yVecAll <- matrix( 0, 0, 1 )
    # list for matrices of regressors in each equation
    xMatEq  <- list()
-   # attributes of the model matrices
-   if( control$useMatrix ){
-      xMatEqAttr <- list()
-   }
-   # number of observations in each equation
-   nObsEq  <- numeric( nEq )
    # number of exogenous variables /(unrestricted) coefficients in each equation
    nCoefEq <- numeric( nEq )
+   # names of observations of each equation (with observations with NAs)
+   obsNamesNaEq <- list()
    # names of coefficients
    coefNames  <- NULL
    # names of coefficients of each equation
    coefNamesEq <- list()
-   # names of observations of each equation
-   obsNamesEq <- list()
    # prepare data for individual equations
    for(i in 1:nEq ) {
       modelFrameEq[[ i ]] <- modelFrame
@@ -186,13 +178,7 @@ systemfit <- function(  formula,
       weights <- model.extract( evalModelFrameEq[[ i ]], "weights" )
       yVecEq[[i]] <- model.extract( evalModelFrameEq[[ i ]], "response" )
       xMatEq[[i]] <- model.matrix( termsEq[[ i ]], evalModelFrameEq[[ i ]] )
-      if( control$useMatrix ){
-         xMatEqAttr[[ i ]] <- attributes( xMatEq[[i]] )
-         xMatEq[[ i ]] <- as( xMatEq[[ i ]], "dgeMatrix" )
-      }
-      obsNamesEq[[ i ]] <- rownames( xMatEq[[ i ]] )
-      yVecAll <- c(yVecAll,yVecEq[[i]])
-      nObsEq[i] <- length( yVecEq[[i]] )
+      obsNamesNaEq[[ i ]] <- rownames( xMatEq[[ i ]] )
       nCoefEq[i] <- ncol(xMatEq[[i]])
       cNamesEq <- NULL
       for(j in 1:nCoefEq[i]) {
@@ -209,18 +195,138 @@ systemfit <- function(  formula,
       }
       coefNamesEq[[ i ]] <- cNamesEq
    }
-   # stacked matrices of all regressors
-   xMatAll <- .stackMatList( xMatEq, way = "diag",
-      useMatrix = control$useMatrix )
    rm( modelFrameEq, xjName, cNamesEq )
 
-   # test for unequal numbers of observations
-   if( nEq > 1 ) {
-      if( var ( nObsEq ) != 0 ) {
-         stop( "Systems with unequal numbers of observations are not supported yet." )
+   ## prepare Z matrices of instruments for each equation
+   if( !is.null( inst ) ) {
+      # list of terms objects of instruments of each equation
+      termsInst <- list()
+      # model frame of instruments
+      modelFrameInst <- list()
+      # evaluated model frame of instruments
+      evalModelFrameInst <- list()
+      # list for matrices of instruments in each equation
+      zMatEq  <- list()
+      # prepare data for individual equations
+      for(i in 1:nEq) {
+         modelFrameInst[[ i ]] <- modelFrame
+         modelFrameInst[[ i ]]$formula <- inst[[ i ]]
+         evalModelFrameInst[[ i ]] <- eval( modelFrameInst[[ i ]] )
+         termsInst[[ i ]] <- attr( evalModelFrameInst[[ i ]], "terms" )
+         zMatEq[[i]] <- model.matrix( termsInst[[ i ]], evalModelFrameInst[[ i ]] )
       }
    }
 
+   ## check if all endogenous variables, regressors, and instruments
+   ## have the same number of observations (including observations with NAs)
+   # total number of observations per equation (including NAs)
+   nObsWithNa <- length( yVecEq[[ 1 ]] )
+   for( i in 1:nEq ){
+      if( nObsWithNa != length( yVecEq[[ i ]] ) ) {
+         stop( "all equations must have the same number of observations",
+            " (including observations with NAs)",
+            " but the endogenous variable of equation 1 has ",
+            nObsWithNa, " observations",
+            " while the endogenous variable of equation ", i, " has ",
+            length( yVecEq[[ i ]] ), " observations" )
+      }
+      if( nObsWithNa != nrow( xMatEq[[ i ]] ) ) {
+         stop( "the regressors of each equation must have the same number",
+            " of observations as the corresponding endogenous variable",
+            " (including observations with NAs)",
+            " but the regressors of equation ", i, " have ",
+            nrow( xMatEq[[ i ]] ), " observations",
+            " while the endogenous variable of this equation has ",
+            length( yVecEq[[ i ]] ), " observations" )
+      }
+      if( !is.null( inst ) ) {
+         if( nObsWithNa != nrow( zMatEq[[ i ]] ) ) {
+            stop( "the instrumental variables of each equation must have",
+               " the same number of observations as the corresponding regressors",
+               " (including observations with NAs)",
+               " but the instrumental variables of equation ", i, " have ",
+               nrow( zMatEq[[ i ]] ), " observations",
+               " while the regressors of this equation have ",
+               nrow( xMatEq[[ i ]] ), " observations" )
+         }
+      }
+   }
+
+   ## determine valid observations of each equation
+   # which observations in each equation have no NAs
+   validObsEq <- matrix( NA, nrow = nObsWithNa, ncol = nEq )
+   for( i in 1:nEq ){
+      validObsEq[ , i ] <- !is.na( yVecEq[[ i ]] ) &
+         rowSums( is.na( xMatEq[[ i ]] ) ) == 0
+      if( !is.null( inst ) ) {
+         validObsEq[ , i ] <- validObsEq[ , i ] &
+            rowSums( is.na( zMatEq[[ i ]] ) ) == 0
+      }
+   }
+
+   ## check if the system of equations is unbalanced
+   # which observations have no NAs in all equations
+   validObsAll <- rowSums( !validObsEq ) == 0
+   unbalanced <- FALSE
+   for( i in 1:nEq ) {
+      if( any( validObsEq[ !validObsAll, i ] ) ) {
+         unbalanced <- TRUE
+      }
+   }
+   if( unbalanced ) {
+      warning( "the estimation of systems of equations with unequal numbers",
+         " of observations has not been thoroughly tested yet" )
+   }
+   rm( validObsAll, unbalanced )
+
+   ## remove all observations with NAs
+   for( i in 1:nEq ) {
+      # vectors of endogenous variables
+      yVecEq[[ i ]] <- yVecEq[[ i ]][ validObsEq[ , i ] ]
+      # matrices of regressors
+      attrAssign <- attributes( xMatEq[[ i ]] )$assign
+      xMatEq[[ i ]] <- xMatEq[[ i ]][ validObsEq[ , i ], , drop = FALSE ]
+      attributes( xMatEq[[ i ]] )$assign <- attrAssign
+      # matrices of instrumental variables
+      if( !is.null( inst ) ) {
+         zMatEq[[ i ]] <- zMatEq[[ i ]][ validObsEq[ , i ], , drop = FALSE ]
+      }
+   }
+   rm( attrAssign )
+
+   ## prepare matrices for using the Matrix package
+   if( control$useMatrix ){
+      # attributes of the model matrices
+      xMatEqAttr <- list()
+      for( i in 1:nEq ) {
+         xMatEqAttr[[ i ]] <- attributes( xMatEq[[i]] )
+         xMatEq[[ i ]] <- as( xMatEq[[ i ]], "dgeMatrix" )
+         if( !is.null( inst ) ) {
+            zMatEq[[ i ]] <- as( zMatEq[[ i ]], "dgeMatrix" )
+         }
+      }
+   }
+
+   # number of observations in each equation
+   nObsEq  <- numeric( nEq )
+   # names of observations of each equation (without observations with NAs)
+   obsNamesEq <- list()
+   for( i in 1:nEq ){
+      obsNamesEq[[ i ]] <- rownames( xMatEq[[ i ]] )
+      nObsEq[i] <- length( yVecEq[[i]] )
+   }
+
+   # stacked vector of all endogenous variables
+   yVecAll <- matrix( 0, 0, 1 )
+   for( i in 1:nEq ) {
+      yVecAll <- c(yVecAll,yVecEq[[i]])
+   }
+
+   # stacked matrices of all regressors
+   xMatAll <- .stackMatList( xMatEq, way = "diag",
+      useMatrix = control$useMatrix )
+
+   # impose restrictions via argument 'restrict.regMat'
    if( !is.null( restrict.regMat ) ) {
       # checking matrix to modify (post-multiply) the regressor matrix (restrict.regMat)
       if( !is.matrix( restrict.regMat ) ) {
@@ -247,34 +353,12 @@ systemfit <- function(  formula,
       }
    }
 
-   ## preparing instruments
+   # fitted values of regressors for IV estimations
    if( !is.null( inst ) ) {
-      # list of terms objects of instruments of each equation
-      termsInst <- list()
-      # model frame of instruments
-      modelFrameInst <- list()
-      # evaluated model frame of instruments
-      evalModelFrameInst <- list()
-      # list for matrices of instruments in each equation
-      zMatEq  <- list()
-      # fitted values of regressors
       xMatHatEq <- list()
-      # prepare data for individual equations
       for(i in 1:nEq) {
+         # rows that belong to the ith equation
          rowsEq <- c( (1+sum(nObsEq[1:i])-nObsEq[i]):(sum(nObsEq[1:i])) )
-            # rows that belong to the ith equation
-         modelFrameInst[[ i ]] <- modelFrame
-         modelFrameInst[[ i ]]$formula <- inst[[ i ]]
-         evalModelFrameInst[[ i ]] <- eval( modelFrameInst[[ i ]] )
-         termsInst[[ i ]] <- attr( evalModelFrameInst[[ i ]], "terms" )
-         zMatEq[[i]] <- model.matrix( termsInst[[ i ]], evalModelFrameInst[[ i ]] )
-         if( control$useMatrix ){
-            zMatEq[[ i ]] <- as( zMatEq[[ i ]], "dgeMatrix" )
-         }
-         if( nrow( zMatEq[[ i ]] ) != nrow( xMatAll[ rowsEq, ] ) ) {
-            stop( paste( "The instruments and the regressors of equation",
-               as.character( i ), "have different numbers of observations." ) )
-         }
          # extract instrument matrix
          xMatAllThisEq <- xMatAll[ rowsEq, ]
          if( control$useMatrix ){
@@ -397,11 +481,11 @@ systemfit <- function(  formula,
     resids <- yVecAll - xMatAll %*% coef                                        # residuals
     if(control$singleEqSigma) {
       rcov <- .calcResidCov( resids, methodResidCov = control$methodResidCov,
-         nObsEq = nObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq, diag = TRUE,
+         validObsEq = validObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq, diag = TRUE,
          centered = control$centerResiduals, useMatrix = control$useMatrix,
          solvetol = control$solvetol )    # residual covariance matrix
       coefCov <- .calcGLS( xMat = xMatAll, R.restr = R.restr, q.restr = q.restr,
-         sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+         sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
          solvetol = control$solvetol )
                     # coefficient covariance matrix
     } else {
@@ -428,16 +512,16 @@ systemfit <- function(  formula,
       coefOld <- coef                # coefficients of previous step
       resids <- yVecAll - xMatAll %*% coef     # residuals
       rcov <- .calcResidCov( resids, methodResidCov = control$methodResidCov,
-         nObsEq = nObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq, diag = TRUE,
+         validObsEq = validObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq, diag = TRUE,
          centered = control$centerResiduals, useMatrix = control$useMatrix,
          solvetol = control$solvetol )
       coef  <- .calcGLS( xMat = xMatAll, yVec = yVecAll, R.restr = R.restr,
-         q.restr = q.restr, sigma = rcov, nObsEq = nObsEq,
+         q.restr = q.restr, sigma = rcov, validObsEq = validObsEq,
          useMatrix = control$useMatrix, solvetol = control$solvetol )
       coefDiff <- coef - coefOld # difference of coefficients between this and previous step
     }
     coefCov <- .calcGLS( xMat = xMatAll, R.restr = R.restr, q.restr = q.restr,
-       sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+       sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
        solvetol = control$solvetol )
     resids <- yVecAll - xMatAll %*% coef                        # residuals
   }
@@ -452,17 +536,17 @@ systemfit <- function(  formula,
       coefOld <- coef                           # coefficients of previous step
       resids <- yVecAll-xMatAll%*%coef                     # residuals
       rcov <- .calcResidCov( resids, methodResidCov = control$methodResidCov,
-         nObsEq = nObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq,
+         validObsEq = validObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq,
          centered = control$centerResiduals, useMatrix = control$useMatrix,
          solvetol = control$solvetol )
       coef <- .calcGLS( xMat = xMatAll, yVec = yVecAll,
          R.restr = R.restr, q.restr = q.restr,
-         sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+         sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
          solvetol = control$solvetol )     # coefficients
       coefDiff <- coef - coefOld # difference of coefficients between this and previous step
     }
     coefCov <- .calcGLS( xMat = xMatAll, R.restr = R.restr, q.restr = q.restr,
-       sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+       sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
        solvetol = control$solvetol )
             # final step coefficient covariance matrix
     resids <- yVecAll - xMatAll %*% coef                        # residuals
@@ -492,11 +576,11 @@ systemfit <- function(  formula,
     resids <- yVecAll - xMatAll %*% coef                        # residuals
     if(control$singleEqSigma) {
       rcov <- .calcResidCov( resids, methodResidCov = control$methodResidCov,
-         nObsEq = nObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq, diag = TRUE,
+         validObsEq = validObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq, diag = TRUE,
          centered = control$centerResiduals, useMatrix = control$useMatrix,
          solvetol = control$solvetol )
       coefCov <- .calcGLS( xMat = xMatHatAll, R.restr = R.restr, q.restr = q.restr,
-         sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+         sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
          solvetol = control$solvetol )  # coefficient covariance matrix
     } else {
       s2 <- .calcSigma2( resids, nObs = nObsAll, nCoef = nCoefLiAll, methodResidCov = control$methodResidCov )
@@ -522,16 +606,16 @@ systemfit <- function(  formula,
       coefOld <- coef                           # coefficients of previous step
       resids <- yVecAll-xMatAll%*%coef                     # residuals
       rcov <- .calcResidCov( resids, methodResidCov = control$methodResidCov,
-         nObsEq = nObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq, diag = TRUE,
+         validObsEq = validObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq, diag = TRUE,
          centered = control$centerResiduals, useMatrix = control$useMatrix,
          solvetol = control$solvetol )
       coef <- .calcGLS( xMat = xMatHatAll, yVec = yVecAll, R.restr = R.restr, q.restr = q.restr,
-         sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+         sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
          solvetol = control$solvetol )          # (unrestr.) coeffic.
       coefDiff <- coef - coefOld # difference of coefficients between this and previous step
     }
     coefCov <- .calcGLS( xMat = xMatHatAll, R.restr = R.restr, q.restr = q.restr,
-       sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+       sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
        solvetol = control$solvetol )  # coefficient covariance matrix
     resids <- yVecAll - xMatAll %*% coef                        # residuals
   }
@@ -546,24 +630,24 @@ systemfit <- function(  formula,
       coefOld <- coef                           # coefficients of previous step
       resids <- yVecAll-xMatAll%*%coef                     # residuals
       rcov <- .calcResidCov( resids, methodResidCov = control$methodResidCov,
-         nObsEq = nObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq,
+         validObsEq = validObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq,
          centered = control$centerResiduals, useMatrix = control$useMatrix,
          solvetol = control$solvetol )
       if(control$method3sls=="GLS") {
          coef <- .calcGLS( xMat = xMatHatAll, yVec = yVecAll,
             R.restr = R.restr, q.restr = q.restr,
-            sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+            sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
             solvetol = control$solvetol )  # (unrestr.) coeffic.
       }
       if(control$method3sls=="IV") {
          coef <- .calcGLS( xMat = xMatHatAll, xMat2 = xMatAll, yVec = yVecAll,
             R.restr = R.restr, q.restr = q.restr,
-            sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+            sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
             solvetol = control$solvetol )   # (unrestr.) coeffic.
       }
       if(control$method3sls=="GMM") {
         ZtOmega <- .calcXtOmegaInv( xMat = zMatAll, sigma = rcov,
-           nObsEq = nObsEq, invertSigma = FALSE, useMatrix = control$useMatrix,
+           validObsEq = validObsEq, invertSigma = FALSE, useMatrix = control$useMatrix,
            solvetol = control$solvetol )
         if(is.null(R.restr)) {
           coef <- as.numeric( solve( crossprod( xMatAll, zMatAll ) %*%
@@ -585,7 +669,7 @@ systemfit <- function(  formula,
       }
       if(control$method3sls=="Schmidt") {
         xMatHatOmegaInv <- .calcXtOmegaInv( xMat = xMatHatAll, sigma = rcov,
-           nObsEq = nObsEq, useMatrix = control$useMatrix,
+           validObsEq = validObsEq, useMatrix = control$useMatrix,
            solvetol = control$solvetol )
         if(is.null(R.restr)) {
           coef <- as.numeric( solve( crossprod( xMatHatAll, t( xMatHatOmegaInv ) ), 
@@ -606,20 +690,20 @@ systemfit <- function(  formula,
       if(control$method3sls=="EViews") {
          coef <- b2 + .calcGLS( xMat = xMatHatAll, yVec = ( yVecAll -  xMatAll %*% b2 ),
             R.restr = R.restr, q.restr = q.restr, sigma = rcov,
-            nObsEq = nObsEq, useMatrix = control$useMatrix,
+            validObsEq = validObsEq, useMatrix = control$useMatrix,
             solvetol = control$solvetol )  # (unrestr.) coeffic.
       }
       coefDiff <- coef - coefOld # difference of coefficients between this and previous step
     }
     if(control$method3sls=="GLS") {
        coefCov <- .calcGLS( xMat = xMatHatAll, R.restr = R.restr, q.restr = q.restr,
-          sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+          sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
           solvetol = control$solvetol )  # coefficient covariance matrix
     }
     if(control$method3sls=="IV") {
        coefCov <- .calcGLS( xMat = xMatHatAll, xMat2 = xMatAll,
           R.restr = R.restr, q.restr = q.restr,
-          sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+          sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
           solvetol = control$solvetol )
     }
     if(control$method3sls=="GMM") {
@@ -634,12 +718,12 @@ systemfit <- function(  formula,
     }
     if(control$method3sls=="Schmidt") {
       xMatHatOmegaInv <- .calcXtOmegaInv( xMat = xMatHatAll, sigma = rcov,
-         nObsEq = nObsEq, useMatrix = control$useMatrix,
+         validObsEq = validObsEq, useMatrix = control$useMatrix,
          solvetol = control$solvetol )
       PH <- zMatAll %*%  solve( crossprod( zMatAll ), t( zMatAll ),
          tol=control$solvetol )
       PHOmega <- .calcXtOmegaInv( xMat = t( PH ), sigma = rcov,
-         nObsEq = nObsEq, invertSigma = FALSE, useMatrix = control$useMatrix,
+         validObsEq = validObsEq, invertSigma = FALSE, useMatrix = control$useMatrix,
          solvetol = control$solvetol )
       if(is.null(R.restr)) {
          coefCov <- solve( xMatHatOmegaInv %*% xMatHatAll,
@@ -659,7 +743,7 @@ systemfit <- function(  formula,
     if(control$method3sls=="EViews") {
        coefCov <- .calcGLS( xMat = xMatHatAll,
           R.restr = R.restr, q.restr = q.restr,
-          sigma = rcov, nObsEq = nObsEq, useMatrix = control$useMatrix,
+          sigma = rcov, validObsEq = validObsEq, useMatrix = control$useMatrix,
           solvetol = control$solvetol )  # final step coefficient covariance matrix
     }
     resids <- yVecAll - xMatAll %*% coef                        # residuals
@@ -668,6 +752,7 @@ systemfit <- function(  formula,
   ## FIML estimation
   if( method == "FIML" ) {
     fimlResult <- .systemfitFiml( systemfitCall = results$call, nObsEq = nObsEq,
+      validObsEq = validObsEq,
       nCoefEq = nCoefLiEq, yVec = yVecAll, xMat = xMatAll, xEq = xMatEq, methodResidCov = control$methodResidCov,
       centerResiduals = control$centerResiduals, solvetol = control$solvetol )
     #print( fimlResult )
@@ -691,9 +776,10 @@ systemfit <- function(  formula,
     results$eq[[ i ]]$eqnLabel <- eqnLabels[[i]]
     results$eq[[ i ]]$method   <- method
 
-    results$eq[[ i ]]$residuals <-
+    results$eq[[ i ]]$residuals <- rep( NA, nObsWithNa )
+    results$eq[[ i ]]$residuals[ validObsEq[ , i ] ] <-
       resids[ ( 1 + sum(nObsEq[1:i]) -nObsEq[i] ):( sum(nObsEq[1:i]) ) ]
-    names( results$eq[[ i ]]$residuals ) <- obsNamesEq[[ i ]]
+    names( results$eq[[ i ]]$residuals ) <- obsNamesNaEq[[ i ]]
 
     results$eq[[ i ]]$coefficients <-
       drop( coef[(1+sum(nCoefEq[1:i])-nCoefEq[i]):(sum(nCoefEq[1:i]))] )
@@ -708,9 +794,10 @@ systemfit <- function(  formula,
     colnames( results$eq[[ i ]]$coefCov ) <- coefNamesEq[[ i ]]
     rownames( results$eq[[ i ]]$coefCov ) <- coefNamesEq[[ i ]]
 
-    results$eq[[ i ]]$fitted.values <-
+    results$eq[[ i ]]$fitted.values <- rep( NA, nObsWithNa )
+    results$eq[[ i ]]$fitted.values[ validObsEq[ , i ] ] <-
       fitted.values[(1+sum(nObsEq[1:i])-nObsEq[i]):(sum(nObsEq[1:i]))]
-    names( results$eq[[ i ]]$fitted.values ) <- obsNamesEq[[ i ]]
+    names( results$eq[[ i ]]$fitted.values ) <- obsNamesNaEq[[ i ]]
 
     results$eq[[ i ]]$terms    <- termsEq[[ i ]]
     results$eq[[ i ]]$rank     <- nCoefLiEq[i]
@@ -734,8 +821,9 @@ systemfit <- function(  formula,
       rownames( results$eq[[ i ]]$x ) <- obsNamesEq[[ i ]]
     }
     if( control$model ){
-      results$eq[[ i ]]$model <- evalModelFrameEq[[ i ]] # model frame of this equation
-      rownames( results$eq[[ i ]]$model ) <- obsNamesEq[[ i ]]
+      results$eq[[ i ]]$model <- evalModelFrameEq[[ i ]]
+         # model frame of this equation
+      rownames( results$eq[[ i ]]$model ) <- obsNamesNaEq[[ i ]]
     }
     if( method %in% c( "2SLS", "W2SLS", "3SLS" ) ) {
       results$eq[[ i ]]$inst         <- inst[[i]]
@@ -766,7 +854,7 @@ systemfit <- function(  formula,
 
   # residual covarance matrix
   results$residCov <- .calcResidCov( resids, methodResidCov = control$methodResidCov,
-      nObsEq = nObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq,
+      validObsEq = validObsEq, nCoefEq = nCoefLiEq, xEq = xMatEq,
       centered = control$centerResiduals, solvetol = control$solvetol )
   colnames( results$residCov ) <- eqnLabels
   rownames( results$residCov ) <- eqnLabels

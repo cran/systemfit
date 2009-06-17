@@ -142,24 +142,24 @@ print( summary( fitw2slsd3e, useDfSys = TRUE ) )
 ## *********** estimations with a single regressor ************
 fitw2slsS1 <- systemfit(
    list( consump ~ price - 1, price ~ consump + trend ), "W2SLS",
-   data = Kmenta, inst = ~ farmPrice + trend + income )
+   data = Kmenta, inst = ~ farmPrice + trend + income, useMatrix = useMatrix )
 print( summary( fitw2slsS1 ) )
 fitw2slsS2 <- systemfit(
    list( consump ~ price - 1, consump ~ trend - 1 ), "W2SLS",
-   data = Kmenta, inst = ~ farmPrice + price + income )
+   data = Kmenta, inst = ~ farmPrice + price + income, useMatrix = useMatrix )
 print( summary( fitw2slsS2 ) )
 fitw2slsS3 <- systemfit(
    list( consump ~ trend - 1, price ~ trend - 1 ), "W2SLS",
-   data = Kmenta, inst = instlist )
+   data = Kmenta, inst = instlist, useMatrix = useMatrix )
 print( summary( fitw2slsS3 ) )
 fitw2slsS4 <- systemfit(
    list( consump ~ trend - 1, price ~ trend - 1 ), "W2SLS",
    data = Kmenta, inst = ~ farmPrice + trend + income,
-   restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ) )
+   restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ), useMatrix = useMatrix )
 print( summary( fitw2slsS4 ) )
 fitw2slsS5 <- systemfit(
    list( consump ~ 1, price ~ 1 ), "W2SLS",
-   data = Kmenta, inst = instlist )
+   data = Kmenta, inst = instlist, useMatrix = useMatrix )
 print( summary( fitw2slsS5 ) )
 
 

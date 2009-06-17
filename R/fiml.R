@@ -10,18 +10,18 @@
    }
    mlResids <- mlVars$yVec - mlVars$xMat %*% mlCoef
    mlSigma <- .calcResidCov( resids = mlResids, methodResidCov = mlVars$methodResidCov,
-      nObsEq = mlVars$nObsEq, nCoefEq = mlVars$nCoefEq, xEq = mlVars$xEq,
+      validObsEq = mlVars$validObsEq, nCoefEq = mlVars$nCoefEq, xEq = mlVars$xEq,
       centered = mlVars$centerResiduals, diag = FALSE,
       solvetol = mlVars$solvetol )
    likValue <- - nObs * log( 2 * pi ) -
       ( nObs / 2 ) * log( det( mlSigma ) ) -
-      ( 1 / 2 ) * .calcXtOmegaInv( mlResids, mlSigma, nObsEq = mlVars$nObsEq,
+      ( 1 / 2 ) * .calcXtOmegaInv( mlResids, mlSigma, validObsEq = mlVars$validObsEq,
          solvetol = mlVars$solvetol ) %*% mlResids
    return( likValue )
 }
 
 ## FIML estimation
-.systemfitFiml <- function( systemfitCall, nObsEq, nCoefEq, yVec, xMat, xEq,
+.systemfitFiml <- function( systemfitCall, nObsEq, validObsEq, nCoefEq, yVec, xMat, xEq,
       methodResidCov, centerResiduals, solvetol, startCoef = "ITSUR" ) {
 
    nObs <- sum( nObsEq )
@@ -45,6 +45,7 @@
    # variables passed to .systemfitFimlLik
    mlVars <- list()
    mlVars$nObsEq  <- nObsEq
+   mlVars$validObsEq <- validObsEq
    mlVars$nCoefEq <- nCoefEq
    mlVars$yVec    <- yVec
    mlVars$xMat    <- xMat

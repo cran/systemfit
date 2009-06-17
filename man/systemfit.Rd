@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 990 2008-12-17 23:04:12Z arne $
+%    $Id: systemfit.Rd 1031 2009-06-17 16:14:50Z arne $
 
 
 \name{systemfit}
@@ -67,6 +67,12 @@ systemfit( formula, method = "OLS",
 }
 
 \details{
+   The estimation of systems of equations with unequal numbers
+   of observations has not been thoroughly tested yet.
+   Currently, \code{systemfit} calculates the residual covariance matrix
+   only from the residuals/observations that are available
+   in all equations.
+
    If argument \code{data} is of class \code{plm.dim}
    (created with \code{plm.data} and thus, contains panel data in long format),
    argument \code{formula} must be a single equation

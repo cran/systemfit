@@ -1,7 +1,7 @@
-.calcXtOmegaInv <- function( xMat, sigma, nObsEq, invertSigma = TRUE,
+.calcXtOmegaInv <- function( xMat, sigma, validObsEq, invertSigma = TRUE,
       useMatrix = FALSE, warnMatrix = TRUE, solvetol = 1e-5 ){
 
-   nEq <- length( nObsEq )
+   nEq <- ncol( validObsEq )
 
    if( useMatrix && warnMatrix ){
       if( class( sigma ) != "dspMatrix" ){
@@ -21,18 +21,40 @@
    }
 
    if( useMatrix ){
-      result <- crossprod( xMat, suppressWarnings(
-         kronecker( sigmaInv, Diagonal( nObsEq[ 1 ] ) ) ) )
+      for( i in 1:nEq ) {
+         for( j in 1:nEq ) {
+            thisBlock <- sparseMatrix(
+               i = which( validObsEq[ validObsEq[ , i ], j ] ),
+               j = which( validObsEq[ validObsEq[ , j ], i ] ),
+               x = sigmaInv[ i, j ],
+               dims = c( sum( validObsEq[ , i ] ), sum( validObsEq[ , j ] ) ) )
+            if( j == 1 ) {
+               thisRow <- thisBlock
+            } else {
+               thisRow <- cBind( thisRow, thisBlock )
+            }
+         }
+         if( i == 1 ) {
+            omegaInv <- thisRow
+         } else {
+            omegaInv <- rBind( omegaInv, thisRow )
+         }
+      }
+      result <- crossprod( xMat, omegaInv )
    } else {
       eqSelect <- rep( 0, nrow( xMat ) )
       for( i in 1:nEq ) {
-         eqSelect[ ( sum( nObsEq[ 0:( i - 1 ) ] ) + 1 ):sum( nObsEq[ 1:i ] ) ] <- i
+         eqSelect[ ( sum( validObsEq[ , 0:( i - 1 ) ] ) + 1 ):sum( validObsEq[ , 1:i ] ) ] <- i
       }
       result <- matrix( 0, nrow = ncol( xMat ), ncol = nrow( xMat ) )
       for( i in 1:nEq ) {
          for( j in 1:nEq ) {
-            result[ , eqSelect == i ] <- result[ , eqSelect == i ] +
-               t( xMat )[ , eqSelect == j ] * sigmaInv[ i, j ]
+            colSelectI <- eqSelect == i
+            colSelectI[ colSelectI ] <- validObsEq[ validObsEq[ , i ], j ]
+            colSelectJ <- eqSelect == j
+            colSelectJ[ colSelectJ ] <- validObsEq[ validObsEq[ , j ], i ]
+            result[ , colSelectI ] <- result[ , colSelectI ] +
+               t( xMat )[ , colSelectJ ] * sigmaInv[ i, j ]
          }
       }
    }
@@ -41,7 +63,7 @@
 }
 
 .calcGLS <- function( xMat, yVec = NULL, xMat2 = xMat, R.restr = NULL,
-      q.restr = NULL, sigma, nObsEq, useMatrix = TRUE, warnMatrix = TRUE,
+      q.restr = NULL, sigma, validObsEq, useMatrix = TRUE, warnMatrix = TRUE,
       solvetol = 1e-5 ){
 
    if( useMatrix && warnMatrix ){
@@ -59,7 +81,7 @@
       }
    }
 
-   xtOmegaInv <- .calcXtOmegaInv( xMat = xMat, sigma = sigma, nObsEq = nObsEq,
+   xtOmegaInv <- .calcXtOmegaInv( xMat = xMat, sigma = sigma, validObsEq = validObsEq,
       useMatrix = useMatrix, solvetol = solvetol )
    if( is.null( R.restr ) ) {
       if( is.null( yVec ) ) {

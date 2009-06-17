@@ -87,12 +87,17 @@ residuals.systemfit <- function( object, ... ) {
       result[[ object$eq[[i]]$eqnLabel ]] <- residuals( object$eq[[i]] )
    }
    result$obsNo <- NULL
+   rownames( result ) <- names( residuals( object$eq[[ 1 ]] ) )
    return( result )
 }
 
 ## return residuals of a single equation
-residuals.systemfit.equation <- function( object, ... ) {
-   object$residuals
+residuals.systemfit.equation <- function( object, na.rm = FALSE, ... ) {
+   if( na.rm ) {
+      return( object$residuals[ !is.na( object$residuals ) ] )
+   } else {
+      return( object$residuals )
+   }
 }
 
 ## return the variance covariance matrix of the coefficients
@@ -128,12 +133,17 @@ fitted.systemfit <- function( object, ... ) {
       fitted.values[ , i ]           <- object$eq[[ i ]]$fitted.values
       colnames( fitted.values )[ i ] <- object$eq[[ i ]]$eqnLabel
    }
+   rownames( fitted.values ) <- names( fitted( object$eq[[ 1 ]] ) )
    return( as.data.frame( fitted.values ) )
 }
 
 ## return the fitted values of e single euation
-fitted.systemfit.equation <- function( object, ... ) {
-   object$fitted.values
+fitted.systemfit.equation <- function( object, na.rm = FALSE, ... ) {
+   if( na.rm ) {
+      return( object$fitted.values[ !is.na( object$fitted.values ) ] )
+   } else {
+      return( object$fitted.values )
+   }
 }
 
 ## return model matrix of the entire system
@@ -169,6 +179,9 @@ model.matrix.systemfit.equation <- function( object, ... ){
       result <- object$x
    } else if( !is.null( model.frame( object ) ) ) {
       result <- model.matrix( object$terms, data = model.frame( object ) )
+      attrAssign <- attributes( result )$assign
+      result <- result[ !is.na( residuals( object ) ), ]
+      attributes( result )$assign <- attrAssign
    } else {
       stop( "returning model matrix not possible. Please re-estimate",
          " the system with either control variable",

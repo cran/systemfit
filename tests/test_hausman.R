@@ -66,7 +66,7 @@ fit2sls2s <- systemfit( eqSystem, "2SLS", data = Kmenta, restrict.matrix = restr
 
 ## ********************* estimations with methodResidCov = 0 **************
 fit2sls2r <- systemfit( eqSystem, "2SLS", data = Kmenta, restrict.matrix = restrm,
-   inst = inst, methodResidCov = "noDfCor" )
+   inst = inst, methodResidCov = "noDfCor", useMatrix = useMatrix )
 fit3sls2r <- systemfit( eqSystem, "3SLS", data = Kmenta, restrict.matrix = restrm,
    inst = inst, methodResidCov = "noDfCor", useMatrix = useMatrix )
 # print( hausman.systemfit( fit2sls2r, fit3sls2r ) )

@@ -1,6 +1,6 @@
 
-R version 2.8.0 (2008-10-20)
-Copyright (C) 2008 The R Foundation for Statistical Computing
+R version 2.9.0 (2009-04-17)
+Copyright (C) 2009 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -30,11 +30,7 @@ Attaching package: 'Matrix'
 
 	The following object(s) are masked from package:base :
 
-	 colMeans,
-	 colSums,
-	 rcond,
-	 rowMeans,
-	 rowSums 
+	 rcond 
 
 Loading required package: car
 Loading required package: lmtest
@@ -2130,12 +2126,7 @@ Multiple R-Squared: 0.625829 Adjusted R-Squared: 0.555672
 > ## *********** estimations with a single regressor ************
 > fit2slsS1 <- systemfit(
 +    list( consump ~ price - 1, price ~ consump + trend ), "2SLS",
-+    data = Kmenta, inst = ~ farmPrice + trend + income )
-Warning message:
-Ambiguous method selection for "crossprod", target "dgCMatrix#dtTMatrix" (the first of the signatures shown will be used)
-    Matrix#ANY
-    ANY#Matrix
- 
++    data = Kmenta, inst = ~ farmPrice + trend + income, useMatrix = useMatrix )
 > print( summary( fit2slsS1 ) )
 
 systemfit results 
@@ -2188,14 +2179,9 @@ Number of observations: 20 Degrees of Freedom: 17
 SSR: 682.257396 MSE: 40.132788 Root MSE: 6.335044 
 Multiple R-Squared: -0.022489 Adjusted R-Squared: -0.142782 
 
-Warning message:
-Ambiguous method selection for "crossprod", target "dgCMatrix#dgTMatrix" (the first of the signatures shown will be used)
-    Matrix#ANY
-    ANY#Matrix
- 
 > fit2slsS2 <- systemfit(
 +    list( consump ~ price - 1, consump ~ trend - 1 ), "2SLS",
-+    data = Kmenta, inst = ~ farmPrice + price + income )
++    data = Kmenta, inst = ~ farmPrice + price + income, useMatrix = useMatrix )
 > print( summary( fit2slsS2 ) )
 
 systemfit results 
@@ -2250,7 +2236,7 @@ Multiple R-Squared: -172.78614 Adjusted R-Squared: -172.78614
 
 > fit2slsS3 <- systemfit(
 +    list( consump ~ trend - 1, price ~ trend - 1 ), "2SLS",
-+    data = Kmenta, inst = instlist )
++    data = Kmenta, inst = instlist, useMatrix = useMatrix )
 > print( summary( fit2slsS3 ) )
 
 systemfit results 
@@ -2306,7 +2292,7 @@ Multiple R-Squared: -69.480332 Adjusted R-Squared: -69.480332
 > fit2slsS4 <- systemfit(
 +    list( consump ~ trend - 1, price ~ trend - 1 ), "2SLS",
 +    data = Kmenta, inst = ~ farmPrice + trend + income,
-+    restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ) )
++    restrict.matrix = matrix( c( 1, -1 ), nrow = 1 ), useMatrix = useMatrix )
 > print( summary( fit2slsS4 ) )
 
 systemfit results 
@@ -2361,7 +2347,7 @@ Multiple R-Squared: -69.488367 Adjusted R-Squared: -69.488367
 
 > fit2slsS5 <- systemfit(
 +    list( consump ~ 1, price ~ 1 ), "2SLS",
-+    data = Kmenta, inst = ~ farmPrice )
++    data = Kmenta, inst = ~ farmPrice, useMatrix = useMatrix )
 > print( summary( fit2slsS1 ) )
 
 systemfit results 

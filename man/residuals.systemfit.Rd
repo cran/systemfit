@@ -12,12 +12,16 @@
 \usage{
    \method{residuals}{systemfit}( object, \dots )
 
-   \method{residuals}{systemfit.equation}( object, \dots )
+   \method{residuals}{systemfit.equation}( object, na.rm = FALSE, \dots )
 }
 
 \arguments{
    \item{object}{an object of class \code{systemfit} or
       \code{systemfit.equation}.}
+   \item{na.rm}{a logical value indicating whether \code{NA} values
+      (corresponding to observations that were not included in the estimation)
+      should be removed from the vector of residuals
+      before it is returned.}
    \item{\dots}{other arguments.}
 }
 

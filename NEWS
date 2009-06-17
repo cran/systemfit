@@ -1,0 +1,27 @@
+THIS IS THE CHANGELOG OF THE "systemfit" PACKAGE
+
+Please note that only the most significant changes are reported here.
+A full ChangeLog is available in the log messages of the SVN repository
+on R-Forge.
+
+
+            CHANGES IN VERSION 1.1-0
+
+* added a NAMESPACE file
+
+* the returned fitted values, residuals, and the model frame include *all*
+  observations now, where fitted values and residuals of observation
+  that were not included in the estimation are NA
+
+* systemfit can estimate systems of equations with unequal numbers
+  of observations now
+
+
+            CHANGES IN VERSION 1.0-4
+
+* added our JSS paper about systemfit as a vignette
+
+
+            CHANGES IN VERSION 1.0-0 AND BEFORE
+
+* please take a look at the log messages of the SVN repository on R-Forge
