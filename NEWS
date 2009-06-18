@@ -5,6 +5,13 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-2
+
+* the subfolder "tests" and the test scripts in this subfolder are no longer
+  included in the R package in order to reduce the time for checking
+  this package on CRAN
+
+
             CHANGES IN VERSION 1.1-0
 
 * added a NAMESPACE file

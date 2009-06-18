@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 1031 2009-06-17 16:14:50Z arne $
+%    $Id: systemfit.Rd 1034 2009-06-18 12:17:06Z arne $
 
 
 \name{systemfit}
@@ -111,6 +111,23 @@ systemfit( formula, method = "OLS",
    that the \emph{equations} might have different weights
    and \emph{not}
    that the \emph{observations} have different weights.
+
+   It is important to realize the limitations on estimating the residuals
+   covariance matrix imposed by the number of observations \eqn{T}
+   in each equation.
+   With \eqn{g} equations we estimate \eqn{g*(g+1)/2} elements using
+   \eqn{T*g} observations total.
+   Beck and Katz (1995,1993) discuss the issue and the resulting overconfidence
+   when the ratio of \eqn{T/g} is small (e.g. 3).
+   Even for \eqn{T/g=5} the estimate is unstable both numerically
+   and statistically
+   and the 95% confidence region of the estimate of the variance is
+   approximately \eqn{[0.5*\sigma^2, 3*\sigma^2]}{[0.5*s^2, 3*s^2]},
+   which is inadequate precision if the covariance matrix will be used
+   for simulation of asset return paths either for investment or risk
+   management decisions.
+   For a starter on models with large cross-sections see Reichlin (2002).
+   [This paragraph has been provided by Stephen C. Bond -- Thanks!]
 }
 
 \value{
@@ -170,6 +187,14 @@ systemfit( formula, method = "OLS",
 }
 
 \references{
+   Beck, N.; J.N. Katz (1995)
+   What to do (and not to do) with Time-Series Cross-Section Data,
+   \emph{The American Political Science Review}, 89, pp. 634-647.
+
+   Beck, N.; J.N. Katz; M.R. Alvarez; G. Garrett; P. Lange (1993)
+   Government Partisanship, Labor Organization, and Macroeconomic Performance:
+   a Corrigendum, \emph{American Political Science Review}, 87,
+   pp. 945-48.
 
   Greene, W. H. (2003)
   \emph{Econometric Analysis, Fifth Edition}, Prentice Hall.
@@ -180,6 +205,10 @@ systemfit( formula, method = "OLS",
   Kmenta, J. (1997)
   \emph{Elements of Econometrics, Second Edition}, University of
   Michigan Publishing.
+
+   Reichlin, L. (2002)
+   \emph{Factor models in large cross-sections of time series},
+   Working Paper, ECARES and CEPR.
 
   Schmidt, P. (1990)
   \emph{Three-Stage Least Squares with different Instruments for different equations},
