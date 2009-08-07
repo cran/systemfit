@@ -5,6 +5,14 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-4
+
+* model.matrix.systemfit.equation() now returns a matrix (and not a vector)
+  even if the equation has only one regressor (including the constant);
+  this fixes bugs in model.matrix.systemfit() and predict.systemfit()
+  that occured if (at least) one equation has only one regressor
+
+
             CHANGES IN VERSION 1.1-2
 
 * the subfolder "tests" and the test scripts in this subfolder are no longer

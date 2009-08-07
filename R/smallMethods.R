@@ -180,7 +180,7 @@ model.matrix.systemfit.equation <- function( object, ... ){
    } else if( !is.null( model.frame( object ) ) ) {
       result <- model.matrix( object$terms, data = model.frame( object ) )
       attrAssign <- attributes( result )$assign
-      result <- result[ !is.na( residuals( object ) ), ]
+      result <- result[ !is.na( residuals( object ) ), , drop = FALSE ]
       attributes( result )$assign <- attrAssign
    } else {
       stop( "returning model matrix not possible. Please re-estimate",
