@@ -1,6 +1,3 @@
-GrunfeldGreene          Grunfeld Data as published by Greene (2003)
-KleinI                  Klein Model I
-Kmenta                  Partly Artificial Data on the U. S. Economy
 coef.systemfit          Coefficients of systemfit object
 confint.systemfit       Confidence intervals of coefficients
 correlation.systemfit   Correlation between Predictions from Equation i
@@ -8,8 +5,11 @@ correlation.systemfit   Correlation between Predictions from Equation i
 createSystemfitModel    Create a Model for systemfit
 fitted.systemfit        Fitted values
 formula.systemfit       Model Formulae of systemfit Objects
+GrunfeldGreene          Grunfeld Data as published by Greene (2003)
 hausman.systemfit       Hausman Test
-linear.hypothesis.systemfit
+KleinI                  Klein Model I
+Kmenta                  Partly Artificial Data on the U. S. Economy
+linearHypothesis.systemfit
                         Test Linear Hypothesis
 logLik.systemfit        Log-Likelihood value of systemfit object
 lrtest.systemfit        Likelihood Ratio test for Equation Systems

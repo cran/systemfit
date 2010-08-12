@@ -1,5 +1,5 @@
 
-%  $Id: lrtest.systemfit.Rd 986 2008-10-16 07:57:24Z arne $
+%  $Id: lrtest.systemfit.Rd 1055 2010-08-12 20:11:21Z arne $
 
 \name{lrtest.systemfit}
 \alias{lrtest.systemfit}
@@ -61,7 +61,7 @@
 
 \seealso{\code{\link{systemfit}}, \code{\link[lmtest]{lrtest}}
    (package "lmtest"),
-   \code{\link{linear.hypothesis.systemfit}}}
+   \code{\link{linearHypothesis.systemfit}}}
 
 \examples{
 data( "Kmenta" )

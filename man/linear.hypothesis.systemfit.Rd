@@ -1,5 +1,5 @@
-\name{linear.hypothesis.systemfit}
-\alias{linear.hypothesis.systemfit}
+\name{linearHypothesis.systemfit}
+\alias{linearHypothesis.systemfit}
 
 \title{Test Linear Hypothesis}
 
@@ -9,7 +9,7 @@
 }
 
 \usage{
-   \method{linear.hypothesis}{systemfit}( model,
+   \method{linearHypothesis}{systemfit}( model,
       hypothesis.matrix, rhs = NULL, test = c( "FT", "F", "Chisq" ),
       vcov. = NULL, ... )
 }
@@ -19,7 +19,7 @@
    \item{hypothesis.matrix}{matrix (or vector) giving linear combinations
       of coefficients by rows,
       or a character vector giving the hypothesis in symbolic form
-      (see documentation of \code{\link[car]{linear.hypothesis}}
+      (see documentation of \code{\link[car]{linearHypothesis}}
       in package "car" for details).}
    \item{rhs}{optional right-hand-side vector for hypothesis,
       with as many entries as rows in the hypothesis matrix;
@@ -34,7 +34,7 @@
       of the regression coefficients or an estimated covariance matrix
       (function \code{vcov} is used by default).}
    \item{\dots}{further arguments passed to
-      \code{\link[car]{linear.hypothesis.default}} (package "car").}
+      \code{\link[car]{linearHypothesis.default}} (package "car").}
 }
 
 \details{
@@ -87,7 +87,7 @@
    the difference in degrees of freedom,
    the test statistic (either F or Wald/Chisq)
    and the corresponding p value.
-   See documentation of \code{\link[car]{linear.hypothesis}}
+   See documentation of \code{\link[car]{linearHypothesis}}
    in package "car".
 }
 
@@ -101,7 +101,7 @@
 
 \author{Arne Henningsen \email{arne.henningsen@googlemail.com}}
 
-\seealso{\code{\link{systemfit}}, \code{\link[car]{linear.hypothesis}}
+\seealso{\code{\link{systemfit}}, \code{\link[car]{linearHypothesis}}
    (package "car"),
    \code{\link{lrtest.systemfit}}}
 
@@ -122,16 +122,16 @@ R1[ 1, 6 ] <- -1
 restrict1 <- "demand_price - supply_farmPrice = 0"
 
 ## perform Theil's F test
-linear.hypothesis( fitsur, R1 )  # rejected
-linear.hypothesis( fitsur, restrict1 )
+linearHypothesis( fitsur, R1 )  # rejected
+linearHypothesis( fitsur, restrict1 )
 
 ## perform Wald test with F statistic
-linear.hypothesis( fitsur, R1, test = "F" )  # rejected
-linear.hypothesis( fitsur, restrict1 )
+linearHypothesis( fitsur, R1, test = "F" )  # rejected
+linearHypothesis( fitsur, restrict1 )
 
 ## perform Wald-test with chi^2 statistic
-linear.hypothesis( fitsur, R1, test = "Chisq" )  # rejected
-linear.hypothesis( fitsur, restrict1, test = "Chisq" )
+linearHypothesis( fitsur, R1, test = "Chisq" )  # rejected
+linearHypothesis( fitsur, restrict1, test = "Chisq" )
 
 # create hypothesis matrix to test whether beta_2 = - \beta_6
 R2 <- matrix( 0, nrow = 1, ncol = 7 )
@@ -141,16 +141,16 @@ R2[ 1, 6 ] <- 1
 restrict2 <- "demand_price + supply_farmPrice = 0"
 
 ## perform Theil's F test
-linear.hypothesis( fitsur, R2 )  # accepted
-linear.hypothesis( fitsur, restrict2 )
+linearHypothesis( fitsur, R2 )  # accepted
+linearHypothesis( fitsur, restrict2 )
 
 ## perform Wald test with F statistic
-linear.hypothesis( fitsur, R2, test = "F" )  # accepted
-linear.hypothesis( fitsur, restrict2 )
+linearHypothesis( fitsur, R2, test = "F" )  # accepted
+linearHypothesis( fitsur, restrict2 )
 
 ## perform Wald-test with chi^2 statistic
-linear.hypothesis( fitsur, R2, test = "Chisq" )  # accepted
-linear.hypothesis( fitsur, restrict2, test = "Chisq" )
+linearHypothesis( fitsur, R2, test = "Chisq" )  # accepted
+linearHypothesis( fitsur, restrict2, test = "Chisq" )
 }
 
 \keyword{models}

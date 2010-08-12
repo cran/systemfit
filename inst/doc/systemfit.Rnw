@@ -1278,19 +1278,19 @@ is available in appendix~\ref{sec:returned-object}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Statistical tests}
 
-The \codeD{linear}{hypothesis} and
+The \code{linearHypothesis} and
 \code{lrtest} methods for \code{systemfit} objects
 as well as the function \codeD{hausman}{systemfit}
 apply the statistical tests described in
 Sections~\ref{sec:testingRestrictions} and~\ref{sec:hausman}.
 
-The \codeD{linear}{hypothesis} method for {systemfit} objects
+The \code{linearHypothesis} method for {systemfit} objects
 can be used to test linear restrictions on the estimated coefficients
 by \citeauthor{theil71}'s $F$ test or by usual Wald tests.
 Internally, \citeauthor{theil71}'s $F$ statistic is computed
 by the hidden function \codeD{.ftest}{systemfit}
 and the Wald tests are computed by
-the default \codeD{linear}{hypothesis} method of the \pkg{car} package
+the default \code{linearHypothesis} method of the \pkg{car} package
 \citep{r-car-1.2-1, fox02a}.
 The \code{lrtest} method for \code{systemfit} objects is a wrapper function
 to the default \code{lrtest} method of the \pkg{lmtest} package
@@ -1649,12 +1649,12 @@ One way is to use the matrix $R$ and the vector $q$
 These restrictions can be specified symbolically
 by argument \codeD{restrict}{matrix}
 as in the generic function
-\codeD{linear}{hypothesis} of the \pkg{car} package \citep{r-car-1.2-1, fox02a}.
+\code{linearHypothesis} of the \pkg{car} package \citep{r-car-1.2-1, fox02a}.
 This argument must be a vector of character strings,
 where each element represents one linear restriction,
 and each element must be either a linear combination of coefficients,
 or a linear equation in the coefficients
-(see documentation of function \codeD{linear}{hypothesis}
+(see documentation of function \code{linearHypothesis}
 in the \pkg{car} package, \citealp{r-car-1.2-1, fox02a}).
 We illustrate this by estimating the model under
 the restriction $\beta_2 + \beta_6 = 0$.
@@ -2042,18 +2042,18 @@ As described in Section~\ref{sec:testingRestrictions},
 linear restrictions can be tested by an $F$ test, two Wald tests and
 an LR test.
 The \pkg{systemfit} package provides
-the method \codeD{linear}{hypothesis} for the $F$ and Wald tests
+the method \code{linearHypothesis} for the $F$ and Wald tests
 as well as the method \code{lrtest} for LR tests.
 
 We will now test the restriction $\beta_2 = -\beta_6$
 that was specified by the matrix \code{Rmat} and the vector \code{qvec}
 in the example above (p.~\pageref{code:Rmat}).
 <<systemfit_usage>>=
-linear.hypothesis( fitsur, Rmat, qvec, test = "FT" )
+linearHypothesis( fitsur, Rmat, qvec, test = "FT" )
 
-linear.hypothesis( fitsur, Rmat, qvec, test = "F" )
+linearHypothesis( fitsur, Rmat, qvec, test = "F" )
 
-linear.hypothesis( fitsur, Rmat, qvec, test = "Chisq" )
+linearHypothesis( fitsur, Rmat, qvec, test = "Chisq" )
 
 lrtest( fitsurRmat, fitsur )
 @
@@ -2066,7 +2066,7 @@ third by the $\chi^2$ statistic of a Wald test
 and finally by an LR test
 (Equation~\ref{eq:lr-test}).
 
-The first argument of the \codeD{linear}{hypothesis} method for \code{systemfit} objects
+The first argument of the \code{linearHypothesis} method for \code{systemfit} objects
 must be an unrestricted regression
 returned by \code{systemfit}.
 The second and third arguments are the restriction matrix $R$ and
@@ -2407,7 +2407,7 @@ The same restriction can be specified also symbolically by
 }
 <<systemfit_replication,results=hide>>=
 RMatrix <- rbind( c( 0, 1, 0, 0, -1, 0 ), c( 0, 0, 1, 0, 0, -1 ) )
-linear.hypothesis( theilSur, RMatrix )
+linearHypothesis( theilSur, RMatrix )
 @
 
 Restricted SUR estimation (page~316)
@@ -2418,7 +2418,7 @@ theilSurRestr <- systemfit(formulaGrunfeld, method = "SUR",
 round(coef(summary(theilSurRestr)), digits = 3)
 @
 
-The method \codeD{linear}{hypothesis} returns the same value of the $F$ statistic
+The method \code{linearHypothesis} returns the same value of the $F$ statistic
 as published in \citet[p.~315]{theil71}.
 Hence, we arrive at the the same conclusion:
 we accept the null hypothesis (restrictions on the coefficients are true)

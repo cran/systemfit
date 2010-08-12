@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 1034 2009-06-18 12:17:06Z arne $
+%    $Id: systemfit.Rd 1055 2010-08-12 20:11:21Z arne $
 
 
 \name{systemfit}
@@ -47,7 +47,7 @@ systemfit( formula, method = "OLS",
       (j = number of restrictions, k = number of all coefficients,
       \eqn{b} = vector of all coefficients)
       or a character vector giving the restrictions in symbolic form
-      (see documentation of \code{\link[car]{linear.hypothesis}}
+      (see documentation of \code{\link[car]{linearHypothesis}}
       in package "car" for details).
       The number and the names of the coefficients can be obtained
       by estimating the system without restrictions and applying

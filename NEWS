@@ -5,6 +5,33 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-8
+
+* the systemfit package now works with version 2.0 of the "car" package
+(linear.hypothesis() has been renamed as linearHypothesis())
+
+
+            CHANGES IN VERSION 1.1-6
+
+* the logLik method now uses the average number of non-NA observations per
+equation (instead of the number of rows of the residual matrix, which might
+include NAs) to calculate the log-likelihood value: hence, the likelihood value
+is correct now even if there are NAs in the data; the calculation of the
+log-likelihood value for unbalanced systems uses the conditional density
+function for the unbalanced observations assuming that the errors of
+not-included observations are zero (the log-likelihood value was incorrect
+before if there were NAs in the data)
+
+* the logLik() method now takes the number of (linearly independent)
+coefficients from element "rank" to calculate the degrees of freedom, because
+this is correct even if there are NAs in the data (it was incorrect before if
+there were NAs in the data)
+
+* the logLik() method now returns (as attribute "nobs") the correct number of
+observations even if there are NAs in the data (it was incorrect before if there
+were NAs in the data)
+
+
             CHANGES IN VERSION 1.1-4
 
 * model.matrix.systemfit.equation() now returns a matrix (and not a vector)
