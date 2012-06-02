@@ -5,6 +5,11 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-12 (2012-06-02)
+
+* added nobs() method for objects of class "systemfit"
+
+
             CHANGES IN VERSION 1.1-10 (2011-11-11)
 
 * slightly revised the package vignette so that it works with version 2.0
