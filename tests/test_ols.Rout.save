@@ -1,5 +1,5 @@
 
-R version 2.15.0 (2012-03-30)
+R version 2.15.1 (2012-06-22) -- "Roasted Marshmallows"
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
@@ -4193,6 +4193,10 @@ attr(,"assign")
 > print( !is.null( fitols5$eq[[ 1 ]]$x ) )
 [1] FALSE
 > 
+> try( model.matrix( fitols1, which = "z" ) )
+Error in model.matrix.systemfit.equation(object$eq[[i]], which = which) : 
+  argument 'which' can only be set to "xHat" or "z" if instruments were used
+> 
 > 
 > ## **************** formulas ************************
 > formula( fitols1 )
@@ -4635,6 +4639,389 @@ attr(,"dataClasses")
   consump     price farmPrice     trend 
 "numeric" "numeric" "numeric" "numeric" 
 > 
+> 
+> ## **************** estfun ************************
+> library( "sandwich" )
+> 
+> estfun( fitols1 )
+          demand_(Intercept) demand_price demand_income supply_(Intercept)
+demand_1           1.0744708    107.79414      93.90875          0.0000000
+demand_2          -0.3902787    -40.69202     -38.09120          0.0000000
+demand_3           2.6246816    271.48394     253.80671          0.0000000
+demand_4           1.8024842    188.37042     177.00395          0.0000000
+demand_5           1.9455436    190.66522     194.16525          0.0000000
+demand_6           1.1745134    116.81241     118.03860          0.0000000
+demand_7           1.5302384    154.65507     157.92060          0.0000000
+demand_8          -2.9327287   -307.24146    -316.14815          0.0000000
+demand_9          -1.3654672   -131.69385    -131.90413          0.0000000
+demand_10          2.0307798    185.26398     180.53632          0.0000000
+demand_11         -0.1488821    -13.85869     -11.18104          0.0000000
+demand_12         -1.9542622   -193.08306    -150.28276          0.0000000
+demand_13         -1.1209171   -115.35134     -94.82959          0.0000000
+demand_14         -0.2200033    -21.72665     -19.93230          0.0000000
+demand_15          1.4866729    141.41084     153.27598          0.0000000
+demand_16         -3.7006906   -364.33669    -388.94259          0.0000000
+demand_17         -1.2730806   -110.11892    -122.72497          0.0000000
+demand_18         -2.0022429   -208.26529    -209.03416          0.0000000
+demand_19          1.7380247    183.82913     192.39933          0.0000000
+demand_20         -0.2988561    -33.91718     -37.98461          0.0000000
+supply_1           0.0000000      0.00000       0.00000         -0.4442544
+supply_2           0.0000000      0.00000       0.00000         -0.8955081
+supply_3           0.0000000      0.00000       0.00000          1.9651334
+supply_4           0.0000000      0.00000       0.00000          1.1342118
+supply_5           0.0000000      0.00000       0.00000          1.5138013
+supply_6           0.0000000      0.00000       0.00000          0.6803121
+supply_7           0.0000000      0.00000       0.00000          1.5689661
+supply_8           0.0000000      0.00000       0.00000         -4.4073714
+supply_9           0.0000000      0.00000       0.00000         -2.5989581
+supply_10          0.0000000      0.00000       0.00000          2.4694121
+supply_11          0.0000000      0.00000       0.00000         -0.5982785
+supply_12          0.0000000      0.00000       0.00000         -1.6973834
+supply_13          0.0000000      0.00000       0.00000         -1.0640179
+supply_14          0.0000000      0.00000       0.00000          0.9701222
+supply_15          0.0000000      0.00000       0.00000          3.1590873
+supply_16          0.0000000      0.00000       0.00000         -3.8655164
+supply_17          0.0000000      0.00000       0.00000         -0.2646900
+supply_18          0.0000000      0.00000       0.00000         -2.4488950
+supply_19          0.0000000      0.00000       0.00000          3.1097065
+supply_20          0.0000000      0.00000       0.00000          1.7141205
+          supply_price supply_farmPrice supply_trend
+demand_1       0.00000          0.00000    0.0000000
+demand_2       0.00000          0.00000    0.0000000
+demand_3       0.00000          0.00000    0.0000000
+demand_4       0.00000          0.00000    0.0000000
+demand_5       0.00000          0.00000    0.0000000
+demand_6       0.00000          0.00000    0.0000000
+demand_7       0.00000          0.00000    0.0000000
+demand_8       0.00000          0.00000    0.0000000
+demand_9       0.00000          0.00000    0.0000000
+demand_10      0.00000          0.00000    0.0000000
+demand_11      0.00000          0.00000    0.0000000
+demand_12      0.00000          0.00000    0.0000000
+demand_13      0.00000          0.00000    0.0000000
+demand_14      0.00000          0.00000    0.0000000
+demand_15      0.00000          0.00000    0.0000000
+demand_16      0.00000          0.00000    0.0000000
+demand_17      0.00000          0.00000    0.0000000
+demand_18      0.00000          0.00000    0.0000000
+demand_19      0.00000          0.00000    0.0000000
+demand_20      0.00000          0.00000    0.0000000
+supply_1     -44.56893        -43.53693   -0.4442544
+supply_2     -93.36926        -88.74486   -1.7910163
+supply_3     203.26358        194.74472    5.8954003
+supply_4     118.53193        111.26617    4.5368470
+supply_5     148.35404        167.72918    7.5690063
+supply_6      67.66112         73.60977    4.0818725
+supply_7     158.56913        165.68282   10.9827626
+supply_8    -461.72945       -483.92938  -35.2589712
+supply_9    -250.65912       -282.50675  -23.3906233
+supply_10    225.27953        248.42286   24.6941209
+supply_11    -55.69075        -48.46055   -6.5810630
+supply_12   -167.70318       -116.44050  -20.3686009
+supply_13   -109.49596        -75.43887  -13.8322332
+supply_14     95.80539         78.96795   13.5817111
+supply_15    300.48923        323.17463   47.3863099
+supply_16   -380.56396       -405.87922  -61.8482626
+supply_17    -22.89515        -29.24824   -4.4997294
+supply_18   -254.72427       -226.52279  -44.0801105
+supply_19    328.91055        277.69679   59.0844240
+supply_20    194.53554        159.41321   34.2824100
+> colSums( estfun( fitols1 ) )
+demand_(Intercept)       demand_price      demand_income supply_(Intercept) 
+      8.526513e-14       4.119727e-11      -4.589396e-11       1.421085e-14 
+      supply_price   supply_farmPrice       supply_trend 
+      3.959499e-11       2.412293e-11      -2.415845e-13 
+> 
+> estfun( fitols1s )
+          demand_(Intercept) demand_price demand_income supply_(Intercept)
+demand_1           1.0744708    107.79414      93.90875          0.0000000
+demand_2          -0.3902787    -40.69202     -38.09120          0.0000000
+demand_3           2.6246816    271.48394     253.80671          0.0000000
+demand_4           1.8024842    188.37042     177.00395          0.0000000
+demand_5           1.9455436    190.66522     194.16525          0.0000000
+demand_6           1.1745134    116.81241     118.03860          0.0000000
+demand_7           1.5302384    154.65507     157.92060          0.0000000
+demand_8          -2.9327287   -307.24146    -316.14815          0.0000000
+demand_9          -1.3654672   -131.69385    -131.90413          0.0000000
+demand_10          2.0307798    185.26398     180.53632          0.0000000
+demand_11         -0.1488821    -13.85869     -11.18104          0.0000000
+demand_12         -1.9542622   -193.08306    -150.28276          0.0000000
+demand_13         -1.1209171   -115.35134     -94.82959          0.0000000
+demand_14         -0.2200033    -21.72665     -19.93230          0.0000000
+demand_15          1.4866729    141.41084     153.27598          0.0000000
+demand_16         -3.7006906   -364.33669    -388.94259          0.0000000
+demand_17         -1.2730806   -110.11892    -122.72497          0.0000000
+demand_18         -2.0022429   -208.26529    -209.03416          0.0000000
+demand_19          1.7380247    183.82913     192.39933          0.0000000
+demand_20         -0.2988561    -33.91718     -37.98461          0.0000000
+supply_1           0.0000000      0.00000       0.00000         -0.4442544
+supply_2           0.0000000      0.00000       0.00000         -0.8955081
+supply_3           0.0000000      0.00000       0.00000          1.9651334
+supply_4           0.0000000      0.00000       0.00000          1.1342118
+supply_5           0.0000000      0.00000       0.00000          1.5138013
+supply_6           0.0000000      0.00000       0.00000          0.6803121
+supply_7           0.0000000      0.00000       0.00000          1.5689661
+supply_8           0.0000000      0.00000       0.00000         -4.4073714
+supply_9           0.0000000      0.00000       0.00000         -2.5989581
+supply_10          0.0000000      0.00000       0.00000          2.4694121
+supply_11          0.0000000      0.00000       0.00000         -0.5982785
+supply_12          0.0000000      0.00000       0.00000         -1.6973834
+supply_13          0.0000000      0.00000       0.00000         -1.0640179
+supply_14          0.0000000      0.00000       0.00000          0.9701222
+supply_15          0.0000000      0.00000       0.00000          3.1590873
+supply_16          0.0000000      0.00000       0.00000         -3.8655164
+supply_17          0.0000000      0.00000       0.00000         -0.2646900
+supply_18          0.0000000      0.00000       0.00000         -2.4488950
+supply_19          0.0000000      0.00000       0.00000          3.1097065
+supply_20          0.0000000      0.00000       0.00000          1.7141205
+          supply_price supply_farmPrice supply_trend
+demand_1       0.00000          0.00000    0.0000000
+demand_2       0.00000          0.00000    0.0000000
+demand_3       0.00000          0.00000    0.0000000
+demand_4       0.00000          0.00000    0.0000000
+demand_5       0.00000          0.00000    0.0000000
+demand_6       0.00000          0.00000    0.0000000
+demand_7       0.00000          0.00000    0.0000000
+demand_8       0.00000          0.00000    0.0000000
+demand_9       0.00000          0.00000    0.0000000
+demand_10      0.00000          0.00000    0.0000000
+demand_11      0.00000          0.00000    0.0000000
+demand_12      0.00000          0.00000    0.0000000
+demand_13      0.00000          0.00000    0.0000000
+demand_14      0.00000          0.00000    0.0000000
+demand_15      0.00000          0.00000    0.0000000
+demand_16      0.00000          0.00000    0.0000000
+demand_17      0.00000          0.00000    0.0000000
+demand_18      0.00000          0.00000    0.0000000
+demand_19      0.00000          0.00000    0.0000000
+demand_20      0.00000          0.00000    0.0000000
+supply_1     -44.56893        -43.53693   -0.4442544
+supply_2     -93.36926        -88.74486   -1.7910163
+supply_3     203.26358        194.74472    5.8954003
+supply_4     118.53193        111.26617    4.5368470
+supply_5     148.35404        167.72918    7.5690063
+supply_6      67.66112         73.60977    4.0818725
+supply_7     158.56913        165.68282   10.9827626
+supply_8    -461.72945       -483.92938  -35.2589712
+supply_9    -250.65912       -282.50675  -23.3906233
+supply_10    225.27953        248.42286   24.6941209
+supply_11    -55.69075        -48.46055   -6.5810630
+supply_12   -167.70318       -116.44050  -20.3686009
+supply_13   -109.49596        -75.43887  -13.8322332
+supply_14     95.80539         78.96795   13.5817111
+supply_15    300.48923        323.17463   47.3863099
+supply_16   -380.56396       -405.87922  -61.8482626
+supply_17    -22.89515        -29.24824   -4.4997294
+supply_18   -254.72427       -226.52279  -44.0801105
+supply_19    328.91055        277.69679   59.0844240
+supply_20    194.53554        159.41321   34.2824100
+> colSums( estfun( fitols1s ) )
+demand_(Intercept)       demand_price      demand_income supply_(Intercept) 
+      8.526513e-14       4.119727e-11      -4.589396e-11       1.421085e-14 
+      supply_price   supply_farmPrice       supply_trend 
+      3.959499e-11       2.412293e-11      -2.415845e-13 
+> 
+> estfun( fitols1r )
+          demand_(Intercept) demand_price demand_income supply_(Intercept)
+demand_1           1.0744708    107.79414      93.90875          0.0000000
+demand_2          -0.3902787    -40.69202     -38.09120          0.0000000
+demand_3           2.6246816    271.48394     253.80671          0.0000000
+demand_4           1.8024842    188.37042     177.00395          0.0000000
+demand_5           1.9455436    190.66522     194.16525          0.0000000
+demand_6           1.1745134    116.81241     118.03860          0.0000000
+demand_7           1.5302384    154.65507     157.92060          0.0000000
+demand_8          -2.9327287   -307.24146    -316.14815          0.0000000
+demand_9          -1.3654672   -131.69385    -131.90413          0.0000000
+demand_10          2.0307798    185.26398     180.53632          0.0000000
+demand_11         -0.1488821    -13.85869     -11.18104          0.0000000
+demand_12         -1.9542622   -193.08306    -150.28276          0.0000000
+demand_13         -1.1209171   -115.35134     -94.82959          0.0000000
+demand_14         -0.2200033    -21.72665     -19.93230          0.0000000
+demand_15          1.4866729    141.41084     153.27598          0.0000000
+demand_16         -3.7006906   -364.33669    -388.94259          0.0000000
+demand_17         -1.2730806   -110.11892    -122.72497          0.0000000
+demand_18         -2.0022429   -208.26529    -209.03416          0.0000000
+demand_19          1.7380247    183.82913     192.39933          0.0000000
+demand_20         -0.2988561    -33.91718     -37.98461          0.0000000
+supply_1           0.0000000      0.00000       0.00000         -0.4442544
+supply_2           0.0000000      0.00000       0.00000         -0.8955081
+supply_3           0.0000000      0.00000       0.00000          1.9651334
+supply_4           0.0000000      0.00000       0.00000          1.1342118
+supply_5           0.0000000      0.00000       0.00000          1.5138013
+supply_6           0.0000000      0.00000       0.00000          0.6803121
+supply_7           0.0000000      0.00000       0.00000          1.5689661
+supply_8           0.0000000      0.00000       0.00000         -4.4073714
+supply_9           0.0000000      0.00000       0.00000         -2.5989581
+supply_10          0.0000000      0.00000       0.00000          2.4694121
+supply_11          0.0000000      0.00000       0.00000         -0.5982785
+supply_12          0.0000000      0.00000       0.00000         -1.6973834
+supply_13          0.0000000      0.00000       0.00000         -1.0640179
+supply_14          0.0000000      0.00000       0.00000          0.9701222
+supply_15          0.0000000      0.00000       0.00000          3.1590873
+supply_16          0.0000000      0.00000       0.00000         -3.8655164
+supply_17          0.0000000      0.00000       0.00000         -0.2646900
+supply_18          0.0000000      0.00000       0.00000         -2.4488950
+supply_19          0.0000000      0.00000       0.00000          3.1097065
+supply_20          0.0000000      0.00000       0.00000          1.7141205
+          supply_price supply_farmPrice supply_trend
+demand_1       0.00000          0.00000    0.0000000
+demand_2       0.00000          0.00000    0.0000000
+demand_3       0.00000          0.00000    0.0000000
+demand_4       0.00000          0.00000    0.0000000
+demand_5       0.00000          0.00000    0.0000000
+demand_6       0.00000          0.00000    0.0000000
+demand_7       0.00000          0.00000    0.0000000
+demand_8       0.00000          0.00000    0.0000000
+demand_9       0.00000          0.00000    0.0000000
+demand_10      0.00000          0.00000    0.0000000
+demand_11      0.00000          0.00000    0.0000000
+demand_12      0.00000          0.00000    0.0000000
+demand_13      0.00000          0.00000    0.0000000
+demand_14      0.00000          0.00000    0.0000000
+demand_15      0.00000          0.00000    0.0000000
+demand_16      0.00000          0.00000    0.0000000
+demand_17      0.00000          0.00000    0.0000000
+demand_18      0.00000          0.00000    0.0000000
+demand_19      0.00000          0.00000    0.0000000
+demand_20      0.00000          0.00000    0.0000000
+supply_1     -44.56893        -43.53693   -0.4442544
+supply_2     -93.36926        -88.74486   -1.7910163
+supply_3     203.26358        194.74472    5.8954003
+supply_4     118.53193        111.26617    4.5368470
+supply_5     148.35404        167.72918    7.5690063
+supply_6      67.66112         73.60977    4.0818725
+supply_7     158.56913        165.68282   10.9827626
+supply_8    -461.72945       -483.92938  -35.2589712
+supply_9    -250.65912       -282.50675  -23.3906233
+supply_10    225.27953        248.42286   24.6941209
+supply_11    -55.69075        -48.46055   -6.5810630
+supply_12   -167.70318       -116.44050  -20.3686009
+supply_13   -109.49596        -75.43887  -13.8322332
+supply_14     95.80539         78.96795   13.5817111
+supply_15    300.48923        323.17463   47.3863099
+supply_16   -380.56396       -405.87922  -61.8482626
+supply_17    -22.89515        -29.24824   -4.4997294
+supply_18   -254.72427       -226.52279  -44.0801105
+supply_19    328.91055        277.69679   59.0844240
+supply_20    194.53554        159.41321   34.2824100
+> colSums( estfun( fitols1r ) )
+demand_(Intercept)       demand_price      demand_income supply_(Intercept) 
+      8.526513e-14       4.119727e-11      -4.589396e-11       1.421085e-14 
+      supply_price   supply_farmPrice       supply_trend 
+      3.959499e-11       2.412293e-11      -2.415845e-13 
+> 
+> try( estfun( fitols2 ) )
+Error in estfun.systemfit(fitols2) : 
+  returning the estimation function for models with restrictions has not yet been implemented.
+> 
+> try( estfun( fitols2Sym ) )
+Error in estfun.systemfit(fitols2Sym) : 
+  returning the estimation function for models with restrictions has not yet been implemented.
+> 
+> try( estfun( fitols3s ) )
+Error in estfun.systemfit(fitols3s) : 
+  returning the estimation function for models with restrictions has not yet been implemented.
+> 
+> try( estfun( fitols4r ) )
+Error in estfun.systemfit(fitols4r) : 
+  returning the estimation function for models with restrictions has not yet been implemented.
+> 
+> try( estfun( fitols4Sym ) )
+Error in estfun.systemfit(fitols4Sym) : 
+  returning the estimation function for models with restrictions has not yet been implemented.
+> 
+> try( estfun( fitols5 ) )
+Error in estfun.systemfit(fitols5) : 
+  returning the estimation function for models with restrictions has not yet been implemented.
+> 
+> try( estfun( fitols5Sym ) )
+Error in estfun.systemfit(fitols5Sym) : 
+  returning the estimation function for models with restrictions has not yet been implemented.
+> 
+> 
+> ## **************** bread ************************
+> bread( fitols1 )
+                   demand_(Intercept) demand_price demand_income
+demand_(Intercept)        607.0858530  -6.38645912    0.34532958
+demand_price               -6.3864591   0.08828487   -0.02505470
+demand_income               0.3453296  -0.02505470    0.02215223
+supply_(Intercept)          0.0000000   0.00000000    0.00000000
+supply_price                0.0000000   0.00000000    0.00000000
+supply_farmPrice            0.0000000   0.00000000    0.00000000
+supply_trend                0.0000000   0.00000000    0.00000000
+                   supply_(Intercept) supply_price supply_farmPrice
+demand_(Intercept)           0.000000  0.000000000      0.000000000
+demand_price                 0.000000  0.000000000      0.000000000
+demand_income                0.000000  0.000000000      0.000000000
+supply_(Intercept)         908.632658 -6.828661282     -2.104686670
+supply_price                -6.828661  0.062256396      0.005836298
+supply_farmPrice            -2.104687  0.005836298      0.014752110
+supply_trend                -1.930580  0.003609851      0.009097435
+                   supply_trend
+demand_(Intercept)  0.000000000
+demand_price        0.000000000
+demand_income       0.000000000
+supply_(Intercept) -1.930580399
+supply_price        0.003609851
+supply_farmPrice    0.009097435
+supply_trend        0.065760648
+> 
+> bread( fitols1s )
+                   demand_(Intercept) demand_price demand_income
+demand_(Intercept)        607.0858530  -6.38645912    0.34532958
+demand_price               -6.3864591   0.08828487   -0.02505470
+demand_income               0.3453296  -0.02505470    0.02215223
+supply_(Intercept)          0.0000000   0.00000000    0.00000000
+supply_price                0.0000000   0.00000000    0.00000000
+supply_farmPrice            0.0000000   0.00000000    0.00000000
+supply_trend                0.0000000   0.00000000    0.00000000
+                   supply_(Intercept) supply_price supply_farmPrice
+demand_(Intercept)           0.000000  0.000000000      0.000000000
+demand_price                 0.000000  0.000000000      0.000000000
+demand_income                0.000000  0.000000000      0.000000000
+supply_(Intercept)         908.632658 -6.828661282     -2.104686670
+supply_price                -6.828661  0.062256396      0.005836298
+supply_farmPrice            -2.104687  0.005836298      0.014752110
+supply_trend                -1.930580  0.003609851      0.009097435
+                   supply_trend
+demand_(Intercept)  0.000000000
+demand_price        0.000000000
+demand_income       0.000000000
+supply_(Intercept) -1.930580399
+supply_price        0.003609851
+supply_farmPrice    0.009097435
+supply_trend        0.065760648
+> 
+> bread( fitols1r )
+                   demand_(Intercept) demand_price demand_income
+demand_(Intercept)        607.0858530  -6.38645912    0.34532958
+demand_price               -6.3864591   0.08828487   -0.02505470
+demand_income               0.3453296  -0.02505470    0.02215223
+supply_(Intercept)          0.0000000   0.00000000    0.00000000
+supply_price                0.0000000   0.00000000    0.00000000
+supply_farmPrice            0.0000000   0.00000000    0.00000000
+supply_trend                0.0000000   0.00000000    0.00000000
+                   supply_(Intercept) supply_price supply_farmPrice
+demand_(Intercept)           0.000000  0.000000000      0.000000000
+demand_price                 0.000000  0.000000000      0.000000000
+demand_income                0.000000  0.000000000      0.000000000
+supply_(Intercept)         908.632658 -6.828661282     -2.104686670
+supply_price                -6.828661  0.062256396      0.005836298
+supply_farmPrice            -2.104687  0.005836298      0.014752110
+supply_trend                -1.930580  0.003609851      0.009097435
+                   supply_trend
+demand_(Intercept)  0.000000000
+demand_price        0.000000000
+demand_income       0.000000000
+supply_(Intercept) -1.930580399
+supply_price        0.003609851
+supply_farmPrice    0.009097435
+supply_trend        0.065760648
+> 
+> try( bread( fitols2 ) )
+Error in bread.systemfit(fitols2) : 
+  returning the 'bread' for models with restrictions has not yet been implemented.
+> 
 > proc.time()
    user  system elapsed 
-  2.392   0.056   2.433 
+  2.408   0.048   2.443 

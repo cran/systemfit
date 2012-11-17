@@ -1,4 +1,5 @@
 library( "systemfit" )
+library( "sandwich" )
 options( warn = 1 )
 
 data( "KleinI" )
@@ -53,6 +54,10 @@ for( methodNo in 1:5 ) {
    } else if( methodNo == 2 ) {
       mf2sls <- model.frame( kleinModel )
       print( mf2sls )
+   cat( "> Frames of instrumental variables\n" )
+      for( i in 1:3 ){
+         print( kleinModel$eq[[ i ]]$modelInst )
+      }
    } else if( methodNo == 3 ) {
       print( all.equal( mfOls, model.frame( kleinModel ) ) )
    } else {
@@ -65,6 +70,12 @@ for( methodNo in 1:5 ) {
    } else {
       print( all.equal( mmOls, model.matrix( kleinModel ) ) )
    }
+   if( methodNo == 2 ) {
+      cat( "> matrix of instrumental variables\n" )
+      print( model.matrix( kleinModel, which = "z" ) )
+      cat( "> matrix of fitted regressors\n" )
+      print( model.matrix( kleinModel, which = "xHat" ) )
+   }
    cat( "> nobs\n" )
    print( nobs( kleinModel ) )
    cat( "> linearHypothesis\n" )
@@ -76,5 +87,12 @@ for( methodNo in 1:5 ) {
    print( linearHypothesis( kleinModel, restrict2, test = "Chisq" ) )
    cat( "> logLik\n" )
    print( logLik( kleinModel ) )
+   
+   cat( "Estimating function\n" )
+   print( estfun( kleinModel ) )
+   print( colSums( estfun( kleinModel ) ) )
+
+   cat( "> Bread\n" )
+   print( bread( kleinModel ) )
 }
 }

@@ -5,6 +5,11 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-14 (2012-11-17)
+
+* changed dependency ("Imports") from "stats (>= 2.15.0)" to "stats (>= 2.14.0)" 
+
+
             CHANGES IN VERSION 1.1-12 (2012-06-02)
 
 * added nobs() method for objects of class "systemfit"

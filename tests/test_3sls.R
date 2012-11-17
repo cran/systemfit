@@ -1004,6 +1004,15 @@ print( all.equal( mf1, model.frame( fit3slsi[[ 4 ]]$e3e$eq[[ 1 ]] ) ) )
 print( all.equal( mf, model.frame( fit3slsd[[ 5 ]]$e4 ) ) )
 print( all.equal( mf2, model.frame( fit3slsd[[ 5 ]]$e4$eq[[ 2 ]] ) ) )
 
+fit3sls[[ 3 ]]$e1c$eq[[ 1 ]]$modelInst
+fit3sls[[ 3 ]]$e1c$eq[[ 2 ]]$modelInst
+
+fit3sls[[ 1 ]]$e3$eq[[ 1 ]]$modelInst
+fit3sls[[ 1 ]]$e3$eq[[ 2 ]]$modelInst
+
+fit3slsd[[ 5 ]]$e4$eq[[ 1 ]]$modelInst
+fit3slsd[[ 5 ]]$e4$eq[[ 2 ]]$modelInst
+
 
 ## **************** model matrix ************************
 # with x (returnModelMatrix) = TRUE
@@ -1090,6 +1099,16 @@ print( all.equal( mm1, model.matrix( fit3slsd[[ 2 ]]$e3$eq[[ 1 ]] ) ) )
 print( all.equal( mm2, model.matrix( fit3slsd[[ 2 ]]$e3$eq[[ 2 ]] ) ) )
 print( !is.null( fit3slsd[[ 2 ]]$e3$eq[[ 1 ]]$x ) )
 
+# matrices of instrumental variables
+model.matrix( fit3sls[[ 1 ]]$e1c, which = "z" )
+model.matrix( fit3sls[[ 3 ]]$e1c$eq[[ 1 ]], which = "z" )
+model.matrix( fit3sls[[ 4 ]]$e1c$eq[[ 2 ]], which = "z" )
+
+# matrices of fitted regressors
+model.matrix( fit3slsd[[ 1 ]]$e3w, which = "xHat" )
+model.matrix( fit3slsd[[ 3 ]]$e3w$eq[[ 1 ]], which = "xHat" )
+model.matrix( fit3slsd[[ 4 ]]$e3w$eq[[ 2 ]], which = "xHat" )
+
 
 ## **************** formulas ************************
 formula( fit3sls[[ 2 ]]$e1c )
@@ -1144,3 +1163,91 @@ terms( fit3slsd[[ 4 ]]$e4$eq[[ 2 ]] )
 
 terms( fit3slsd[[ 5 ]]$e5we )
 terms( fit3slsd[[ 5 ]]$e5we$eq[[ 2 ]] )
+
+
+## **************** terms of instruments *******************
+fit3sls[[ 2 ]]$e1c$eq[[ 1 ]]$termsInst
+
+fit3sls[[ 3 ]]$e2e$eq[[ 2 ]]$termsInst
+
+fit3sls[[ 4 ]]$e3$eq[[ 1 ]]$termsInst
+
+fit3sls[[ 5 ]]$e4e$eq[[ 2 ]]$termsInst
+
+fit3sls[[ 1 ]]$e5$eq[[ 1 ]]$termsInst
+
+fit3sls[[ 2 ]]$e4wSym$eq[[ 1 ]]$termsInst
+
+fit3slsi[[ 3 ]]$e3e$eq[[ 1 ]]$termsInst
+
+fit3slsd[[ 4 ]]$e4$eq[[ 2 ]]$termsInst
+
+fit3slsd[[ 5 ]]$e5we$eq[[ 2 ]]$termsInst
+
+
+## **************** estfun ************************
+library( "sandwich" )
+
+estfun( fit3sls[[ 1 ]]$e1 )
+colSums( estfun( fit3sls[[ 1 ]]$e1 ) )
+
+estfun( fit3sls[[ 2 ]]$e1e )
+colSums( estfun( fit3sls[[ 2 ]]$e1e ) )
+
+estfun( fit3sls[[ 3 ]]$e1c )
+colSums( estfun( fit3sls[[ 3 ]]$e1c ) )
+
+estfun( fit3sls[[ 4 ]]$e1wc )
+
+colSums( estfun( fit3sls[[ 5 ]]$e1wc ) )
+colSums( estfun( fit3sls[[ 5 ]]$e1wc, residFit = FALSE ) )
+
+colSums( estfun( fit3sls[[ 4 ]]$e1wc ) )
+colSums( estfun( fit3sls[[ 4 ]]$e1wc, residFit = FALSE ) )
+
+colSums( estfun( fit3sls[[ 3 ]]$e1wc ) )
+colSums( estfun( fit3sls[[ 3 ]]$e1wc, residFit = FALSE ) )
+
+colSums( estfun( fit3sls[[ 2 ]]$e1wc ) )
+colSums( estfun( fit3sls[[ 2 ]]$e1wc, residFit = FALSE ) )
+
+colSums( estfun( fit3sls[[ 1 ]]$e1wc ) )
+colSums( estfun( fit3sls[[ 1 ]]$e1wc, residFit = FALSE ) )
+
+estfun( fit3slsd[[ 5 ]]$e1w )
+estfun( fit3slsd[[ 5 ]]$e1w, residFit = FALSE )
+
+colSums( estfun( fit3slsd[[ 5 ]]$e1w ) )
+colSums( estfun( fit3slsd[[ 5 ]]$e1w, residFit = FALSE ) )
+
+colSums( estfun( fit3slsd[[ 4 ]]$e1w ) )
+colSums( estfun( fit3slsd[[ 4 ]]$e1w, residFit = FALSE ) )
+
+colSums( estfun( fit3slsd[[ 3 ]]$e1w ) )
+colSums( estfun( fit3slsd[[ 3 ]]$e1w, residFit = FALSE ) )
+
+colSums( estfun( fit3slsd[[ 2 ]]$e1w ) )
+colSums( estfun( fit3slsd[[ 2 ]]$e1w, residFit = FALSE ) )
+
+colSums( estfun( fit3slsd[[ 1 ]]$e1w ) )
+colSums( estfun( fit3slsd[[ 1 ]]$e1w, residFit = FALSE ) )
+
+
+## **************** bread ************************
+bread( fit3sls[[ 1 ]]$e1 )
+
+bread( fit3sls[[ 2 ]]$e1e )
+
+bread( fit3sls[[ 3 ]]$e1c )
+
+bread( fit3sls[[ 4 ]]$e1wc )
+
+bread( fit3slsd[[ 5 ]]$e1w )
+
+bread( fit3slsd[[ 4 ]]$e1w )
+
+bread( fit3slsd[[ 3 ]]$e1w )
+
+bread( fit3slsd[[ 2 ]]$e1w )
+
+bread( fit3slsd[[ 1 ]]$e1w )

@@ -1,4 +1,4 @@
-###   $Id: systemfit.R 1031 2009-06-17 16:14:50Z arne $
+###   $Id: systemfit.R 1102 2012-08-04 05:51:09Z arne $
 ###
 ###            Simultaneous Equation Estimation for R
 ###
@@ -355,26 +355,13 @@ systemfit <- function(  formula,
 
    # fitted values of regressors for IV estimations
    if( !is.null( inst ) ) {
-      xMatHatEq <- list()
-      for(i in 1:nEq) {
-         # rows that belong to the ith equation
-         rowsEq <- c( (1+sum(nObsEq[1:i])-nObsEq[i]):(sum(nObsEq[1:i])) )
-         # extract instrument matrix
-         xMatAllThisEq <- xMatAll[ rowsEq, ]
-         if( control$useMatrix ){
-            xMatAllThisEq <- as( xMatAllThisEq, "dgeMatrix" )
-         }
-         xMatHatEq[[ i ]] <- zMatEq[[i]] %*%
-            solve( crossprod( zMatEq[[i]] ),
-            crossprod( zMatEq[[i]], xMatAllThisEq ), tol=control$solvetol )
-      }
       # stacked matrices of all instruments
       zMatAll <- .stackMatList( zMatEq, way = "diag",
          useMatrix = control$useMatrix )
       # fitted values of all regressors
-      xMatHatAll <- .stackMatList( xMatHatEq, way = "below",
-         useMatrix = control$useMatrix )
-      rm( modelFrameInst, xMatHatEq )
+      xMatHatAll <- calcFittedRegMat( xMatAll = xMatAll, zMatEq = zMatEq, 
+         nEq = nEq, nObsEq = nObsEq, 
+         useMatrix = control$useMatrix, solvetol = control$solvetol )
    }
 
    # checking and modifying parameter restrictions
@@ -824,9 +811,14 @@ systemfit <- function(  formula,
       results$eq[[ i ]]$model <- evalModelFrameEq[[ i ]]
          # model frame of this equation
       rownames( results$eq[[ i ]]$model ) <- obsNamesNaEq[[ i ]]
+      if( !is.null( inst ) ) {
+         results$eq[[ i ]]$modelInst <- evalModelFrameInst[[ i ]]
+         rownames( results$eq[[ i ]]$modelInst ) <- obsNamesNaEq[[ i ]]
+      }
     }
     if( method %in% c( "2SLS", "W2SLS", "3SLS" ) ) {
       results$eq[[ i ]]$inst         <- inst[[i]]
+      results$eq[[ i ]]$termsInst <- termsInst[[i]]
       if(  control$z ) {
          results$eq[[ i ]]$z <- zMatEq[[i]]  # matrix of instrumental variables
          rownames( results$eq[[ i ]]$z ) <- obsNamesEq[[ i ]]

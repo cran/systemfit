@@ -552,6 +552,15 @@ print( all.equal( mf1, model.frame( fitw2slsd2e$eq[[ 1 ]] ) ) )
 print( all.equal( mf, model.frame( fitw2slsd3e ) ) )
 print( all.equal( mf2, model.frame( fitw2slsd3e$eq[[ 2 ]] ) ) )
 
+fitw2sls1e$eq[[ 1 ]]$modelInst
+fitw2sls1e$eq[[ 2 ]]$modelInst
+
+fitw2sls4Sym$eq[[ 1 ]]$modelInst
+fitw2sls4Sym$eq[[ 2 ]]$modelInst
+
+fitw2sls5$eq[[ 1 ]]$modelInst
+fitw2sls5$eq[[ 2 ]]$modelInst
+
 
 ## **************** model matrix ************************
 # with x (returnModelMatrix) = TRUE
@@ -614,6 +623,16 @@ print( all.equal( mm1, model.matrix( fitw2sls5e$eq[[ 1 ]] ) ) )
 print( all.equal( mm2, model.matrix( fitw2sls5e$eq[[ 2 ]] ) ) )
 print( !is.null( fitw2sls5e$eq[[ 1 ]]$x ) )
 
+# matrices of instrumental variables
+model.matrix( fitw2sls1, which = "z" )
+model.matrix( fitw2sls1$eq[[ 1 ]], which = "z" )
+model.matrix( fitw2sls1$eq[[ 2 ]], which = "z" )
+
+# matrices of fitted regressors
+model.matrix( fitw2sls5e, which = "xHat" )
+model.matrix( fitw2sls5e$eq[[ 1 ]], which = "xHat" )
+model.matrix( fitw2sls5e$eq[[ 2 ]], which = "xHat" )
+
 
 ## **************** formulas ************************
 formula( fitw2sls1e )
@@ -665,3 +684,42 @@ terms( fitw2slsd2e$eq[[ 1 ]] )
 
 terms( fitw2slsd3e )
 terms( fitw2slsd3e$eq[[ 2 ]] )
+
+
+## **************** terms of instruments *******************
+fitw2sls1e$eq[[ 1 ]]$termsInst
+
+fitw2sls2$eq[[ 2 ]]$termsInst
+
+fitw2sls3$eq[[ 1 ]]$termsInst
+
+fitw2sls4e$eq[[ 2 ]]$termsInst
+
+fitw2sls5$eq[[ 1 ]]$termsInst
+
+fitw2slsd1$eq[[ 2 ]]$termsInst
+
+fitw2slsd2e$eq[[ 1 ]]$termsInst
+
+fitw2slsd3e$eq[[ 2 ]]$termsInst
+
+
+## **************** estfun ************************
+library( "sandwich" )
+
+estfun( fitw2sls1 )
+colSums( estfun( fitw2sls1 ) )
+
+estfun( fitw2sls1e )
+colSums( estfun( fitw2sls1e ) )
+
+estfun( fitw2slsd1e )
+colSums( estfun( fitw2slsd1e ) )
+
+
+## **************** bread ************************
+bread( fitw2sls1 )
+
+bread( fitw2sls1e )
+
+bread( fitw2slsd1e )

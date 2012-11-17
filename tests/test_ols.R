@@ -587,6 +587,8 @@ print( all.equal( mm1, model.matrix( fitols5$eq[[ 1 ]] ) ) )
 print( all.equal( mm2, model.matrix( fitols5$eq[[ 2 ]] ) ) )
 print( !is.null( fitols5$eq[[ 1 ]]$x ) )
 
+try( model.matrix( fitols1, which = "z" ) )
+
 
 ## **************** formulas ************************
 formula( fitols1 )
@@ -620,3 +622,40 @@ terms( fitols4rs$eq[[ 1 ]] )
 
 terms( fitols5 )
 terms( fitols5$eq[[ 2 ]] )
+
+
+## **************** estfun ************************
+library( "sandwich" )
+
+estfun( fitols1 )
+colSums( estfun( fitols1 ) )
+
+estfun( fitols1s )
+colSums( estfun( fitols1s ) )
+
+estfun( fitols1r )
+colSums( estfun( fitols1r ) )
+
+try( estfun( fitols2 ) )
+
+try( estfun( fitols2Sym ) )
+
+try( estfun( fitols3s ) )
+
+try( estfun( fitols4r ) )
+
+try( estfun( fitols4Sym ) )
+
+try( estfun( fitols5 ) )
+
+try( estfun( fitols5Sym ) )
+
+
+## **************** bread ************************
+bread( fitols1 )
+
+bread( fitols1s )
+
+bread( fitols1r )
+
+try( bread( fitols2 ) )

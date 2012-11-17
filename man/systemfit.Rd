@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 1055 2010-08-12 20:11:21Z arne $
+%    $Id: systemfit.Rd 1096 2012-08-03 20:52:43Z arne $
 
 
 \name{systemfit}
@@ -167,6 +167,8 @@ systemfit( formula, method = "OLS",
   \item{eqnNo*}{the number of this equation.}
   \item{terms*}{the 'terms' object used for the ith equation.}
   \item{inst*}{instruments of the ith equation (only 2SLS, W2SLS, and 3SLS).}
+  \item{termsInst*}{the 'terms' object of the instruments 
+     used for the ith equation (only 2SLS, W2SLS, and 3SLS).}
   \item{rank*}{number of linear independent coefficients in the ith equation
      (differs from the number of coefficients only if there are
      restrictions that are not cross-equation).}
@@ -178,6 +180,9 @@ systemfit( formula, method = "OLS",
   \item{coefficients*}{estimated coefficients of the ith equation.}
   \item{covb*}{estimated covariance matrix of \code{coefficients}.}
   \item{model*}{if requested (the default), the model frame of the ith equation.}
+  \item{modelInst*}{if requested (the default), the model frame 
+      of the instrumental variables of the ith equation 
+      (only 2SLS, W2SLS, and 3SLS).}
   \item{x*}{if requested, the model matrix of the ith equation.}
   \item{y*}{if requested, the response of the ith equation.}
   \item{z*}{if requested, the matrix of instrumental variables

@@ -56,8 +56,8 @@ systemfit.control(
       \code{\link{solve}} and \code{\link{det}}).}
    \item{model, x, y, z}{
       logical. If 'TRUE' the corresponding components of the fit
-      (the model frame, the model matrix, the matrix of instruments,
-      the response) are returned.}
+      (the model frame, the model matrix, the response, and
+      the matrix of instruments, respectively) are returned.}
 }
 
 \details{
