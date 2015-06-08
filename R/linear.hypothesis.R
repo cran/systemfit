@@ -8,7 +8,7 @@ linearHypothesis.systemfit <- function( model,
    modelName <- deparse( substitute( model ) )
 
    if( test == "Chisq" ){
-      result <- car:::linearHypothesis.default( model,
+      result <- car::linearHypothesis.default( model,
          hypothesis.matrix = hypothesis.matrix, rhs = rhs, test = test,
          vcov. = vcov., ... )
 
@@ -22,7 +22,7 @@ linearHypothesis.systemfit <- function( model,
             attributes( result )$heading[ modelPos[ 1 ] ] )
 
    } else if ( test == "F" ) {
-      result <- car:::linearHypothesis.default( model,
+      result <- car::linearHypothesis.default( model,
          hypothesis.matrix = hypothesis.matrix, rhs = rhs, test = test,
          vcov. = vcov., ... )
 
@@ -37,7 +37,7 @@ linearHypothesis.systemfit <- function( model,
 
    } else if ( test == "FT" ) {
       if( is.character( hypothesis.matrix ) ) {
-         R.restr <- car:::makeHypothesis( names( coef( model ) ),
+         R.restr <- car::makeHypothesis( names( coef( model ) ),
             hypothesis.matrix, rhs )
          if( is.null( dim( R.restr ) ) ){
             R.restr <- t( R.restr )
@@ -76,7 +76,7 @@ linearHypothesis.systemfit <- function( model,
          note <- "\nNote: Coefficient covariance matrix supplied.\n"
       }
       attributes( result )$heading <- c( title,
-         car:::printHypothesis( R.restr, q.restr, names( coef( model ) ) ),
+         car::printHypothesis( R.restr, q.restr, names( coef( model ) ) ),
          "", topnote, note )
       class( result ) <- c( "anova", "data.frame" )
    } else {

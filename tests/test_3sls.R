@@ -1,5 +1,6 @@
-
 library( systemfit )
+options( digits = 3 )
+
 data( "Kmenta" )
 useMatrix <- FALSE
 
@@ -557,69 +558,69 @@ print( round( coef( summary( fit3sls[[ 3 ]]$e5we$eq[[ 2 ]] ) ), digits = 6 ) )
 
 
 ## *********** variance covariance matrix of the coefficients *******
-print( round( vcov( fit3sls[[ 3 ]]$e1c ), digits = 6 ) )
-print( round( vcov( fit3sls[[ 4 ]]$e1c$eq[[ 2 ]] ), digits = 6 ) )
+print( round( vcov( fit3sls[[ 3 ]]$e1c ), digits = 5 ) )
+print( round( vcov( fit3sls[[ 4 ]]$e1c$eq[[ 2 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3sls[[ 4 ]]$e2 ), digits = 6 ) )
-print( round( vcov( fit3sls[[ 5 ]]$e2$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3sls[[ 4 ]]$e2 ), digits = 5 ) )
+print( round( vcov( fit3sls[[ 5 ]]$e2$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3sls[[ 5 ]]$e3e ), digits = 6 ) )
-print( round( vcov( fit3sls[[ 5 ]]$e3e, modified.regMat = TRUE ), digits = 6 ) )
-print( round( vcov( fit3sls[[ 1 ]]$e3e$eq[[ 2 ]] ), digits = 6 ) )
+print( round( vcov( fit3sls[[ 5 ]]$e3e ), digits = 5 ) )
+print( round( vcov( fit3sls[[ 5 ]]$e3e, modified.regMat = TRUE ), digits = 5 ) )
+print( round( vcov( fit3sls[[ 1 ]]$e3e$eq[[ 2 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3sls[[ 1 ]]$e4 ), digits = 6 ) )
-print( round( vcov( fit3sls[[ 2 ]]$e4$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3sls[[ 1 ]]$e4 ), digits = 5 ) )
+print( round( vcov( fit3sls[[ 2 ]]$e4$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3sls[[ 3 ]]$e4wSym ), digits = 6 ) )
-print( round( vcov( fit3sls[[ 4 ]]$e4wSym$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3sls[[ 3 ]]$e4wSym ), digits = 5 ) )
+print( round( vcov( fit3sls[[ 4 ]]$e4wSym$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3sls[[ 2 ]]$e5e ), digits = 6 ) )
-print( round( vcov( fit3sls[[ 2 ]]$e5e, modified.regMat = TRUE ), digits = 6 ) )
-print( round( vcov( fit3sls[[ 3 ]]$e5e$eq[[ 2 ]] ), digits = 6 ) )
+print( round( vcov( fit3sls[[ 2 ]]$e5e ), digits = 5 ) )
+print( round( vcov( fit3sls[[ 2 ]]$e5e, modified.regMat = TRUE ), digits = 5 ) )
+print( round( vcov( fit3sls[[ 3 ]]$e5e$eq[[ 2 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsi[[ 4 ]]$e1e ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 3 ]]$e1e$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsi[[ 4 ]]$e1e ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 3 ]]$e1e$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsi[[ 5 ]]$e1we ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 1 ]]$e1we$eq[[ 2 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsi[[ 5 ]]$e1we ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 1 ]]$e1we$eq[[ 2 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsi[[ 5 ]]$e2e ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 4 ]]$e2e$eq[[ 2 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsi[[ 5 ]]$e2e ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 4 ]]$e2e$eq[[ 2 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsi[[ 1 ]]$e3 ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 1 ]]$e3, modified.regMat = TRUE ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 5 ]]$e3$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsi[[ 1 ]]$e3 ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 1 ]]$e3, modified.regMat = TRUE ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 5 ]]$e3$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsi[[ 2 ]]$e4e ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 1 ]]$e4e$eq[[ 2 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsi[[ 2 ]]$e4e ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 1 ]]$e4e$eq[[ 2 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsi[[ 3 ]]$e5 ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 3 ]]$e5, modified.regMat = TRUE ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 2 ]]$e5$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsi[[ 3 ]]$e5 ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 3 ]]$e5, modified.regMat = TRUE ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 2 ]]$e5$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsi[[ 5 ]]$e5w ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 5 ]]$e5w, modified.regMat = TRUE ), digits = 6 ) )
-print( round( vcov( fit3slsi[[ 4 ]]$e5w$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsi[[ 5 ]]$e5w ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 5 ]]$e5w, modified.regMat = TRUE ), digits = 5 ) )
+print( round( vcov( fit3slsi[[ 4 ]]$e5w$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsd[[ 5 ]]$e1c ), digits = 6 ) )
-print( round( vcov( fit3slsd[[ 2 ]]$e1c$eq[[ 2 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsd[[ 5 ]]$e1c ), digits = 5 ) )
+print( round( vcov( fit3slsd[[ 2 ]]$e1c$eq[[ 2 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsd[[ 1 ]]$e2 ), digits = 6 ) )
-print( round( vcov( fit3slsd[[ 3 ]]$e2$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsd[[ 1 ]]$e2 ), digits = 5 ) )
+print( round( vcov( fit3slsd[[ 3 ]]$e2$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsd[[ 5 ]]$e2we ), digits = 6 ) )
-print( round( vcov( fit3slsd[[ 3 ]]$e2we$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsd[[ 5 ]]$e2we ), digits = 5 ) )
+print( round( vcov( fit3slsd[[ 3 ]]$e2we$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsd[[ 2 ]]$e3 ), digits = 6 ) )
-print( round( vcov( fit3slsd[[ 2 ]]$e3, modified.regMat = TRUE ), digits = 6 ) )
-print( round( vcov( fit3slsd[[ 4 ]]$e3$eq[[ 2 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsd[[ 2 ]]$e3 ), digits = 5 ) )
+print( round( vcov( fit3slsd[[ 2 ]]$e3, modified.regMat = TRUE ), digits = 5 ) )
+print( round( vcov( fit3slsd[[ 4 ]]$e3$eq[[ 2 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsd[[ 3 ]]$e4 ), digits = 6 ) )
-print( round( vcov( fit3slsd[[ 5 ]]$e4$eq[[ 1 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsd[[ 3 ]]$e4 ), digits = 5 ) )
+print( round( vcov( fit3slsd[[ 5 ]]$e4$eq[[ 1 ]] ), digits = 5 ) )
 
-print( round( vcov( fit3slsd[[ 4 ]]$e5e ), digits = 6 ) )
-print( round( vcov( fit3slsd[[ 4 ]]$e5e, modified.regMat = TRUE ), digits = 6 ) )
-print( round( vcov( fit3slsd[[ 1 ]]$e5e$eq[[ 2 ]] ), digits = 6 ) )
+print( round( vcov( fit3slsd[[ 4 ]]$e5e ), digits = 5 ) )
+print( round( vcov( fit3slsd[[ 4 ]]$e5e, modified.regMat = TRUE ), digits = 5 ) )
+print( round( vcov( fit3slsd[[ 1 ]]$e5e$eq[[ 2 ]] ), digits = 5 ) )
 
 
 ## *********** confidence intervals of coefficients *************
@@ -1189,48 +1190,48 @@ fit3slsd[[ 5 ]]$e5we$eq[[ 2 ]]$termsInst
 library( "sandwich" )
 
 estfun( fit3sls[[ 1 ]]$e1 )
-colSums( estfun( fit3sls[[ 1 ]]$e1 ) )
+round( colSums( estfun( fit3sls[[ 1 ]]$e1 ) ), digits = 7 )
 
 estfun( fit3sls[[ 2 ]]$e1e )
-colSums( estfun( fit3sls[[ 2 ]]$e1e ) )
+round( colSums( estfun( fit3sls[[ 2 ]]$e1e ) ), digits = 7 )
 
 estfun( fit3sls[[ 3 ]]$e1c )
-colSums( estfun( fit3sls[[ 3 ]]$e1c ) )
+round( colSums( estfun( fit3sls[[ 3 ]]$e1c ) ), digits = 7 )
 
 estfun( fit3sls[[ 4 ]]$e1wc )
 
-colSums( estfun( fit3sls[[ 5 ]]$e1wc ) )
-colSums( estfun( fit3sls[[ 5 ]]$e1wc, residFit = FALSE ) )
+round( colSums( estfun( fit3sls[[ 5 ]]$e1wc ) ), digits = 7 )
+round( colSums( estfun( fit3sls[[ 5 ]]$e1wc, residFit = FALSE ) ), digits = 7 )
 
-colSums( estfun( fit3sls[[ 4 ]]$e1wc ) )
-colSums( estfun( fit3sls[[ 4 ]]$e1wc, residFit = FALSE ) )
+round( colSums( estfun( fit3sls[[ 4 ]]$e1wc ) ), digits = 7 )
+round( colSums( estfun( fit3sls[[ 4 ]]$e1wc, residFit = FALSE ) ), digits = 7 )
 
-colSums( estfun( fit3sls[[ 3 ]]$e1wc ) )
-colSums( estfun( fit3sls[[ 3 ]]$e1wc, residFit = FALSE ) )
+round( colSums( estfun( fit3sls[[ 3 ]]$e1wc ) ), digits = 7 )
+round( colSums( estfun( fit3sls[[ 3 ]]$e1wc, residFit = FALSE ) ), digits = 7 )
 
-colSums( estfun( fit3sls[[ 2 ]]$e1wc ) )
-colSums( estfun( fit3sls[[ 2 ]]$e1wc, residFit = FALSE ) )
+round( colSums( estfun( fit3sls[[ 2 ]]$e1wc ) ), digits = 7 )
+round( colSums( estfun( fit3sls[[ 2 ]]$e1wc, residFit = FALSE ) ), digits = 7 )
 
-colSums( estfun( fit3sls[[ 1 ]]$e1wc ) )
-colSums( estfun( fit3sls[[ 1 ]]$e1wc, residFit = FALSE ) )
+round( colSums( estfun( fit3sls[[ 1 ]]$e1wc ) ), digits = 7 )
+round( colSums( estfun( fit3sls[[ 1 ]]$e1wc, residFit = FALSE ) ), digits = 7 )
 
 estfun( fit3slsd[[ 5 ]]$e1w )
 estfun( fit3slsd[[ 5 ]]$e1w, residFit = FALSE )
 
-colSums( estfun( fit3slsd[[ 5 ]]$e1w ) )
-colSums( estfun( fit3slsd[[ 5 ]]$e1w, residFit = FALSE ) )
+round( colSums( estfun( fit3slsd[[ 5 ]]$e1w ) ), digits = 7 )
+round( colSums( estfun( fit3slsd[[ 5 ]]$e1w, residFit = FALSE ) ), digits = 7 )
 
-colSums( estfun( fit3slsd[[ 4 ]]$e1w ) )
-colSums( estfun( fit3slsd[[ 4 ]]$e1w, residFit = FALSE ) )
+round( colSums( estfun( fit3slsd[[ 4 ]]$e1w ) ), digits = 7 )
+round( colSums( estfun( fit3slsd[[ 4 ]]$e1w, residFit = FALSE ) ), digits = 7 )
 
-colSums( estfun( fit3slsd[[ 3 ]]$e1w ) )
-colSums( estfun( fit3slsd[[ 3 ]]$e1w, residFit = FALSE ) )
+round( colSums( estfun( fit3slsd[[ 3 ]]$e1w ) ), digits = 7 )
+round( colSums( estfun( fit3slsd[[ 3 ]]$e1w, residFit = FALSE ) ), digits = 7 )
 
-colSums( estfun( fit3slsd[[ 2 ]]$e1w ) )
-colSums( estfun( fit3slsd[[ 2 ]]$e1w, residFit = FALSE ) )
+round( colSums( estfun( fit3slsd[[ 2 ]]$e1w ) ), digits = 7 )
+round( colSums( estfun( fit3slsd[[ 2 ]]$e1w, residFit = FALSE ) ), digits = 7 )
 
-colSums( estfun( fit3slsd[[ 1 ]]$e1w ) )
-colSums( estfun( fit3slsd[[ 1 ]]$e1w, residFit = FALSE ) )
+round( colSums( estfun( fit3slsd[[ 1 ]]$e1w ) ), digits = 7 )
+round( colSums( estfun( fit3slsd[[ 1 ]]$e1w, residFit = FALSE ) ), digits = 7 )
 
 
 ## **************** bread ************************

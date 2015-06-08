@@ -1,5 +1,6 @@
-
 library( systemfit )
+options( digits = 3 )
+
 data( "Kmenta" )
 useMatrix <- FALSE
 
@@ -708,13 +709,13 @@ fitw2slsd3e$eq[[ 2 ]]$termsInst
 library( "sandwich" )
 
 estfun( fitw2sls1 )
-colSums( estfun( fitw2sls1 ) )
+round( colSums( estfun( fitw2sls1 ) ), digits = 7 )
 
 estfun( fitw2sls1e )
-colSums( estfun( fitw2sls1e ) )
+round( colSums( estfun( fitw2sls1e ) ), digits = 7 )
 
 estfun( fitw2slsd1e )
-colSums( estfun( fitw2slsd1e ) )
+round( colSums( estfun( fitw2slsd1e ) ), digits = 7 )
 
 
 ## **************** bread ************************

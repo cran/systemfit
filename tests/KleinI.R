@@ -1,6 +1,7 @@
 library( "systemfit" )
 library( "sandwich" )
 options( warn = 1 )
+options( digits = 3 )
 
 data( "KleinI" )
 eqConsump  <- consump ~ corpProf + corpProfLag + wages
@@ -74,7 +75,7 @@ for( methodNo in 1:5 ) {
       cat( "> matrix of instrumental variables\n" )
       print( model.matrix( kleinModel, which = "z" ) )
       cat( "> matrix of fitted regressors\n" )
-      print( model.matrix( kleinModel, which = "xHat" ) )
+      print( round( model.matrix( kleinModel, which = "xHat" ), digits = 7 ) )
    }
    cat( "> nobs\n" )
    print( nobs( kleinModel ) )
@@ -89,8 +90,9 @@ for( methodNo in 1:5 ) {
    print( logLik( kleinModel ) )
    
    cat( "Estimating function\n" )
-   print( estfun( kleinModel ) )
-   print( colSums( estfun( kleinModel ) ) )
+   print( round( estfun( kleinModel ), digits = 7 ) )
+   print( all.equal( colSums( estfun( kleinModel ) ),
+      rep( 0, ncol( estfun( kleinModel ) ) ), check.attributes = FALSE ) )
 
    cat( "> Bread\n" )
    print( bread( kleinModel ) )

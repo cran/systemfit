@@ -1,7 +1,5 @@
 createSystemfitModel <- function( nEq, nRegEq, nObs, coef = NULL, sigma = NULL ){
 
-   library( MASS )
-
    result <- list()
    nCoef <- nEq * ( nRegEq + 1 )
 

@@ -1,5 +1,6 @@
-
 library( systemfit )
+options( digits = 3 )
+
 data( "Kmenta" )
 useMatrix <- FALSE
 
@@ -1225,55 +1226,55 @@ terms( fitsuri5r2$eq[[ 1 ]] )
 library( "sandwich" )
 
 estfun( fitsur1 )
-colSums( estfun( fitsur1 ) )
+round( colSums( estfun( fitsur1 ) ), digits = 7 )
 
 estfun( fitsur1e2 )
-colSums( estfun( fitsur1e2 ) )
+round( colSums( estfun( fitsur1e2 ) ), digits = 7 )
 
 estfun( fitsur1r3 )
-colSums( estfun( fitsur1r3 ) )
+round( colSums( estfun( fitsur1r3 ) ), digits = 7 )
 
 estfun( fitsur1w )
-colSums( estfun( fitsur1w ) )
+round( colSums( estfun( fitsur1w ) ), digits = 7 )
 
 estfun( fitsuri1e )
-colSums( estfun( fitsuri1e ) )
+round( colSums( estfun( fitsuri1e ) ), digits = 7 )
 
 estfun( fitsuri1wr3 )
-colSums( estfun( fitsuri1wr3 ) )
+round( colSums( estfun( fitsuri1wr3 ) ), digits = 7 )
 
 estfun( fitsurS1 )
-colSums( estfun( fitsurS1 ) )
+round( colSums( estfun( fitsurS1 ) ), digits = 7 )
 
 estfun( fitsurS2 )
-colSums( estfun( fitsurS2 ) )
+round( colSums( estfun( fitsurS2 ) ), digits = 7 )
 
 estfun( fitsurS3 )
-colSums( estfun( fitsurS3 ) )
+round( colSums( estfun( fitsurS3 ) ), digits = 7 )
 
 try( estfun( fitsurS4 ) )
 
 estfun( fitsurS5 )
-colSums( estfun( fitsurS5 ) )
+round( colSums( estfun( fitsurS5 ) ), digits = 7 )
 
 
 ## **************** bread ************************
-bread( fitsur1 )
+round( bread( fitsur1 ), digits = 7 )
 
-bread( fitsur1e2 )
+round( bread( fitsur1e2 ), digits = 7 )
 
-bread( fitsur1r3 )
+round( bread( fitsur1r3 ), digits = 7 )
 
-bread( fitsur1w )
+round( bread( fitsur1w ), digits = 7 )
 
-bread( fitsuri1e )
+round( bread( fitsuri1e ), digits = 7 )
 
-bread( fitsuri1wr3 )
+round( bread( fitsuri1wr3 ), digits = 7 )
 
-bread( fitsurS1 )
+round( bread( fitsurS1 ), digits = 7 )
 
-bread( fitsurS2 )
+round( bread( fitsurS2 ), digits = 7 )
 
-bread( fitsurS3 )
+round( bread( fitsurS3 ), digits = 7 )
 
 try( bread( fitsurS4 ) )

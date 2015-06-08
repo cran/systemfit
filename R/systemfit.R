@@ -1,4 +1,4 @@
-###   $Id: systemfit.R 1102 2012-08-04 05:51:09Z arne $
+###   $Id: systemfit.R 1126 2014-08-14 08:49:51Z arne $
 ###
 ###            Simultaneous Equation Estimation for R
 ###
@@ -367,7 +367,7 @@ systemfit <- function(  formula,
    # checking and modifying parameter restrictions
    coefNamesModReg <- if( is.null( restrict.regMat ) ) coefNames else colnames( restrict.regMat )
    if( is.character( restrict.matrix ) ) {
-      R.restr <- car:::makeHypothesis( coefNamesModReg, restrict.matrix, restrict.rhs )
+      R.restr <- car::makeHypothesis( coefNamesModReg, restrict.matrix, restrict.rhs )
       if( is.null( dim( R.restr ) ) ){
          R.restr <- t( R.restr )
       }
@@ -401,14 +401,14 @@ systemfit <- function(  formula,
    if( !is.null( R.restr ) ){
       if( is.null( rownames( R.restr ) ) ) {
          rownames( R.restr ) <-
-            car:::printHypothesis( R.restr, q.restr, coefNamesModReg )
+            car::printHypothesis( R.restr, q.restr, coefNamesModReg )
       }
       if( is.null( colnames( R.restr ) ) ) {
          colnames( R.restr ) <- coefNamesModReg
       }
       if( is.null( rownames( q.restr ) ) ) {
          rownames( q.restr ) <-
-            car:::printHypothesis( R.restr, q.restr, coefNamesModReg )
+            car::printHypothesis( R.restr, q.restr, coefNamesModReg )
       }
       if( is.null( colnames( q.restr ) ) ) {
          colnames( q.restr ) <- "*rhs*"

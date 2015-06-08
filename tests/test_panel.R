@@ -1,5 +1,6 @@
 library( systemfit )
 library( plm )
+options( digits = 3 )
 useMatrix <- FALSE
 
 ## Repeating the OLS and SUR estimations in Theil (1971, pp. 295, 300)
@@ -161,18 +162,18 @@ terms( greeneSurPooled$eq[[ 1 ]] )
 library( "sandwich" )
 
 estfun( theilOls )
-colSums( estfun( theilOls ) )
+round( colSums( estfun( theilOls ) ), digits = 7 )
 
 estfun( theilSur )
-colSums( estfun( theilSur ) )
+round( colSums( estfun( theilSur ) ), digits = 7 )
 
 estfun( greeneOls )
-colSums( estfun( greeneOls ) )
+round( colSums( estfun( greeneOls ) ), digits = 7 )
 
 try( estfun( greeneOlsPooled ) )
 
 estfun( greeneSur )
-colSums( estfun( greeneSur ) )
+round( colSums( estfun( greeneSur ) ), digits = 7 )
 
 try( estfun( greeneSurPooled ) )
 

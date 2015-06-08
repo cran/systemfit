@@ -1,7 +1,6 @@
 
-R version 2.15.0 (2012-03-30)
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -16,22 +15,20 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-> 
-> library( systemfit )
+> library( "systemfit" )
 Loading required package: Matrix
-Loading required package: lattice
 Loading required package: car
-Loading required package: MASS
-Loading required package: nnet
 Loading required package: lmtest
 Loading required package: zoo
 
 Attaching package: 'zoo'
 
-The following object(s) are masked from 'package:base':
+The following objects are masked from 'package:base':
 
     as.Date, as.Date.numeric
 
+> options( digits = 5 )
+> 
 > data( "Kmenta" )
 > useMatrix <- FALSE
 > 
@@ -72,8 +69,8 @@ The following object(s) are masked from 'package:base':
 
 	Hausman specification test for consistency of the 3SLS estimation
 
-data:  Kmenta 
-Hausman = 2.5357, df = 7, p-value = 0.9244
+data:  Kmenta
+Hausman = 2.54, df = 7, p-value = 0.92
 
 > 
 > ## ************** 2SLS estimation with singleEqSigma = FALSE *****************
@@ -83,8 +80,8 @@ Hausman = 2.5357, df = 7, p-value = 0.9244
 
 	Hausman specification test for consistency of the 3SLS estimation
 
-data:  Kmenta 
-Hausman = 3.2844, df = 7, p-value = 0.8575
+data:  Kmenta
+Hausman = 3.28, df = 7, p-value = 0.86
 
 > 
 > ## ******************* estimations with methodResidCov = 0 *****************
@@ -96,8 +93,8 @@ Hausman = 3.2844, df = 7, p-value = 0.8575
 
 	Hausman specification test for consistency of the 3SLS estimation
 
-data:  Kmenta 
-Hausman = 2.9831, df = 7, p-value = 0.8866
+data:  Kmenta
+Hausman = 2.98, df = 7, p-value = 0.89
 
 > 
 > 
@@ -132,8 +129,8 @@ Hausman = 2.9831, df = 7, p-value = 0.8866
 
 	Hausman specification test for consistency of the 3SLS estimation
 
-data:  Kmenta 
-Hausman = -0.2815, df = 6, p-value = 1
+data:  Kmenta
+Hausman = -0.281, df = 6, p-value = 1
 
 > 
 > ## ******************* estimations with methodResidCov = 0 *******
@@ -145,7 +142,7 @@ Hausman = -0.2815, df = 6, p-value = 1
 
 	Hausman specification test for consistency of the 3SLS estimation
 
-data:  Kmenta 
+data:  Kmenta
 Hausman = -0.0132, df = 6, p-value = 1
 
 > 
@@ -189,4 +186,4 @@ Hausman = -0.0132, df = 6, p-value = 1
 > 
 > proc.time()
    user  system elapsed 
-  1.668   0.052   1.708 
+  1.676   0.048   1.723 

@@ -5,7 +5,17 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-16 (2015-06-08)
+
+* fixed a few minor issues pointed out by 'R CMD check' 
+
+
             CHANGES IN VERSION 1.1-14 (2012-11-17)
+
+* added (incomplete) estfun() method (from the "sandwhich" package) for 
+objects of class "systemfit" (currently, the residual covariance matrix is 
+always assumed to be the identity matrix, although this is only true for 
+OLS estimations!); therefore, the sandwich package is now "imported"
 
 * changed dependency ("Imports") from "stats (>= 2.15.0)" to "stats (>= 2.14.0)" 
 
