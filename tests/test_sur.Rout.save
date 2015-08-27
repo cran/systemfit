@@ -1,5 +1,5 @@
 
-R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -7039,42 +7039,72 @@ income       0.213   0.390
 > ## ************ Log-Likelihood values ***************
 > print( logLik( fitsur1e2 ) )
 'log Lik.' -50.9 (df=10)
+> print( logLik( fitsur1e2, residCovDiag = TRUE ) )
+'log Lik.' -85.4 (df=10)
 > 
 > print( logLik( fitsur2e ) )
 'log Lik.' -52 (df=9)
+> print( logLik( fitsur2e, residCovDiag = TRUE ) )
+'log Lik.' -86.5 (df=9)
 > 
 > print( logLik( fitsur3 ) )
 'log Lik.' -52.2 (df=9)
+> print( logLik( fitsur3, residCovDiag = TRUE ) )
+'log Lik.' -86.4 (df=9)
 > 
 > print( logLik( fitsur4r3 ) )
 'log Lik.' -58.4 (df=8)
+> print( logLik( fitsur4r3, residCovDiag = TRUE ) )
+'log Lik.' -85.5 (df=8)
 > 
 > print( logLik( fitsur5 ) )
 'log Lik.' -58.5 (df=8)
+> print( logLik( fitsur5, residCovDiag = TRUE ) )
+'log Lik.' -84.6 (df=8)
 > 
 > print( logLik( fitsur5w ) )
 'log Lik.' -58.5 (df=8)
+> print( logLik( fitsur5w, residCovDiag = TRUE ) )
+'log Lik.' -84.7 (df=8)
 > 
 > print( logLik( fitsuri1r3 ) )
 'log Lik.' -67.8 (df=10)
+> print( logLik( fitsuri1r3, residCovDiag = TRUE ) )
+'log Lik.' -76.2 (df=10)
 > 
 > print( logLik( fitsuri2 ) )
 'log Lik.' -99.9 (df=9)
+> print( logLik( fitsuri2, residCovDiag = TRUE ) )
+'log Lik.' -101 (df=9)
 > 
 > print( logLik( fitsuri3e ) )
 'log Lik.' -99.9 (df=9)
+> print( logLik( fitsuri3e, residCovDiag = TRUE ) )
+'log Lik.' -102 (df=9)
 > 
 > print( logLik( fitsurio4 ) )
 'log Lik.' -58.5 (df=8)
+> print( logLik( fitsurio4, residCovDiag = TRUE ) )
+'log Lik.' -85.9 (df=8)
+> 
 > print( logLik( fitsuri4 ) )
+'log Lik.' -101 (df=8)
+> print( logLik( fitsuri4, residCovDiag = TRUE ) )
 'log Lik.' -101 (df=8)
 > 
 > print( logLik( fitsuri4w ) )
 'log Lik.' -101 (df=8)
+> print( logLik( fitsuri4w, residCovDiag = TRUE ) )
+'log Lik.' -101 (df=8)
 > 
 > print( logLik( fitsurio5r2 ) )
 'log Lik.' -59.8 (df=8)
+> print( logLik( fitsurio5r2, residCovDiag = TRUE ) )
+'log Lik.' -93.1 (df=8)
+> 
 > print( logLik( fitsuri5r2 ) )
+'log Lik.' -101 (df=8)
+> print( logLik( fitsuri5r2, residCovDiag = TRUE ) )
 'log Lik.' -101 (df=8)
 > 
 > 
@@ -11236,4 +11266,4 @@ Error in bread.systemfit(fitsurS4) :
 > 
 > proc.time()
    user  system elapsed 
-  6.152   0.144   6.298 
+  3.896   0.136   4.028 

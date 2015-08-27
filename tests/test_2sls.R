@@ -551,18 +551,25 @@ print( correlation.systemfit( fit2slsd2r, 1, 2 ) )
 
 ## ************ Log-Likelihood values ***************
 print( logLik( fit2sls1 ) )
+print( logLik( fit2sls1, residCovDiag = TRUE ) )
 
 print( logLik( fit2sls2s ) )
+print( logLik( fit2sls2s, residCovDiag = TRUE ) )
 
 print( logLik( fit2sls3 ) )
+print( logLik( fit2sls3, residCovDiag = TRUE ) )
 
 print( logLik( fit2sls4r ) )
+print( logLik( fit2sls4r, residCovDiag = TRUE ) )
 
 print( logLik( fit2sls5rs ) )
+print( logLik( fit2sls5rs, residCovDiag = TRUE ) )
 
 print( logLik( fit2slsd1 ) )
+print( logLik( fit2slsd1, residCovDiag = TRUE ) )
 
 print( logLik( fit2slsd2r ) )
+print( logLik( fit2slsd2r, residCovDiag = TRUE ) )
 
 
 ## ************** F tests ****************

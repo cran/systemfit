@@ -1,5 +1,5 @@
 
-R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -67,6 +67,10 @@ The following objects are masked from 'package:base':
 > # methodResidCov == "noDfCor" for the residual covariance matrix, while
 > # systemfit uses always the same formulas for both calculations.
 > 
+> ## *******  single-equation OLS estimations  *********************
+> lmDemand <- lm( demand, data = Kmenta )
+> lmSupply <- lm( supply, data = Kmenta )
+> 
 > ## *************** OLS estimation ************************
 > ## ********** OLS estimation (default) ********************
 > fitols1 <- systemfit( system, "OLS", data = Kmenta, useMatrix = useMatrix )
@@ -127,6 +131,17 @@ Multiple R-Squared: 0.655 Adjusted R-Squared: 0.59
 
 > nobs( fitols1 )
 [1] 40
+> all.equal( coef( fitols1 ), c( coef( lmDemand ), coef( lmSupply ) ),
++    check.attributes = FALSE )
+[1] TRUE
+> all.equal( coef( summary( fitols1 ) ),
++    rbind( coef( summary( lmDemand ) ), coef( summary( lmSupply ) ) ),
++    check.attributes = FALSE )
+[1] TRUE
+> all.equal( vcov( fitols1 ),
++    as.matrix( bdiag( vcov( lmDemand ), vcov( lmSupply ) ) ),
++    check.attributes = FALSE )
+[1] TRUE
 > 
 > ## ********** OLS estimation (no singleEqSigma=F) ******************
 > fitols1s <- systemfit( system, "OLS", data = Kmenta,
@@ -186,6 +201,9 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551 MSE: 5.784 Root MSE: 2.405 
 Multiple R-Squared: 0.655 Adjusted R-Squared: 0.59 
 
+> all.equal( coef( fitols1s ), c( coef( lmDemand ), coef( lmSupply ) ),
++    check.attributes = FALSE )
+[1] TRUE
 > 
 > ## ****************  OLS (useDfSys=T) ***********************
 > print( summary( fitols1, useDfSys = TRUE ) )
@@ -303,6 +321,9 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551 MSE: 5.784 Root MSE: 2.405 
 Multiple R-Squared: 0.655 Adjusted R-Squared: 0.59 
 
+> all.equal( coef( fitols1r ), c( coef( lmDemand ), coef( lmSupply ) ),
++    check.attributes = FALSE )
+[1] TRUE
 > 
 > ## ********  OLS (methodResidCov="noDfCor", singleEqSigma=F) ***********
 > fitols1rs <- systemfit( system, "OLS", data = Kmenta,
@@ -363,6 +384,9 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551 MSE: 5.784 Root MSE: 2.405 
 Multiple R-Squared: 0.655 Adjusted R-Squared: 0.59 
 
+> all.equal( coef( fitols1rs ), c( coef( lmDemand ), coef( lmSupply ) ),
++    check.attributes = FALSE )
+[1] TRUE
 > 
 > ## ****************  OLS (methodResidCov="Theil" ) ***********************
 > fitols1r <- systemfit( system, "OLS", data = Kmenta,
@@ -423,6 +447,9 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551 MSE: 5.784 Root MSE: 2.405 
 Multiple R-Squared: 0.655 Adjusted R-Squared: 0.59 
 
+> all.equal( coef( fitols1r ), c( coef( lmDemand ), coef( lmSupply ) ),
++    check.attributes = FALSE )
+[1] TRUE
 > 
 > ## ****************  OLS (methodResidCov="max") ***********************
 > fitols1r <- systemfit( system, "OLS", data = Kmenta,
@@ -3368,18 +3395,32 @@ income       0.220   0.406
 > ## ************ Log-Likelihood values ***************
 > print( logLik( fitols1 ) )
 'log Lik.' -67.8 (df=8)
+> print( logLik( fitols1, residCovDiag = TRUE ) )
+'log Lik.' -83.6 (df=8)
+> all.equal( logLik( fitols1, residCovDiag = TRUE ),
++    logLik( lmDemand ) + logLik( lmSupply ),
++    check.attributes = FALSE )
+[1] TRUE
 > 
 > print( logLik( fitols2r ) )
 'log Lik.' -62 (df=7)
+> print( logLik( fitols2r, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=7)
 > 
 > print( logLik( fitols3s ) )
 'log Lik.' -62 (df=7)
+> print( logLik( fitols3s, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=7)
 > 
 > print( logLik( fitols4rs ) )
 'log Lik.' -62.8 (df=6)
+> print( logLik( fitols4rs, residCovDiag = TRUE ) )
+'log Lik.' -84.1 (df=6)
 > 
 > print( logLik( fitols5 ) )
 'log Lik.' -62.8 (df=6)
+> print( logLik( fitols5, residCovDiag = TRUE ) )
+'log Lik.' -84.1 (df=6)
 > 
 > 
 > ## ************** F tests ****************
@@ -4999,4 +5040,4 @@ Error in bread.systemfit(fitols2) :
 > 
 > proc.time()
    user  system elapsed 
-  3.856   0.128   3.986 
+  2.380   0.044   2.428 

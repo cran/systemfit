@@ -25,6 +25,11 @@ for( dataNo in 1:5 ) {
       KleinI$invest[ 16 ] <- NA
    }
 
+   # single-equation OLS
+   lmConsump  <- lm( eqConsump, data = KleinI )
+   lmInvest   <- lm( eqInvest, data = KleinI )
+   lmPrivWage <- lm( eqPrivWage, data = KleinI )
+   
 for( methodNo in 1:5 ) {
    method <- c( "OLS", "2SLS", "SUR", "3SLS", "3SLS" )[ methodNo ]
    maxit <- ifelse( methodNo == 5, 500, 1 )
@@ -40,6 +45,12 @@ for( methodNo in 1:5 ) {
    }
    cat( "> summary\n" )
    print( summary( kleinModel ) )
+   if( method == "OLS" ) {
+      cat( "compare coef with single-equation OLS\n" )
+      print( all.equal( coef( kleinModel ),
+         c( coef( lmConsump ), coef( lmInvest ), coef( lmPrivWage ) ),
+         check.attributes = FALSE ) )
+   }
    cat( "> residuals\n" )
    print( residuals( kleinModel ) )
    cat( "> fitted\n" )
@@ -88,7 +99,14 @@ for( methodNo in 1:5 ) {
    print( linearHypothesis( kleinModel, restrict2, test = "Chisq" ) )
    cat( "> logLik\n" )
    print( logLik( kleinModel ) )
-   
+   print( logLik( kleinModel, residCovDiag = TRUE ) )
+   if( method == "OLS" ) {
+      cat( "compare log likelihood value with single-equation OLS\n" )
+      print( all.equal( logLik( kleinModel, residCovDiag = TRUE ),
+         logLik( lmConsump ) + logLik( lmInvest ) + logLik( lmPrivWage ),
+         check.attributes = FALSE ) )
+   }
+
    cat( "Estimating function\n" )
    print( round( estfun( kleinModel ), digits = 7 ) )
    print( all.equal( colSums( estfun( kleinModel ) ),

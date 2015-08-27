@@ -1,5 +1,5 @@
 
-R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -19985,33 +19985,53 @@ trend        0.371   0.439
 > ## ************ Log-Likelihood values ***************
 > print( logLik( fit3sls[[ 1 ]]$e1c ) )
 'log Lik.' -53 (df=10)
+> print( logLik( fit3sls[[ 1 ]]$e1c, residCovDiag = TRUE ) )
+'log Lik.' -85.6 (df=10)
 > 
 > print( logLik( fit3sls[[ 2 ]]$e2e ) )
 'log Lik.' -55.6 (df=9)
+> print( logLik( fit3sls[[ 2 ]]$e2e, residCovDiag = TRUE ) )
+'log Lik.' -85.4 (df=9)
 > 
 > print( logLik( fit3sls[[ 3 ]]$e3 ) )
 'log Lik.' -55.3 (df=9)
+> print( logLik( fit3sls[[ 3 ]]$e3, residCovDiag = TRUE ) )
+'log Lik.' -85.5 (df=9)
 > 
 > print( logLik( fit3sls[[ 4 ]]$e4e ) )
 'log Lik.' -58.5 (df=8)
+> print( logLik( fit3sls[[ 4 ]]$e4e, residCovDiag = TRUE ) )
+'log Lik.' -85.2 (df=8)
 > 
 > print( logLik( fit3sls[[ 2 ]]$e4wSym ) )
 'log Lik.' -58.5 (df=8)
+> print( logLik( fit3sls[[ 2 ]]$e4wSym, residCovDiag = TRUE ) )
+'log Lik.' -85.3 (df=8)
 > 
 > print( logLik( fit3sls[[ 5 ]]$e5 ) )
 'log Lik.' -87.3 (df=8)
+> print( logLik( fit3sls[[ 5 ]]$e5, residCovDiag = TRUE ) )
+'log Lik.' -104 (df=8)
 > 
 > print( logLik( fit3slsi[[ 2 ]]$e3e ) )
 'log Lik.' -46.7 (df=9)
+> print( logLik( fit3slsi[[ 2 ]]$e3e, residCovDiag = TRUE ) )
+'log Lik.' -92.1 (df=9)
 > 
 > print( logLik( fit3slsi[[ 1 ]]$e1we ) )
 'log Lik.' -52.7 (df=10)
+> print( logLik( fit3slsi[[ 1 ]]$e1we, residCovDiag = TRUE ) )
+'log Lik.' -85.8 (df=10)
 > 
 > print( logLik( fit3slsd[[ 3 ]]$e4 ) )
 'log Lik.' -59.4 (df=8)
+> print( logLik( fit3slsd[[ 3 ]]$e4, residCovDiag = TRUE ) )
+'log Lik.' -86.1 (df=8)
 > 
 > print( logLik( fit3slsd[[ 5 ]]$e2we ) )
 'log Lik.' -65 (df=9)
+> print( logLik( fit3slsd[[ 5 ]]$e2we, residCovDiag = TRUE ) )
+'log Lik.' -85.7 (df=9)
 > 
 > 
 > ## ************** F tests ****************
@@ -23831,4 +23851,4 @@ In estfun.systemfit(fit3slsd[[1]]$e1w, residFit = FALSE) :
 > 
 > proc.time()
    user  system elapsed 
- 12.236   0.272  12.521 
+  7.208   0.288   7.504 

@@ -1,12 +1,12 @@
 Package: systemfit
-Version: 1.1-16
-Date: 2015-06-08
+Version: 1.1-18
+Date: 2015-08-27
 Title: Estimating Systems of Simultaneous Equations
 Author: Arne Henningsen and Jeff D. Hamann
 Maintainer: Arne Henningsen <arne.henningsen@gmail.com>
 Depends: R (>= 1.8.0), Matrix, car (>= 2.0-0), lmtest
 Suggests: plm (>= 1.0-1), sem (>= 2.0-0)
-Imports: stats (>= 2.14.0), sandwich (>= 2.2-9), MASS
+Imports: stats (>= 2.14.0), sandwich (>= 2.2-9), MASS, methods
 Description: Fitting simultaneous
  systems of linear and nonlinear equations using Ordinary Least
  Squares (OLS), Weighted Least Squares (WLS), Seemingly Unrelated
@@ -15,6 +15,6 @@ Description: Fitting simultaneous
 License: GPL (>= 2)
 URL: http://www.systemfit.org
 NeedsCompilation: no
-Packaged: 2015-06-08 21:23:30 UTC; arne
+Packaged: 2015-08-27 07:47:01 UTC; arne
 Repository: CRAN
-Date/Publication: 2015-06-09 07:52:26
+Date/Publication: 2015-08-27 10:31:01

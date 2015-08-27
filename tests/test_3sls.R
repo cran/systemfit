@@ -806,24 +806,34 @@ print( correlation.systemfit( fit3slsd[[ 3 ]]$e4, 2, 1 ) )
 
 ## ************ Log-Likelihood values ***************
 print( logLik( fit3sls[[ 1 ]]$e1c ) )
+print( logLik( fit3sls[[ 1 ]]$e1c, residCovDiag = TRUE ) )
 
 print( logLik( fit3sls[[ 2 ]]$e2e ) )
+print( logLik( fit3sls[[ 2 ]]$e2e, residCovDiag = TRUE ) )
 
 print( logLik( fit3sls[[ 3 ]]$e3 ) )
+print( logLik( fit3sls[[ 3 ]]$e3, residCovDiag = TRUE ) )
 
 print( logLik( fit3sls[[ 4 ]]$e4e ) )
+print( logLik( fit3sls[[ 4 ]]$e4e, residCovDiag = TRUE ) )
 
 print( logLik( fit3sls[[ 2 ]]$e4wSym ) )
+print( logLik( fit3sls[[ 2 ]]$e4wSym, residCovDiag = TRUE ) )
 
 print( logLik( fit3sls[[ 5 ]]$e5 ) )
+print( logLik( fit3sls[[ 5 ]]$e5, residCovDiag = TRUE ) )
 
 print( logLik( fit3slsi[[ 2 ]]$e3e ) )
+print( logLik( fit3slsi[[ 2 ]]$e3e, residCovDiag = TRUE ) )
 
 print( logLik( fit3slsi[[ 1 ]]$e1we ) )
+print( logLik( fit3slsi[[ 1 ]]$e1we, residCovDiag = TRUE ) )
 
 print( logLik( fit3slsd[[ 3 ]]$e4 ) )
+print( logLik( fit3slsd[[ 3 ]]$e4, residCovDiag = TRUE ) )
 
 print( logLik( fit3slsd[[ 5 ]]$e2we ) )
+print( logLik( fit3slsd[[ 5 ]]$e2we, residCovDiag = TRUE ) )
 
 
 ## ************** F tests ****************

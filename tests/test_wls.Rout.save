@@ -1,5 +1,5 @@
 
-R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -61,6 +61,10 @@ The following objects are masked from 'package:base':
 > restr3q <- c( 0.5 )  # restriction vector "q" 2
 > restrict3 <- "- C2 + C5 = 0.5"
 > 
+> 
+> ## *******  single-equation OLS estimations  *********************
+> lmDemand <- lm( demand, data = Kmenta )
+> lmSupply <- lm( supply, data = Kmenta )
 > 
 > ## *************** WLS estimation ************************
 > fitwls1 <- systemfit( system, "WLS", data = Kmenta, useMatrix = useMatrix )
@@ -124,6 +128,17 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551 MSE: 5.784 Root MSE: 2.405 
 Multiple R-Squared: 0.655 Adjusted R-Squared: 0.59 
 
+> all.equal( coef( fitwls1 ), c( coef( lmDemand ), coef( lmSupply ) ),
++    check.attributes = FALSE )
+[1] TRUE
+> all.equal( coef( summary( fitwls1 ) ),
++    rbind( coef( summary( lmDemand ) ), coef( summary( lmSupply ) ) ),
++    check.attributes = FALSE )
+[1] TRUE
+> all.equal( vcov( fitwls1 ),
++    as.matrix( bdiag( vcov( lmDemand ), vcov( lmSupply ) ) ),
++    check.attributes = FALSE )
+[1] TRUE
 > 
 > ## *************** WLS estimation (EViews-like) ************************
 > fitwls1e <- systemfit( system, "WLS", data = Kmenta, methodResidCov = "noDfCor",
@@ -188,6 +203,9 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 92.551 MSE: 5.784 Root MSE: 2.405 
 Multiple R-Squared: 0.655 Adjusted R-Squared: 0.59 
 
+> all.equal( coef( fitwls1e ), c( coef( lmDemand ), coef( lmSupply ) ),
++    check.attributes = FALSE )
+[1] TRUE
 > 
 > ## ************** WLS with cross-equation restriction ***************
 > fitwls2 <- systemfit( system, "WLS", data = Kmenta, restrict.matrix = restrm,
@@ -4228,33 +4246,57 @@ income       0.252   0.395
 > ## ************ Log-Likelihood values ***************
 > print( logLik( fitwls1 ) )
 'log Lik.' -67.8 (df=9)
+> print( logLik( fitwls1, residCovDiag = TRUE ) )
+'log Lik.' -83.6 (df=9)
+> all.equal( logLik( fitwls1, residCovDiag = TRUE ),
++    logLik( lmDemand ) + logLik( lmSupply ),
++    check.attributes = FALSE )
+[1] TRUE
 > 
 > print( logLik( fitwls2e ) )
 'log Lik.' -61.5 (df=8)
+> print( logLik( fitwls2e, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=8)
 > 
 > print( logLik( fitwls3 ) )
 'log Lik.' -61.4 (df=8)
+> print( logLik( fitwls3, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=8)
 > 
 > print( logLik( fitwls4e ) )
 'log Lik.' -62.2 (df=7)
+> print( logLik( fitwls4e, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=7)
 > 
 > print( logLik( fitwls5 ) )
 'log Lik.' -62.1 (df=7)
+> print( logLik( fitwls5, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=7)
 > 
 > print( logLik( fitwlsi1e ) )
 'log Lik.' -67.8 (df=9)
+> print( logLik( fitwlsi1e, residCovDiag = TRUE ) )
+'log Lik.' -83.6 (df=9)
 > 
 > print( logLik( fitwlsi2 ) )
 'log Lik.' -61.4 (df=8)
+> print( logLik( fitwlsi2, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=8)
 > 
 > print( logLik( fitwlsi3e ) )
 'log Lik.' -61.5 (df=8)
+> print( logLik( fitwlsi3e, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=8)
 > 
 > print( logLik( fitwlsi4 ) )
 'log Lik.' -62.1 (df=7)
+> print( logLik( fitwlsi4, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=7)
 > 
 > print( logLik( fitwlsi5e ) )
 'log Lik.' -62.2 (df=7)
+> print( logLik( fitwlsi5e, residCovDiag = TRUE ) )
+'log Lik.' -84 (df=7)
 > 
 > 
 > ## ************** F tests ****************
@@ -6274,4 +6316,4 @@ demand_(Intercept)       demand_price      demand_income supply_(Intercept)
 > 
 > proc.time()
    user  system elapsed 
-  4.176   0.164   4.334 
+   4.16    0.18    4.33 

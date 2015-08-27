@@ -39,16 +39,30 @@ restrict3 <- "- C2 + C5 = 0.5"
 # methodResidCov == "noDfCor" for the residual covariance matrix, while
 # systemfit uses always the same formulas for both calculations.
 
+## *******  single-equation OLS estimations  *********************
+lmDemand <- lm( demand, data = Kmenta )
+lmSupply <- lm( supply, data = Kmenta )
+
 ## *************** OLS estimation ************************
 ## ********** OLS estimation (default) ********************
 fitols1 <- systemfit( system, "OLS", data = Kmenta, useMatrix = useMatrix )
 print( summary( fitols1 ) )
 nobs( fitols1 )
+all.equal( coef( fitols1 ), c( coef( lmDemand ), coef( lmSupply ) ),
+   check.attributes = FALSE )
+all.equal( coef( summary( fitols1 ) ),
+   rbind( coef( summary( lmDemand ) ), coef( summary( lmSupply ) ) ),
+   check.attributes = FALSE )
+all.equal( vcov( fitols1 ),
+   as.matrix( bdiag( vcov( lmDemand ), vcov( lmSupply ) ) ),
+   check.attributes = FALSE )
 
 ## ********** OLS estimation (no singleEqSigma=F) ******************
 fitols1s <- systemfit( system, "OLS", data = Kmenta,
    singleEqSigma = FALSE, useMatrix = useMatrix )
 print( summary( fitols1s ) )
+all.equal( coef( fitols1s ), c( coef( lmDemand ), coef( lmSupply ) ),
+   check.attributes = FALSE )
 
 ## ****************  OLS (useDfSys=T) ***********************
 print( summary( fitols1, useDfSys = TRUE ) )
@@ -58,18 +72,24 @@ fitols1r <- systemfit( system, "OLS", data = Kmenta,
    methodResidCov = "noDfCor", x = TRUE,
    useMatrix = useMatrix )
 print( summary( fitols1r ) )
+all.equal( coef( fitols1r ), c( coef( lmDemand ), coef( lmSupply ) ),
+   check.attributes = FALSE )
 
 ## ********  OLS (methodResidCov="noDfCor", singleEqSigma=F) ***********
 fitols1rs <- systemfit( system, "OLS", data = Kmenta,
    methodResidCov = "noDfCor", singleEqSigma = FALSE,
    useMatrix = useMatrix )
 print( summary( fitols1rs ) )
+all.equal( coef( fitols1rs ), c( coef( lmDemand ), coef( lmSupply ) ),
+   check.attributes = FALSE )
 
 ## ****************  OLS (methodResidCov="Theil" ) ***********************
 fitols1r <- systemfit( system, "OLS", data = Kmenta,
    methodResidCov = "Theil", x = TRUE,
    useMatrix = useMatrix )
 print( summary( fitols1r ) )
+all.equal( coef( fitols1r ), c( coef( lmDemand ), coef( lmSupply ) ),
+   check.attributes = FALSE )
 
 ## ****************  OLS (methodResidCov="max") ***********************
 fitols1r <- systemfit( system, "OLS", data = Kmenta,
@@ -431,14 +451,22 @@ print( correlation.systemfit( fitols5, 1, 2 ) )
 
 ## ************ Log-Likelihood values ***************
 print( logLik( fitols1 ) )
+print( logLik( fitols1, residCovDiag = TRUE ) )
+all.equal( logLik( fitols1, residCovDiag = TRUE ),
+   logLik( lmDemand ) + logLik( lmSupply ),
+   check.attributes = FALSE )
 
 print( logLik( fitols2r ) )
+print( logLik( fitols2r, residCovDiag = TRUE ) )
 
 print( logLik( fitols3s ) )
+print( logLik( fitols3s, residCovDiag = TRUE ) )
 
 print( logLik( fitols4rs ) )
+print( logLik( fitols4rs, residCovDiag = TRUE ) )
 
 print( logLik( fitols5 ) )
+print( logLik( fitols5, residCovDiag = TRUE ) )
 
 
 ## ************** F tests ****************

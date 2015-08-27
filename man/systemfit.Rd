@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 1096 2012-08-03 20:52:43Z arne $
+%    $Id: systemfit.Rd 1138 2015-06-28 07:23:19Z arne $
 
 
 \name{systemfit}
@@ -34,7 +34,8 @@ systemfit( formula, method = "OLS",
       "2SLS", "W2SLS", or "3SLS" (see details);
       iterated estimation methods can be specified by setting control parameter
       \code{maxiter} larger than 1 (e.g. 500).}
-   \item{inst}{one-sided model formula specifying instrumental variables
+   \item{inst}{one-sided model formula specifying the instrumental variables
+      (including exogenous explanatory variables)
       or a list of one-sided model formulas if different instruments should
       be used for the different equations (only needed for 2SLS, W2SLS, and
       3SLS estimations).}

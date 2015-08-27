@@ -1,7 +1,14 @@
-logLik.systemfit <- function( object, ... ){
+logLik.systemfit <- function( object, residCovDiag = FALSE, ... ){
 
+   if( length( residCovDiag ) != 1 || any( !is.logical( residCovDiag ) ) ) {
+      stop( "argument 'residCovDiag' must be a single logical value" )
+   } 
+      
    resid <- residuals( object )
    residCov <- .calcResidCov( resid, "noDfCor" )
+   if( residCovDiag ) {
+      residCov <- diag( diag( residCov ) )
+   }
    residCovInv <- solve( residCov )
    resid <- as.matrix( resid )
    nEq <- ncol( resid )

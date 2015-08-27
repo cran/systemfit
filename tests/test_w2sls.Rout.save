@@ -1,5 +1,5 @@
 
-R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -3565,27 +3565,43 @@ trend        0.246  0.426
 > ## ************ LOG-Likelihood values ***************
 > print( logLik( fitw2sls1e ) )
 'log Lik.' -67.6 (df=9)
+> print( logLik( fitw2sls1e, residCovDiag = TRUE ) )
+'log Lik.' -84.4 (df=9)
 > 
 > print( logLik( fitw2sls2 ) )
 'log Lik.' -65.2 (df=8)
+> print( logLik( fitw2sls2, residCovDiag = TRUE ) )
+'log Lik.' -84.8 (df=8)
 > 
 > print( logLik( fitw2sls3 ) )
 'log Lik.' -65.2 (df=8)
+> print( logLik( fitw2sls3, residCovDiag = TRUE ) )
+'log Lik.' -84.8 (df=8)
 > 
 > print( logLik( fitw2sls4e ) )
 'log Lik.' -65.7 (df=7)
+> print( logLik( fitw2sls4e, residCovDiag = TRUE ) )
+'log Lik.' -84.8 (df=7)
 > 
 > print( logLik( fitw2sls5 ) )
 'log Lik.' -65.6 (df=7)
+> print( logLik( fitw2sls5, residCovDiag = TRUE ) )
+'log Lik.' -84.8 (df=7)
 > 
 > print( logLik( fitw2slsd1 ) )
 'log Lik.' -75.1 (df=9)
+> print( logLik( fitw2slsd1, residCovDiag = TRUE ) )
+'log Lik.' -84.7 (df=9)
 > 
 > print( logLik( fitw2slsd2e ) )
 'log Lik.' -69.1 (df=8)
+> print( logLik( fitw2slsd2e, residCovDiag = TRUE ) )
+'log Lik.' -84.7 (df=8)
 > 
 > print( logLik( fitw2slsd3e ) )
 'log Lik.' -69.1 (df=8)
+> print( logLik( fitw2slsd3e, residCovDiag = TRUE ) )
+'log Lik.' -84.7 (df=8)
 > 
 > 
 > ## ************** F tests ****************
@@ -6124,4 +6140,4 @@ demand_(Intercept)       demand_price      demand_income supply_(Intercept)
 > 
 > proc.time()
    user  system elapsed 
-   4.00    0.12    4.11 
+  3.372   0.088   3.469 

@@ -34,14 +34,28 @@ restr3q <- c( 0.5 )  # restriction vector "q" 2
 restrict3 <- "- C2 + C5 = 0.5"
 
 
+## *******  single-equation OLS estimations  *********************
+lmDemand <- lm( demand, data = Kmenta )
+lmSupply <- lm( supply, data = Kmenta )
+
 ## *************** WLS estimation ************************
 fitwls1 <- systemfit( system, "WLS", data = Kmenta, useMatrix = useMatrix )
 print( summary( fitwls1 ) )
+all.equal( coef( fitwls1 ), c( coef( lmDemand ), coef( lmSupply ) ),
+   check.attributes = FALSE )
+all.equal( coef( summary( fitwls1 ) ),
+   rbind( coef( summary( lmDemand ) ), coef( summary( lmSupply ) ) ),
+   check.attributes = FALSE )
+all.equal( vcov( fitwls1 ),
+   as.matrix( bdiag( vcov( lmDemand ), vcov( lmSupply ) ) ),
+   check.attributes = FALSE )
 
 ## *************** WLS estimation (EViews-like) ************************
 fitwls1e <- systemfit( system, "WLS", data = Kmenta, methodResidCov = "noDfCor",
    x = TRUE, useMatrix = useMatrix )
 print( summary( fitwls1e, useDfSys = TRUE ) )
+all.equal( coef( fitwls1e ), c( coef( lmDemand ), coef( lmSupply ) ),
+   check.attributes = FALSE )
 
 ## ************** WLS with cross-equation restriction ***************
 fitwls2 <- systemfit( system, "WLS", data = Kmenta, restrict.matrix = restrm,
@@ -484,24 +498,37 @@ print( correlation.systemfit( fitwlsi5e, 1, 2 ) )
 
 ## ************ Log-Likelihood values ***************
 print( logLik( fitwls1 ) )
+print( logLik( fitwls1, residCovDiag = TRUE ) )
+all.equal( logLik( fitwls1, residCovDiag = TRUE ),
+   logLik( lmDemand ) + logLik( lmSupply ),
+   check.attributes = FALSE )
 
 print( logLik( fitwls2e ) )
+print( logLik( fitwls2e, residCovDiag = TRUE ) )
 
 print( logLik( fitwls3 ) )
+print( logLik( fitwls3, residCovDiag = TRUE ) )
 
 print( logLik( fitwls4e ) )
+print( logLik( fitwls4e, residCovDiag = TRUE ) )
 
 print( logLik( fitwls5 ) )
+print( logLik( fitwls5, residCovDiag = TRUE ) )
 
 print( logLik( fitwlsi1e ) )
+print( logLik( fitwlsi1e, residCovDiag = TRUE ) )
 
 print( logLik( fitwlsi2 ) )
+print( logLik( fitwlsi2, residCovDiag = TRUE ) )
 
 print( logLik( fitwlsi3e ) )
+print( logLik( fitwlsi3e, residCovDiag = TRUE ) )
 
 print( logLik( fitwlsi4 ) )
+print( logLik( fitwlsi4, residCovDiag = TRUE ) )
 
 print( logLik( fitwlsi5e ) )
+print( logLik( fitwlsi5e, residCovDiag = TRUE ) )
 
 
 ## ************** F tests ****************

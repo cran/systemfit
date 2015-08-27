@@ -1,6 +1,6 @@
 
-R version 3.1.0 (2014-04-10) -- "Spring Dance"
-Copyright (C) 2014 The R Foundation for Statistical Computing
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
+Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -52,6 +52,11 @@ The following objects are masked from 'package:base':
 +       KleinI$invest[ 16 ] <- NA
 +    }
 + 
++    # single-equation OLS
++    lmConsump  <- lm( eqConsump, data = KleinI )
++    lmInvest   <- lm( eqInvest, data = KleinI )
++    lmPrivWage <- lm( eqPrivWage, data = KleinI )
++    
 + for( methodNo in 1:5 ) {
 +    method <- c( "OLS", "2SLS", "SUR", "3SLS", "3SLS" )[ methodNo ]
 +    maxit <- ifelse( methodNo == 5, 500, 1 )
@@ -68,6 +73,12 @@ The following objects are masked from 'package:base':
 +    }
 +    cat( "> summary\n" )
 +    print( summary( kleinModel ) )
++    if( method == "OLS" ) {
++       cat( "compare coef with single-equation OLS\n" )
++       print( all.equal( coef( kleinModel ),
++          c( coef( lmConsump ), coef( lmInvest ), coef( lmPrivWage ) ),
++          check.attributes = FALSE ) )
++    }
 +    cat( "> residuals\n" )
 +    print( residuals( kleinModel ) )
 +    cat( "> fitted\n" )
@@ -106,6 +117,13 @@ The following objects are masked from 'package:base':
 +    print( linearHypothesis( kleinModel, restrict2, test = "Chisq" ) )
 +    cat( "> logLik\n" )
 +    print( logLik( kleinModel ) )
++    print( logLik( kleinModel, residCovDiag = TRUE ) )
++    if( method == "OLS" ) {
++       cat( "compare log likelihood value with single-equation OLS\n" )
++       print( all.equal( logLik( kleinModel, residCovDiag = TRUE ),
++          logLik( lmConsump ) + logLik( lmInvest ) + logLik( lmPrivWage ),
++          check.attributes = FALSE ) )
++    }
 + }
 + }
 > 
@@ -186,6 +204,8 @@ Number of observations: 21 Degrees of Freedom: 17
 SSR: 10.005 MSE: 0.589 Root MSE: 0.767 
 Multiple R-Squared: 0.987 Adjusted R-Squared: 0.985 
 
+compare coef with single-equation OLS
+[1] TRUE
 > residuals
    Consumption Investment PrivateWages
 1           NA         NA           NA
@@ -810,6 +830,9 @@ Model 2: kleinModel
 2     51  2  0.74       0.69
 > logLik
 'log Lik.' -72.3 (df=13)
+'log Lik.' -77.9 (df=13)
+compare log likelihood value with single-equation OLS
+[1] TRUE
 > 
 > # 2SLS
 > summary
@@ -1135,6 +1158,7 @@ Model 2: kleinModel
 2     51  2   1.3       0.52
 > logLik
 'log Lik.' -76.3 (df=13)
+'log Lik.' -85.5 (df=13)
 > 
 > # SUR
 > summary
@@ -1415,6 +1439,7 @@ Model 2: kleinModel
 2     51  2  1.83        0.4
 > logLik
 'log Lik.' -70 (df=18)
+'log Lik.' -79 (df=18)
 > 
 > # 3SLS
 > summary
@@ -1701,6 +1726,7 @@ Model 2: kleinModel
 2     51  2   0.8       0.67
 > logLik
 'log Lik.' -76.1 (df=18)
+'log Lik.' -89.1 (df=18)
 > 
 > # I3SLS
 > summary
@@ -1989,6 +2015,7 @@ Model 2: kleinModel
 2     51  2  1.77       0.41
 > logLik
 'log Lik.' -82.3 (df=18)
+'log Lik.' -99.1 (df=18)
 > 
 > # OLS
 Warning in systemfit(system, method = method, data = KleinI, methodResidCov = ifelse(method ==  :
@@ -2069,6 +2096,8 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 9.739 MSE: 0.609 Root MSE: 0.78 
 Multiple R-Squared: 0.988 Adjusted R-Squared: 0.985 
 
+compare coef with single-equation OLS
+[1] TRUE
 > residuals
    Consumption Investment PrivateWages
 1           NA         NA           NA
@@ -2687,6 +2716,9 @@ Model 2: kleinModel
 2     50  2  0.75       0.69
 > logLik
 'log Lik.' -71.9 (df=13)
+'log Lik.' -77.1 (df=13)
+compare log likelihood value with single-equation OLS
+[1] "Mean relative difference: 0.000555"
 > 
 > # 2SLS
 > summary
@@ -3014,6 +3046,7 @@ Model 2: kleinModel
 2     48  2  1.06       0.59
 > logLik
 'log Lik.' -72.2 (df=13)
+'log Lik.' -79.7 (df=13)
 > 
 > # SUR
 Warning in systemfit(system, method = method, data = KleinI, methodResidCov = ifelse(method ==  :
@@ -3296,6 +3329,7 @@ Model 2: kleinModel
 2     50  2  1.75       0.42
 > logLik
 'log Lik.' -69.4 (df=18)
+'log Lik.' -78.2 (df=18)
 > 
 > # 3SLS
 > summary
@@ -3584,6 +3618,7 @@ Model 2: kleinModel
 2     48  2  0.77       0.68
 > logLik
 'log Lik.' -71.9 (df=18)
+'log Lik.' -82.9 (df=18)
 > 
 > # I3SLS
 > summary
@@ -3874,6 +3909,7 @@ Model 2: kleinModel
 2     48  2  1.66       0.44
 > logLik
 'log Lik.' -77.6 (df=18)
+'log Lik.' -92.7 (df=18)
 > 
 > # OLS
 Warning in systemfit(system, method = method, data = KleinI, methodResidCov = ifelse(method ==  :
@@ -3954,6 +3990,8 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 9.739 MSE: 0.609 Root MSE: 0.78 
 Multiple R-Squared: 0.988 Adjusted R-Squared: 0.985 
 
+compare coef with single-equation OLS
+[1] TRUE
 > residuals
    Consumption Investment PrivateWages
 1           NA         NA           NA
@@ -4566,6 +4604,9 @@ Model 2: kleinModel
 2     49  2  0.87       0.65
 > logLik
 'log Lik.' -71.7 (df=13)
+'log Lik.' -76.1 (df=13)
+compare log likelihood value with single-equation OLS
+[1] "Mean relative difference: 0.00159"
 > 
 > # 2SLS
 Warning in systemfit(system, method = method, data = KleinI, inst = inst,  :
@@ -4895,6 +4936,7 @@ Model 2: kleinModel
 2     47  2  0.98       0.61
 > logLik
 'log Lik.' -71.5 (df=13)
+'log Lik.' -78.7 (df=13)
 > 
 > # SUR
 Warning in systemfit(system, method = method, data = KleinI, methodResidCov = ifelse(method ==  :
@@ -5177,6 +5219,7 @@ Model 2: kleinModel
 2     49  2  1.38        0.5
 > logLik
 'log Lik.' -69.6 (df=18)
+'log Lik.' -76.9 (df=18)
 > 
 > # 3SLS
 Warning in systemfit(system, method = method, data = KleinI, inst = inst,  :
@@ -5467,6 +5510,7 @@ Model 2: kleinModel
 2     47  2  1.37        0.5
 > logLik
 'log Lik.' -71 (df=18)
+'log Lik.' -81.1 (df=18)
 > 
 > # I3SLS
 Warning in systemfit(system, method = method, data = KleinI, inst = inst,  :
@@ -5759,6 +5803,7 @@ Model 2: kleinModel
 2     47  2  3.28       0.19
 > logLik
 'log Lik.' -74.5 (df=18)
+'log Lik.' -87.1 (df=18)
 > 
 > # OLS
 Warning in systemfit(system, method = method, data = KleinI, methodResidCov = ifelse(method ==  :
@@ -5839,6 +5884,8 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 9.739 MSE: 0.609 Root MSE: 0.78 
 Multiple R-Squared: 0.988 Adjusted R-Squared: 0.985 
 
+compare coef with single-equation OLS
+[1] TRUE
 > residuals
    Consumption Investment PrivateWages
 1           NA         NA           NA
@@ -6439,6 +6486,9 @@ Model 2: kleinModel
 2     47  2  0.33       0.85
 > logLik
 'log Lik.' -69.6 (df=13)
+'log Lik.' -74.2 (df=13)
+compare log likelihood value with single-equation OLS
+[1] "Mean relative difference: 0.00099"
 > 
 > # 2SLS
 Warning in systemfit(system, method = method, data = KleinI, inst = inst,  :
@@ -6768,6 +6818,7 @@ Model 2: kleinModel
 2     45  2  1.78       0.41
 > logLik
 'log Lik.' -70.6 (df=13)
+'log Lik.' -78.7 (df=13)
 > 
 > # SUR
 Warning in systemfit(system, method = method, data = KleinI, methodResidCov = ifelse(method ==  :
@@ -7050,6 +7101,7 @@ Model 2: kleinModel
 2     47  2  0.79       0.67
 > logLik
 'log Lik.' -67.3 (df=18)
+'log Lik.' -74.9 (df=18)
 > 
 > # 3SLS
 Warning in systemfit(system, method = method, data = KleinI, inst = inst,  :
@@ -7346,6 +7398,7 @@ Model 2: kleinModel
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 > logLik
 'log Lik.' -71.2 (df=18)
+'log Lik.' -81.7 (df=18)
 > 
 > # I3SLS
 Warning in systemfit(system, method = method, data = KleinI, inst = inst,  :
@@ -7648,6 +7701,7 @@ Model 2: kleinModel
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 > logLik
 'log Lik.' -72.7 (df=18)
+'log Lik.' -83.9 (df=18)
 > 
 > # OLS
 Warning in systemfit(system, method = method, data = KleinI, methodResidCov = ifelse(method ==  :
@@ -7728,6 +7782,8 @@ Number of observations: 20 Degrees of Freedom: 16
 SSR: 9.739 MSE: 0.609 Root MSE: 0.78 
 Multiple R-Squared: 0.988 Adjusted R-Squared: 0.985 
 
+compare coef with single-equation OLS
+[1] TRUE
 > residuals
    Consumption Investment PrivateWages
 1           NA         NA           NA
@@ -8322,6 +8378,9 @@ Model 2: kleinModel
 2     46  2   0.3       0.86
 > logLik
 'log Lik.' -68.8 (df=13)
+'log Lik.' -73.3 (df=13)
+compare log likelihood value with single-equation OLS
+[1] "Mean relative difference: 0.0011"
 > 
 > # 2SLS
 Warning in systemfit(system, method = method, data = KleinI, inst = inst,  :
@@ -8651,6 +8710,7 @@ Model 2: kleinModel
 2     44  2  1.68       0.43
 > logLik
 'log Lik.' -69.5 (df=13)
+'log Lik.' -77.5 (df=13)
 > 
 > # SUR
 Warning in systemfit(system, method = method, data = KleinI, methodResidCov = ifelse(method ==  :
@@ -8933,6 +8993,7 @@ Model 2: kleinModel
 2     46  2  0.75       0.69
 > logLik
 'log Lik.' -66.4 (df=18)
+'log Lik.' -74.1 (df=18)
 > 
 > # 3SLS
 Warning in systemfit(system, method = method, data = KleinI, inst = inst,  :
@@ -9223,6 +9284,7 @@ Model 2: kleinModel
 2     44  2  4.41       0.11
 > logLik
 'log Lik.' -70.1 (df=18)
+'log Lik.' -80.6 (df=18)
 > 
 > # I3SLS
 Warning in systemfit(system, method = method, data = KleinI, inst = inst,  :
@@ -9523,7 +9585,8 @@ Model 2: kleinModel
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 > logLik
 'log Lik.' -72.2 (df=18)
+'log Lik.' -83.4 (df=18)
 > 
 > proc.time()
    user  system elapsed 
-  3.245   0.101   3.326 
+   3.25    0.08    3.33 

@@ -8,12 +8,31 @@
 }
 
 \usage{
-   \method{logLik}{systemfit}( object, ... )
+   \method{logLik}{systemfit}( object, residCovDiag = FALSE, ... )
 }
 
 \arguments{
    \item{object}{an object of class \code{systemfit}.}
+   \item{residCovDiag}{logical.
+      If this argument is set to \code{TRUE},
+      the residual covaraince matrix
+      that is used for calculating the log-likelihood value
+      is assumed to be diagonal,
+      i.e. all covariances are set to zero.
+      This may be desirable for models
+      estimated by OLS, 2SLS, WLS, and W2SLS.}
    \item{...}{currently not used.}
+}
+
+\details{
+   The residual covariance matrix
+   that is used for calculating the log-likelihood value 
+   is calculated based on the actually obtained (final) residuals
+   (not correcting for degrees of freedom).
+   In case of systems of equations with unequal numbers of observations,
+   the calculation of the residual covariance matrix
+   is only based on the residuals/observations
+   that are available in all equations.
 }
 
 \value{

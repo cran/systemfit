@@ -754,30 +754,46 @@ print( correlation.systemfit( fitsuri5r2, 1, 2 ) )
 
 ## ************ Log-Likelihood values ***************
 print( logLik( fitsur1e2 ) )
+print( logLik( fitsur1e2, residCovDiag = TRUE ) )
 
 print( logLik( fitsur2e ) )
+print( logLik( fitsur2e, residCovDiag = TRUE ) )
 
 print( logLik( fitsur3 ) )
+print( logLik( fitsur3, residCovDiag = TRUE ) )
 
 print( logLik( fitsur4r3 ) )
+print( logLik( fitsur4r3, residCovDiag = TRUE ) )
 
 print( logLik( fitsur5 ) )
+print( logLik( fitsur5, residCovDiag = TRUE ) )
 
 print( logLik( fitsur5w ) )
+print( logLik( fitsur5w, residCovDiag = TRUE ) )
 
 print( logLik( fitsuri1r3 ) )
+print( logLik( fitsuri1r3, residCovDiag = TRUE ) )
 
 print( logLik( fitsuri2 ) )
+print( logLik( fitsuri2, residCovDiag = TRUE ) )
 
 print( logLik( fitsuri3e ) )
+print( logLik( fitsuri3e, residCovDiag = TRUE ) )
 
 print( logLik( fitsurio4 ) )
+print( logLik( fitsurio4, residCovDiag = TRUE ) )
+
 print( logLik( fitsuri4 ) )
+print( logLik( fitsuri4, residCovDiag = TRUE ) )
 
 print( logLik( fitsuri4w ) )
+print( logLik( fitsuri4w, residCovDiag = TRUE ) )
 
 print( logLik( fitsurio5r2 ) )
+print( logLik( fitsurio5r2, residCovDiag = TRUE ) )
+
 print( logLik( fitsuri5r2 ) )
+print( logLik( fitsuri5r2, residCovDiag = TRUE ) )
 
 
 ## *********** likelihood ratio tests *************
