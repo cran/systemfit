@@ -52,8 +52,8 @@ Theil, Henri (1971). \emph{Principles of Econometrics},
 \examples{
 ## Repeating the OLS and SUR estimations in Greene (2003, pp. 351)
 data( "GrunfeldGreene" )
-library( plm )
-GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
+library( "plm" )
+GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 # OLS
 greeneOls <- systemfit( formulaGrunfeld, "OLS",
@@ -78,7 +78,7 @@ summary( greeneSurPooled )
 ## Repeating the OLS and SUR estimations in Theil (1971, pp. 295, 300)
 GrunfeldTheil <- subset( GrunfeldGreene,
    firm \%in\% c( "General Electric", "Westinghouse" ) )
-GTPanel <- plm.data( GrunfeldTheil, c( "firm", "year" ) )
+GTPanel <- pdata.frame( GrunfeldTheil, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 # OLS
 theilOls <- systemfit( formulaGrunfeld, "OLS",

@@ -5,6 +5,13 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-20 (2017-03-09)
+
+* users can now use pdata.frame() (in addition to plm.data()) to specify the
+panel structure of (panel) data sets (patch provided by Kevin Tappe -- thanks
+a lot!) [note: the use of plm.data() is deprecated]
+
+
             CHANGES IN VERSION 1.1-18 (2015-08-27)
 
 * added argument 'residCovDiag' to logLik.systemfit()

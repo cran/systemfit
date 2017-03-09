@@ -1,14 +1,30 @@
 .systemfitPanel <- function( formula, data, pooled ) {
 
-   if( class( data )[1] != "plm.dim" ) {
-      stop( "argument 'data' must be of class 'plm.dim'",
-         " (created with 'plm.data')" )
+
+  if (inherits( data, "pdata.frame" )) {
+       # current panel data format from pkg plm
+       index <- index( data )
+       eqnVar  <- names( index )[1]
+       timeVar <- names( index )[2]
+       
+       # pdata.frames do not necessarily carry the index variables as columns.
+       # attach index vars to data, if not in data (pdata.frame(..., drop.index = TRUE))
+       if (! (eqnVar %in% colnames(data))) {
+         data <- cbind(data, index)
+       }
+    } else {
+      if (inherits( data, "plm.dim" )) {
+        # deprecated panel data format from pkg plm
+        eqnVar  <- names( data )[1]
+        timeVar <- names( data )[2]
+      } else {
+        stop( "argument 'data' must be of class 'pdata.frame'",
+              " (created with 'pdata.frame')" )
+        }
    }
-   eqnVar <- names( data )[ 1 ]
-   timeVar <- names( data )[ 2 ]
-
+   
    result <- list()
-
+  
    data[[ eqnVar ]] <- gsub( " |_", ".", data[[ eqnVar ]] )
    eqnLabels <- levels( as.factor( data[[ eqnVar ]] ) )
    nEqn <- length( eqnLabels )

@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 1138 2015-06-28 07:23:19Z arne $
+%    $Id: systemfit.Rd 1147 2017-03-08 21:16:07Z arne $
 
 
 \name{systemfit}
@@ -26,8 +26,8 @@ systemfit( formula, method = "OLS",
       (for single-equation models)
       or (typically) a list of objects of class \code{formula}
       (for multiple-equation models);
-      if argument \code{data} is of class \code{plm.dim}
-      (created with \code{plm.data}),
+      if argument \code{data} is of class \code{pdata.frame}
+      (created with \code{pdata.frame()}),
       this argument must be a single object of class \code{formula}
       that represents the formula to be estimated for all individuals.}
    \item{method}{the estimation method, one of "OLS", "WLS", "SUR",
@@ -74,8 +74,8 @@ systemfit( formula, method = "OLS",
    only from the residuals/observations that are available
    in all equations.
 
-   If argument \code{data} is of class \code{plm.dim}
-   (created with \code{plm.data} and thus, contains panel data in long format),
+   If argument \code{data} is of class \code{pdata.frame}
+   (created with \code{pdata.frame()} and thus, contains panel data in long format),
    argument \code{formula} must be a single equation
    that is applied to all individuals.
    In this case, argument \code{pooled} specifies
@@ -302,8 +302,8 @@ print( fit3sls )
 ## Examples how to use systemfit() with panel-like data
 ## Repeating the SUR estimations in Greene (2003, p. 351)
 data( "GrunfeldGreene" )
-library( plm )
-GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
+library( "plm" )
+GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 # SUR
 greeneSur <- systemfit( formulaGrunfeld, "SUR",

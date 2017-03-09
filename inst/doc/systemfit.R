@@ -109,7 +109,7 @@ summary( fitsur, residCov = FALSE, equations = FALSE )
 ###################################################
 data( "GrunfeldGreene" )
 library( "plm" )
-GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
+GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
 greeneSur <- systemfit( invest ~ value + capital, method = "SUR",
    data = GGPanel )
 
@@ -242,7 +242,7 @@ round( coef( summary( kleinI3sls ) ), digits = 3 )
 ###################################################
 data( "GrunfeldGreene" )
 library( "plm" )
-GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
+GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 
 
@@ -292,7 +292,7 @@ round( summary( greeneSurPooled )$residCor, digits = 3 ) #$
 ###################################################
 GrunfeldTheil <- subset( GrunfeldGreene,
    firm %in% c( "General Electric", "Westinghouse" ) )
-GTPanel <- plm.data( GrunfeldTheil, c( "firm", "year" ) )
+GTPanel <- pdata.frame( GrunfeldTheil, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 
 

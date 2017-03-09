@@ -1976,7 +1976,7 @@ The \code{systemfit} function can also be used
 for a (classical) ``seemingly unrelated regression'' analysis
 with panel data.
 For this type of analysis,
-the data must be provided in a transformed data frame of class \codeD{plm}{dim}%
+the data must be provided in a transformed data frame of class \codeD{pdata}{frame}%
 \footnote{
 Generally, panel data can be either in ``long format''
 (different individuals are arranged below each other)
@@ -1984,7 +1984,7 @@ or in ``wide format''
 (different individuals are arranged next to each other).
 For this analysis, the data must be in ``long format''.
 }
-which can be created with the function \codeD{plm}{data}
+which can be created with the function \codeD{pdata}{frame}
 from the \proglang{R} package \pkg{plm}
 \citep{r-plm-0.3-1}.
 In contrast to the previously described usage of \code{systemfit},
@@ -2011,14 +2011,14 @@ This model can be estimated by
 <<systemfit_usage>>=
 data( "GrunfeldGreene" )
 library( "plm" )
-GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
+GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
 greeneSur <- systemfit( invest ~ value + capital, method = "SUR",
    data = GGPanel )
 @
 The first line loads the example data set \code{GrunfeldGreene}
 that is included in the \pkg{systemfit} package.
 The second line loads the \pkg{plm} package
-and the following line specifies a data frame of class \codeD{plm}{dim},
+and the following line specifies a data frame of class \codeD{pdata}{frame},
 where the variables \code{firm} and \code{year} indicate
 the individual (cross-section) and time identifier, respectively.
 Finally, a seemingly unrelated regression is performed.
@@ -2301,7 +2301,7 @@ of the SUR estimations.
 <<systemfit_replication>>=
 data( "GrunfeldGreene" )
 library( "plm" )
-GGPanel <- plm.data( GrunfeldGreene, c( "firm", "year" ) )
+GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 @
 OLS estimation (Table 14.2):
@@ -2376,7 +2376,7 @@ after each estimation.
 <<systemfit_replication>>=
 GrunfeldTheil <- subset( GrunfeldGreene,
    firm %in% c( "General Electric", "Westinghouse" ) )
-GTPanel <- plm.data( GrunfeldTheil, c( "firm", "year" ) )
+GTPanel <- pdata.frame( GrunfeldTheil, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 @
 OLS estimation (page 295)

@@ -1,4 +1,4 @@
-###   $Id: systemfit.R 1126 2014-08-14 08:49:51Z arne $
+###   $Id: systemfit.R 1146 2017-03-08 20:49:26Z arne $
 ###
 ###            Simultaneous Equation Estimation for R
 ###
@@ -35,7 +35,7 @@ systemfit <- function(  formula,
 {
 
    ## determine whether we have panel date and thus a panel-like model
-   panelLike <- class( data )[1] == "plm.dim"
+   panelLike <- inherits(data, c("pdata.frame", "plm.dim"))
 
    ## checking argument 'formula'
    if( panelLike ){
