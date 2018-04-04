@@ -1,9 +1,9 @@
-b7a4b0828c165d5abdc88db9a4a1ff14 *DESCRIPTION
+f7fa2ce8151551fdb8c13a10a22ea3ff *DESCRIPTION
 b621dd1da2fa341709c291758891895f *NAMESPACE
-0176020c0aa58ee9e567175f7686342f *NEWS
+c3cc13cc7af70ae4a4ccfe5aaf0a489e *NEWS
 fdc6d9422932bbe878388972bed1fdf5 *R/bread.systemfit.R
 031afd9e70a2f4bd4d6078caa918bad3 *R/calcFittedRegMat.R
-268807f5e9fb36cb7800aa121d6bf523 *R/calcGLS.R
+a84a62593d9aadbf2bce69cc2f25393a *R/calcGLS.R
 3bc7c6609082a38e5d8349eacf39fb46 *R/calcResidCov.R
 a928f6a81bb77da3442f0fec48411bde *R/confint.systemfit.R
 f174d645f3f7752c4c90eaf6ad44352b *R/createSystemfitModel.R
@@ -29,7 +29,7 @@ bd1b4701dccd8838f8cfbe3b5fa19284 *R/systemfit.R
 be4aacd83db1222aecaf6c7b234bd052 *R/systemfitPanel.R
 4d7e7270bd69d6694db06179ebc73b17 *R/terms.systemfit.R
 33d77615e70fc80c43635897a0752f1c *R/zzz.R
-3f92182f4d74402356440b5714ae95bf *build/vignette.rds
+7728a06bf68d81b648d2b53f2fc0df41 *build/vignette.rds
 73d1f5128c46530e9c9e90a30b911eea *data/GrunfeldGreene.rda
 823978032ef9dbca31df78670ca9d8cc *data/KleinI.txt.gz
 39240597a57aa474288421c00c284080 *data/Kmenta.txt.gz
@@ -38,7 +38,7 @@ be4aacd83db1222aecaf6c7b234bd052 *R/systemfitPanel.R
 147ad3c370268e2980847dae83b27e8e *inst/doc/systemfit.R
 f200414b93a75a24f3d995a7b24223c0 *inst/doc/systemfit.Rnw
 5abc09d659a3e7d6f2cff448779ab3b3 *inst/doc/systemfit.bib
-4a3d41dc14c7642fdb963176ab2c8947 *inst/doc/systemfit.pdf
+2b2ceedb3badbcfabe1cea5525a4696c *inst/doc/systemfit.pdf
 fa055491edacf7fb7d59b766fa227474 *man/GrunfeldGreene.Rd
 a5cf2ada212de1bad0c7a7e7c6470e6b *man/KleinI.Rd
 7f9c41af36eab43ea77d978df1f7a84e *man/Kmenta.Rd

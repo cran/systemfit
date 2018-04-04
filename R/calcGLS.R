@@ -31,13 +31,13 @@
             if( j == 1 ) {
                thisRow <- thisBlock
             } else {
-               thisRow <- cBind( thisRow, thisBlock )
+               thisRow <- cbind( thisRow, thisBlock )
             }
          }
          if( i == 1 ) {
             omegaInv <- thisRow
          } else {
-            omegaInv <- rBind( omegaInv, thisRow )
+            omegaInv <- rbind( omegaInv, thisRow )
          }
       }
       result <- crossprod( xMat, omegaInv )
