@@ -1,6 +1,6 @@
 Package: systemfit
-Version: 1.1-22
-Date: 2018-04-04
+Version: 1.1-24
+Date: 2019-12-08
 Title: Estimating Systems of Simultaneous Equations
 Author: Arne Henningsen and Jeff D. Hamann
 Maintainer: Arne Henningsen <arne.henningsen@gmail.com>
@@ -11,10 +11,13 @@ Description: Econometric estimation of simultaneous
  systems of linear and nonlinear equations using Ordinary Least
  Squares (OLS), Weighted Least Squares (WLS), Seemingly Unrelated
  Regressions (SUR), Two-Stage Least Squares (2SLS), Weighted
- Two-Stage Least Squares (W2SLS), and Three-Stage Least Squares (3SLS).
+ Two-Stage Least Squares (W2SLS), and Three-Stage Least Squares (3SLS)
+ as suggested, e.g., by Zellner (1962) <doi:10.2307/2281644>,
+ Zellner and Theil (1962) <doi:10.2307/1911287>, and
+ Schmidt (1990) <doi:10.1016/0304-4076(90)90127-F>.
 License: GPL (>= 2)
 URL: http://www.systemfit.org
 NeedsCompilation: no
-Packaged: 2018-04-04 05:39:50 UTC; arne
+Packaged: 2019-12-08 20:47:26 UTC; gsl324
 Repository: CRAN
-Date/Publication: 2018-04-04 11:11:06 UTC
+Date/Publication: 2019-12-09 06:40:04 UTC

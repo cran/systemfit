@@ -5,6 +5,16 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-24 (2019-12-08)
+
+* implemented 2SLS and 3SLS (instrumental variable) estimations for panel data
+
+* fixed a bug that occurred in panel data estimations when one variable name 
+was a substring of another variable name
+
+* internal improvements to make this package compatible with R 4.0.0            
+
+
             CHANGES IN VERSION 1.1-22 (2018-04-04)
 
 * made this package compatible to the latest version of the "Matrix" package

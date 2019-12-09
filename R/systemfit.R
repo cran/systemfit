@@ -1,4 +1,4 @@
-###   $Id: systemfit.R 1146 2017-03-08 20:49:26Z arne $
+###   $Id: systemfit.R 1159 2018-11-17 11:44:15Z arne $
 ###
 ###            Simultaneous Equation Estimation for R
 ###
@@ -39,16 +39,16 @@ systemfit <- function(  formula,
 
    ## checking argument 'formula'
    if( panelLike ){
-      if( class( formula ) != "formula" ){
+      if( !inherits( formula, "formula" ) ){
          stop( "argument 'formula' must be an object of class 'formula'",
             " for panel-like models" )
       }
    } else {
       # single-equation models
-      if( class( formula ) == "formula" ){
+      if( inherits( formula, "formula" ) ){
          formula <- list( formula )
-      } else if( class( formula ) == "list" ){
-         if( !all( lapply( formula, class ) == "formula" ) ){
+      } else if( inherits( formula, "list" ) ){
+         if( !all( sapply( formula, function(x) inherits( x, "formula" ) ) ) ){
             stop( "the list of argument 'formula' must",
                " contain only objects of class 'formula'" )
          }
@@ -71,10 +71,11 @@ systemfit <- function(  formula,
          stop( "argument 'restrict.regMat' cannot be used for pooled estimation",
             " of panel-like data" )
       }
-      result <- .systemfitPanel( formula = formula,
+      result <- .systemfitPanel( formula = formula, inst = inst,
          data = data, pooled = pooled )
       data <- result$wideData
       formula <- result$eqnSystem
+      inst <- result$instSystem
       if( pooled ){
          restrict.regMat <- result$restrict.regMat
       }
@@ -84,24 +85,24 @@ systemfit <- function(  formula,
    if( method %in% c( "2SLS", "W2SLS", "3SLS" ) ){
       if( is.null( inst ) ) {
          stop( "The methods '2SLS', 'W2SLS', and '3SLS' need instruments" )
-      } else if( class( inst ) == "formula" ){
+      } else if( inherits( inst, "formula" ) ){
          if( length( inst ) != 2 ){
             stop( "argument 'inst' must be a one-sided formula" )
          }
          inst <- lapply( c( 1:length( formula ) ), function(x) inst )
-      } else if( class( inst ) == "list" ){
+      } else if( inherits( inst, "list" ) ){
          if( length( inst ) != length( formula ) ){
             stop( "if different instruments are specified for each equation,",
                " the length of argument 'inst' must be equal to the number",
                " of equations" )
          }
          if( !is.null( names( inst ) ) && !is.null( names( formula ) ) ){
-            if( names( inst ) != names( formula ) ){
+            if( any( names( inst ) != names( formula ) ) ){
                warning( "names of formulas for instruments (argument 'inst')",
                   " are not equal to names of equations (argument 'formula')" )
             }
          }
-         if( !all( lapply( inst, class ) == "formula" ) ){
+         if( !all( sapply( inst, function(x) inherits( x, "formula" ) ) ) ){
             stop( "the list of argument 'inst' must",
                " contain only objects of class 'formula'" )
          }

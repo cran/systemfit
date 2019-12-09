@@ -4,12 +4,14 @@
    nEq <- ncol( validObsEq )
 
    if( useMatrix && warnMatrix ){
-      if( class( sigma ) != "dspMatrix" ){
-         warning( "class of 'sigma' is '", class( sigma ),
+      if( !inherits( sigma, "dspMatrix" ) ){
+         warning( "class of 'sigma' is '", 
+            paste( class( sigma ), collapse = ", " ),
             "', but it should be 'dspMatrix'" )
       }
-      if( class( xMat ) != "dgCMatrix" ){
-         warning( "class of 'xMat' is '", class( xMat ),
+      if( !inherits( xMat,"dgCMatrix" ) ){
+         warning( "class of 'xMat' is '", 
+            paste( class( xMat ), collapse = ", " ),
             "', but it should be 'dgCMatrix'" )
       }
    }
@@ -67,16 +69,19 @@
       solvetol = 1e-5 ){
 
    if( useMatrix && warnMatrix ){
-      if( class( xMat ) != "dgCMatrix" ){
-         warning( "class of 'xMat' is '", class( xMat ),
+      if( !inherits( xMat, "dgCMatrix" ) ){
+         warning( "class of 'xMat' is '", 
+            paste( class( xMat ), collapse = ", " ),
             "', but it should be 'dgCMatrix'" )
       }
-      if( class( xMat2 ) != "dgCMatrix" ){
-         warning( "class of 'xMat2' is '", class( xMat2 ),
+      if( !inherits( xMat2, "dgCMatrix" ) ){
+         warning( "class of 'xMat2' is '", 
+            paste( class( xMat2 ), collapse = ", " ),
             "', but it should be 'dgCMatrix'" )
       }
-      if( class( sigma ) != "dspMatrix" ){
-         warning( "class of 'sigma' is '", class( sigma ),
+      if( !inherits( sigma, "dspMatrix" ) ){
+         warning( "class of 'sigma' is '", 
+            paste( class( sigma ), collapse = ", " ),
             "', but it should be 'dspMatrix'" )
       }
    }

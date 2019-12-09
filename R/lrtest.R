@@ -3,7 +3,7 @@ lrtest.systemfit <- function( object, ... ) {
 
    thisCall <- match.call()
 
-   if( class( object ) != "systemfit" ){
+   if( !inherits( object, "systemfit" ) ){
       stop( "argument 'object' must be of class 'systemfit'" )
    }
    object$lrtest.systemfit.name <- deparse( substitute( object ) )
@@ -11,7 +11,7 @@ lrtest.systemfit <- function( object, ... ) {
    if( length( objectList ) < 1 ){
       stop( "at least one further argument ('...') must be provided" )
    }
-   if( !all( lapply( objectList, class ) == "systemfit" ) ){
+   if( !all( sapply( objectList, function(x) inherits( x, "systemfit" ) ) ) ){
       stop( "all further arguments ('...') must be of class 'systemfit'" )
    }
    dotsNames <- as.list( thisCall )[ -1 ]

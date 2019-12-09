@@ -4,7 +4,7 @@
       useMatrix = FALSE, solvetol = .Machine$double.eps ) {
 
    eqNames <- NULL
-   if( class( resids ) == "data.frame" ) {
+   if( inherits( resids, "data.frame" ) ) {
       resids <- as.matrix( resids )
       validObsEq <- !is.na( resids )
       eqNames <- names( resids )

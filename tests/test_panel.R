@@ -164,6 +164,83 @@ terms( greeneSurPooled )
 terms( greeneSurPooled$eq[[ 1 ]] )
 
 
+#########  IV estimation  #######################
+###  2SLS  ###
+# instruments = explanatory variables  ->  2SLS estimates = OLS estimates
+greene2sls <- systemfit( formulaGrunfeld, inst = ~ value + capital, "2SLS",
+   data = GrunfeldGreene, useMatrix = useMatrix )
+print( greene2sls )
+summary( greene2sls )
+all.equal( coef( summary( greene2sls ) ), coef( summary( greeneOls ) ) )
+all.equal( greene2sls[ -c(1,2,6) ], greeneOls[ -c(1,2,6) ] )
+for( i in 1:length( greene2sls$eq ) ) {
+   print( all.equal( greene2sls$eq[[i]][ -c(3,15:17) ], 
+      greeneOls$eq[[i]][-3] ) )
+}
+# 'real' IV/2SLS estimation
+greene2slsR <- systemfit( invest ~ capital, inst = ~ value, "2SLS",
+   data = GrunfeldGreene, useMatrix = useMatrix )
+print( greene2slsR )
+summary( greene2slsR )
+
+###  2SLS, pooled  ###
+# instruments = explanatory variables  ->  2SLS estimates = OLS estimates
+greene2slsPooled <- systemfit( formulaGrunfeld, inst = ~ value + capital, "2SLS",
+   data = GrunfeldGreene, pooled = TRUE, useMatrix = useMatrix )
+print( greene2slsPooled )
+summary( greene2slsPooled )
+all.equal( coef( summary( greene2slsPooled ) ), 
+   coef( summary( greeneOlsPooled ) ) )
+all.equal( greene2slsPooled[ -c(1,2,6) ], greeneOlsPooled[ -c(1,2,6) ] )
+for( i in 1:length( greene2slsPooled$eq ) ) {
+   print( all.equal( greene2slsPooled$eq[[i]][ -c(3,15:17) ], 
+      greeneOlsPooled$eq[[i]][-3] ) )
+}
+# 'real' IV/2SLS estimation
+greene2slsRPooled <- systemfit( invest ~ capital, inst = ~ value, "2SLS",
+   data = GrunfeldGreene, pooled = TRUE, useMatrix = useMatrix )
+print( greene2slsRPooled )
+summary( greene2slsRPooled )
+
+###  3SLS  ###
+# instruments = explanatory variables  ->  3SLS estimates = SUR estimates
+greene3sls <- systemfit( formulaGrunfeld, inst = ~ value + capital, "3SLS",
+   data = GrunfeldGreene, useMatrix = useMatrix, methodResidCov = "noDfCor" )
+print( greene3sls )
+summary( greene3sls )
+all.equal( coef( summary( greene3sls ) ), coef( summary( greeneSur ) ) )
+all.equal( greene3sls[ -c(1,2,7) ], greeneSur[ -c(1,2,7) ] )
+for( i in 1:length( greene3sls$eq ) ) {
+   print( all.equal( greene3sls$eq[[i]][ -c(3,15:17) ], 
+      greeneSur$eq[[i]][-3] ) )
+}
+# 'real' IV/3SLS estimation
+greene3slsR <- systemfit( invest ~ capital, inst = ~ value, "3SLS",
+   data = GrunfeldGreene, useMatrix = useMatrix )
+print( greene3slsR )
+summary( greene3slsR )
+
+###  3SLS, Pooled  ###
+# instruments = explanatory variables  ->  3SLS estimates = SUR estimates
+greene3slsPooled <- systemfit( formulaGrunfeld, inst = ~ capital + value, "3SLS",
+   data = GrunfeldGreene, pooled = TRUE, useMatrix = useMatrix, 
+   residCovWeighted = TRUE, methodResidCov = "noDfCor" )
+print( greene3slsPooled )
+summary( greene3slsPooled )
+all.equal( coef( summary( greene3slsPooled ) ), 
+   coef( summary( greeneSurPooled ) ) )
+all.equal( greene3slsPooled[ -c(1,2,7) ], greeneSurPooled[ -c(1,2,7) ] )
+for( i in 1:length( greene3slsPooled$eq ) ) {
+   print( all.equal( greene3slsPooled$eq[[i]][ -c(3,15:17) ], 
+      greeneSurPooled$eq[[i]][-3] ) )
+}
+# 'real' IV/3SLS estimation
+greene3slsRPooled <- systemfit( invest ~ capital, inst = ~ value, "3SLS",
+   data = GrunfeldGreene, useMatrix = useMatrix )
+print( greene3slsRPooled )
+summary( greene3slsRPooled )
+
+
 ## **************** estfun ************************
 library( "sandwich" )
 
