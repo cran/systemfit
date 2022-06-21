@@ -29,12 +29,12 @@ However, we provide this incorrect version to replicate the results
 published in Theil (1971) and Greene (2003).
 A correct version of this data set with 5 additional firms
 is available in the \code{Ecdat} package
-(data set \code{\link[Ecdat]{Grunfeld}}).
+(data set \code{Grunfeld}).
 }
 
 \source{
    Greene (2003), Appendix F, Data Sets Used in Applications, Table F13.1.
-   \url{http://pages.stern.nyu.edu/~wgreene/Text/econometricanalysis.htm}
+   \url{https://pages.stern.nyu.edu/~wgreene/Text/econometricanalysis.htm}
    (a subset of this data set is available in Theil (1971), p. 296).
 }
 
@@ -52,6 +52,7 @@ Theil, Henri (1971). \emph{Principles of Econometrics},
 \examples{
 ## Repeating the OLS and SUR estimations in Greene (2003, pp. 351)
 data( "GrunfeldGreene" )
+if( requireNamespace( 'plm', quietly = TRUE ) ) {
 library( "plm" )
 GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
@@ -88,6 +89,7 @@ summary( theilOls )
 theilSur <- systemfit( formulaGrunfeld, "SUR",
    data = GTPanel, methodResidCov = "noDfCor" )
 summary( theilSur )
+}
 }
 
 \keyword{datasets}

@@ -1,4 +1,4 @@
-###   $Id: systemfit.R 1159 2018-11-17 11:44:15Z arne $
+###   $Id: systemfit.R 1164 2019-12-08 20:55:07Z arne $
 ###
 ###            Simultaneous Equation Estimation for R
 ###

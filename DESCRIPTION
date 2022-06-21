@@ -1,11 +1,11 @@
 Package: systemfit
-Version: 1.1-24
-Date: 2019-12-08
+Version: 1.1-26
+Date: 2022-06-20
 Title: Estimating Systems of Simultaneous Equations
 Author: Arne Henningsen and Jeff D. Hamann
 Maintainer: Arne Henningsen <arne.henningsen@gmail.com>
 Depends: R (>= 3.2.0), Matrix, car (>= 2.0-0), lmtest
-Suggests: plm (>= 1.0-1), sem (>= 2.0-0)
+Suggests: knitr, plm (>= 1.0-1), sem (>= 2.0-0)
 Imports: stats (>= 2.14.0), sandwich (>= 2.2-9), MASS, methods
 Description: Econometric estimation of simultaneous
  systems of linear and nonlinear equations using Ordinary Least
@@ -17,7 +17,8 @@ Description: Econometric estimation of simultaneous
  Schmidt (1990) <doi:10.1016/0304-4076(90)90127-F>.
 License: GPL (>= 2)
 URL: http://www.systemfit.org
+VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-12-08 20:47:26 UTC; gsl324
+Packaged: 2022-06-20 08:30:41 UTC; gsl324
 Repository: CRAN
-Date/Publication: 2019-12-09 06:40:04 UTC
+Date/Publication: 2022-06-21 11:40:02 UTC

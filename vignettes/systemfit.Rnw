@@ -114,13 +114,21 @@ and its reliability is demonstrated.
 \begin{document}
 
 % initialisation stuff
-\SweaveOpts{engine=R}
+
+<<include=FALSE>>=
+library(knitr)
+opts_chunk$set(
+engine='R'
+)
+@
+
 %\VignetteIndexEntry{Systemfit}
 %\VignetteDepends{plm,sem}
 %\VignetteKeywords{R, system of simultaneous equations,
 % seemingly unrelated regression, two-stage least squares,
 % three-stage least squares, instrumental variables}
 %\VignettePackage{systemfit}
+%\VignetteEngine{knitr::knitr} 
 <<echo=FALSE>>=
 options( prompt = "R> ", ctinue = "+  " )
 @
@@ -862,7 +870,7 @@ where
       \XHat^\top \OHat^{-1} Z \left( Z^\top Z \right)^{-1} Z^\top \OHat
       Z \left( Z^\top Z \right)^{-1} Z^\top \OHat^{-1} \XHat & 0^\top \\
       0 & 0
-   \end{array} \right]^{-1}
+   \end{array} \right]
    \nonumber \\
    & & \cdot
    \left[ \begin{array}{cc}
@@ -1544,7 +1552,7 @@ consumer prices) and a constant as well as
 to general consumer prices) and 
 \code{trend} (a time trend in years).
 These equations can be estimated by OLS in \proglang{R} by
-<<systemfit_usage>>=
+<<message=FALSE>>=
 library( "systemfit" )
 data( "Kmenta" )
 attach( Kmenta )
@@ -1596,7 +1604,7 @@ described in Sections~\ref{sec:Estimation-ols-wls-sur},
 \ref{sec:Estimation-2sls-w2sls-3sls}, and~\ref{sec:Restrictions}.
 The following command estimates the model described above as
 ``seemingly unrelated regression''.
-<<systemfit_usage>>=
+<<>>=
 fitsur <- systemfit( eqSystem, method = "SUR" )
 @
 
@@ -1618,7 +1626,7 @@ to estimate the model described above
 by ``three-stage least squares'' (3SLS).
 While the first command specifies the same instruments for all equations,
 the second uses different instruments:
-<<systemfit_usage>>=
+<<>>=
 fit3sls  <- systemfit( eqSystem, method = "3SLS",
    inst = ~ income + farmPrice + trend )
 fit3sls2 <- systemfit( eqSystem, method = "3SLS",
@@ -1636,7 +1644,7 @@ In the following example, we use this argument to specify
 that the data for the estimation
 should be taken from the data frame \code{Kmenta}.
 Hence, we no longer need to attach this data frame before calling \code{systemfit}:
-<<systemfit_usage>>=
+<<>>=
 fitsur <- systemfit( eqSystem, method = "SUR", data = Kmenta )
 @
 
@@ -1666,7 +1674,7 @@ and the name of $\beta_6$
 (coefficient of variable \code{farmPrice} in equation \code{supply})
 is \code{supply\_farmPrice},
 this restriction can be specified by
-<<systemfit_usage,keep.source=TRUE>>=
+<<tidy=FALSE>>=
 restrict <- "demand_price + supply_farmPrice = 0"
 fitsurRmat <- systemfit(eqSystem, method = "SUR",
    restrict.matrix = restrict)
@@ -1677,7 +1685,7 @@ Alternatively, the restrictions via matrix $R$ and vector $q$
 can be specified numerically.
 The matrix $R$ can be specified with argument \codeD{restrict}{matrix}
 and the vector $q$ with argument \codeD{restrict}{rhs}.
-<<systemfit_usage,keep.source=TRUE>>=
+<<tidy=FALSE>>=
 Rmat <- matrix(0, nrow = 1, ncol = 7)
 Rmat[1, 2] <- 1
 Rmat[1, 6] <- 1
@@ -1705,7 +1713,7 @@ We convert the restriction specified above to $\beta_2 = - \beta_6$,
 and set $\beta_1 = \beta^\text{M}_1$, \ldots, $\beta_5 = \beta^\text{M}_5$,
 $\beta_6 = - \beta^\text{M}_2$, and $\beta_7 =  \beta^\text{M}_6$.
 We can do this in \proglang{R} by
-<<systemfit_usage,keep.source=TRUE>>=
+<<tidy=FALSE>>=
 modRegMat <- matrix(0, nrow = 7, ncol = 6)
 modRegMat[1:5, 1:5] <- diag(5)
 modRegMat[6, 2] <- -1
@@ -1723,7 +1731,7 @@ $\beta^\text{M}_2 = \beta_2 = - \beta_6$.
 
 Of course, the estimation results do not depend on the method
 that was used to specify this restriction:
-<<systemfit_usage>>=
+<<>>=
 all.equal( coef( fitsurRmat ), coef( fitsurRmatNum ) )
 all.equal( coef( fitsurRmat ), coef( fitsurRegMat ) )
 @
@@ -1753,7 +1761,7 @@ is $10^{-5}$.
 
 In the following example,
 we estimate the model described above by iterated SUR:
-<<systemfit_usage>>=
+<<>>=
 fitsurit <- systemfit( eqSystem, method = "SUR", maxiter = 500 )
 @
 
@@ -1916,7 +1924,7 @@ i.e., these data objects are not returned.
 The \code{summary} method can be used
 to compute and print summary results of objects
 returned by \code{systemfit}.
-<<systemfit_usage>>=
+<<>>=
 summary( fitsur )
 @
 First, the estimation method is reported
@@ -1964,7 +1972,7 @@ Argument \code{equations} specifies
 whether summary results of each equation are printed.
 By default, both arguments are \code{TRUE}.
 The following command returns a sparse summary output:
-<<systemfit_usage>>=
+<<>>=
 summary( fitsur, residCov = FALSE, equations = FALSE )
 @
 
@@ -2008,7 +2016,8 @@ previous year, and
 previous year.
 
 This model can be estimated by
-<<systemfit_usage>>=
+<<message=FALSE,eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 data( "GrunfeldGreene" )
 library( "plm" )
 GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
@@ -2030,7 +2039,8 @@ By default, this argument is set to \code{FALSE}.
 The following command does a seemingly unrelated regression
 of the same model as before,
 but with coefficients restricted to be equal for all individuals.
-<<systemfit_usage>>=
+<<eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 greeneSurPooled <- systemfit( invest ~ value + capital, method = "SUR",
    data = GGPanel, pooled = TRUE )
 @
@@ -2049,7 +2059,7 @@ as well as the method \code{lrtest} for LR tests.
 We will now test the restriction $\beta_2 = -\beta_6$
 that was specified by the matrix \code{Rmat} and the vector \code{qvec}
 in the example above (p.~\pageref{code:Rmat}).
-<<systemfit_usage>>=
+<<>>=
 linearHypothesis( fitsur, Rmat, qvec, test = "FT" )
 
 linearHypothesis( fitsur, Rmat, qvec, test = "F" )
@@ -2106,7 +2116,7 @@ reasonable level of significance.
 \subsection{Hausman test}
 A Hausman test, which is described in Section~\ref{sec:hausman},
 can be carried out with following commands:
-<<systemfit_usage>>=
+<<>>=
 fit2sls  <- systemfit( eqSystem, method = "2SLS",
    inst = ~ income + farmPrice + trend, data = Kmenta )
 fit3sls <- systemfit( eqSystem, method = "3SLS",
@@ -2169,10 +2179,10 @@ Then the equation system is estimated by OLS, 2SLS, 3SLS, and
 iterated 3SLS.
 After each estimation, we provide the commands
 to print the estimated coefficients.
-<<systemfit_replication,echo=FALSE>>=
+<<echo=FALSE>>=
 library( "systemfit" )
 @
-<<systemfit_replication,results=hide>>=
+<<results='hide'>>=
 data( "Kmenta" )
 eqDemand <- consump ~ price + income
 eqSupply <- consump ~ price + farmPrice + trend
@@ -2180,22 +2190,22 @@ inst <- ~ income + farmPrice + trend
 system <- list( demand = eqDemand, supply = eqSupply )
 @
 OLS estimation:
-<<systemfit_replication,results=hide>>=
+<<results='hide'>>=
 fitOls <- systemfit( system, data = Kmenta )
 round( coef( summary( fitOls ) ), digits = 4 )
 @
 2SLS estimation:
-<<systemfit_replication,results=hide>>=
+<<results='hide'>>=
 fit2sls <- systemfit( system, method = "2SLS", inst = inst, data = Kmenta )
 round( coef( summary( fit2sls ) ), digits = 4 )
 @
 3SLS estimation:
-<<systemfit_replication,results=hide>>=
+<<results='hide'>>=
 fit3sls <- systemfit( system, method = "3SLS", inst = inst, data = Kmenta )
 round( coef( summary( fit3sls ) ), digits = 4 )
 @
 Iterated 3SLS estimation:
-<<systemfit_replication,results=hide>>=
+<<results='hide'>>=
 fitI3sls <- systemfit( system, method = "3SLS", inst = inst, data = Kmenta,
    maxit = 250 )
 round( coef( summary( fitI3sls ) ), digits = 4 )
@@ -2226,7 +2236,7 @@ as well as the instrumental variables are specified.
 As in the example before, the equation system is estimated by
 OLS, 2SLS, 3SLS, and iterated 3SLS, and
 commands to print the estimated coefficients are presented.
-<<systemfit_replication>>=
+<<>>=
 data( "KleinI" )
 eqConsump  <- consump ~ corpProf + corpProfLag + wages
 eqInvest   <- invest ~ corpProf + corpProfLag + capitalLag
@@ -2236,24 +2246,24 @@ system <- list( Consumption = eqConsump, Investment = eqInvest,
    PrivateWages = eqPrivWage )
 @
 OLS estimation:
-<<systemfit_replication,results=hide>>=
+<<results='hide'>>=
 kleinOls <- systemfit( system, data = KleinI )
 round( coef( summary( kleinOls ) ), digits = 3 )
 @
 2SLS estimation:
-<<systemfit_replication,results=hide>>=
+<<results='hide'>>=
 klein2sls <- systemfit( system, method = "2SLS", inst = inst, data = KleinI,
    methodResidCov = "noDfCor" )
 round( coef( summary( klein2sls ) ), digits = 3 )
 @
 3SLS estimation:
-<<systemfit_replication,results=hide>>=
+<<results='hide'>>=
 klein3sls <- systemfit( system, method = "3SLS", inst = inst, data = KleinI,
    methodResidCov = "noDfCor" )
 round( coef( summary( klein3sls ) ), digits = 3 )
 @
 iterated 3SLS estimation:
-<<systemfit_replication,results=hide>>=
+<<results='hide'>>=
 kleinI3sls <- systemfit( system, method = "3SLS", inst = inst, data = KleinI,
    methodResidCov = "noDfCor", maxit = 500 )
 round( coef( summary( kleinI3sls ) ), digits = 3 )
@@ -2298,28 +2308,32 @@ After each estimation, we show the commands to print the estimated coefficients,
 the $\sigma^2$ values of the OLS estimations, and
 the residual covariance matrix as well as the residual correlation matrix
 of the SUR estimations.
-<<systemfit_replication>>=
+<<message=FALSE,eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 data( "GrunfeldGreene" )
 library( "plm" )
 GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 @
 OLS estimation (Table 14.2):
-<<systemfit_replication,results=hide>>=
+<<results='hide',eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 greeneOls <- systemfit( formulaGrunfeld,
    data = GGPanel )
 round( coef( summary( greeneOls ) ), digits = 4 )
 round( sapply( greeneOls$eq, function(x){return(summary(x)$ssr/20)} ), digits = 3 )
 @
 pooled OLS (Table 14.2):
-<<systemfit_replication,results=hide>>=
+<<results='hide',eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 greeneOlsPooled <- systemfit( formulaGrunfeld,
    data = GGPanel, pooled = TRUE )
 round( coef( summary( greeneOlsPooled$eq[[1]] ) ), digits = 4 ) #$
 sum( sapply( greeneOlsPooled$eq, function(x){return(summary(x)$ssr)}) )/100
 @
 SUR estimation (Table~14.1):
-<<systemfit_replication,results=hide>>=
+<<results='hide',eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 greeneSur <- systemfit( formulaGrunfeld, method = "SUR",
    data = GGPanel, methodResidCov = "noDfCor" )
 round( coef( summary( greeneSur ) ), digits = 4 )
@@ -2327,7 +2341,8 @@ round( greeneSur$residCov, digits = 3 ) #$
 round( summary( greeneSur )$residCor, digits = 3 ) #$
 @
 pooled SUR estimation (Table~14.1):
-<<systemfit_replication,results=hide>>=
+<<results='hide',eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 greeneSurPooled <- systemfit( formulaGrunfeld, method = "SUR",
    data = GGPanel, pooled = TRUE, methodResidCov = "noDfCor",
    residCovWeighted = TRUE )
@@ -2373,20 +2388,23 @@ Then, the formula is specified,
 and the model is estimated by OLS and SUR.
 Commands to print the estimated coefficients are reported
 after each estimation.
-<<systemfit_replication>>=
+<<eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 GrunfeldTheil <- subset( GrunfeldGreene,
    firm %in% c( "General Electric", "Westinghouse" ) )
 GTPanel <- pdata.frame( GrunfeldTheil, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
 @
 OLS estimation (page 295)
-<<systemfit_replication,results=hide>>=
+<<results='hide',eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 theilOls <- systemfit( formulaGrunfeld,
    data = GTPanel )
 round( coef( summary( theilOls ) ), digits = 3 )
 @
 SUR estimation (page 300)
-<<systemfit_replication,results=hide>>=
+<<results='hide',eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 theilSur <- systemfit( formulaGrunfeld, method = "SUR",
    data = GTPanel, methodResidCov = "noDfCor" )
 round( coef( summary( theilSur ) ), digits = 3 )
@@ -2406,13 +2424,15 @@ The same restriction can be specified also symbolically by
 \code{RMatrix <- c("General.Electric\_value = Westinghouse\_value",
 "General.Electric\_capital = Westinghouse\_capital")}
 }
-<<systemfit_replication,results=hide>>=
+<<results='hide',eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 RMatrix <- rbind( c( 0, 1, 0, 0, -1, 0 ), c( 0, 0, 1, 0, 0, -1 ) )
 linearHypothesis( theilSur, RMatrix )
 @
 
 Restricted SUR estimation (page~316)
-<<systemfit_replication,results=hide,keep.source=TRUE>>=
+<<results='hide',tidy=FALSE,eval = requireNamespace("plm", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'plm' package is available
 theilSurRestr <- systemfit(formulaGrunfeld, method = "SUR",
    data = GTPanel, methodResidCov = "noDfCor", restrict.matrix = RMatrix,
    residCovRestricted = FALSE)
@@ -2592,7 +2612,7 @@ to create a medium-sized multi-equation model with 8~equations,
 and 750~observations.
 Then, we estimated this model with and without using the \pkg{Matrix} package.
 Finally, the results are compared.
-<<systemfit_timings>>=
+<<message=FALSE>>=
 library( "systemfit" )
 set.seed( 1 )
 systemfitModel <- createSystemfitModel( nEq = 8, nReg = 10, nObs = 750 )
@@ -2618,7 +2638,7 @@ However, the estimation of rather small models is much slower
 with the \pkg{Matrix} package than without this package.
 Moreover, the differences in computation time accumulate,
 if the estimation is iterated.
-<<systemfit_timings>>=
+<<>>=
 smallModel <- createSystemfitModel( nEq = 3, nReg = 4, nObs = 50 )
 system.time(
    fitSmallMatrix <- systemfit( smallModel$formula, method = "SUR",
@@ -2650,7 +2670,8 @@ This comparison uses Klein's ``Model I'' (see Section~\ref{sec:KleinsModel}).
 Before starting the estimation,
 we load the \pkg{sem} and \pkg{systemfit} package
 as well as the required data set.
-<<systemfit_sem>>=
+<<message=FALSE,eval = requireNamespace("sem", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'sem' package is available
 library( "sem" )
 library( "systemfit" )
 data( "KleinI" )
@@ -2658,7 +2679,8 @@ data( "KleinI" )
 
 First, we estimate the system by limited information maximum likelihood
 (LIML) with \code{sem}:
-<<systemfit_sem,keep.source = TRUE>>=
+<<tidy=FALSE,eval = requireNamespace("sem", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'sem' package is available
 limlRam <- matrix(c(
    "consump  <-  corpProf",    "consump_corpProf",    NA,
    "consump  <-  corpProfLag", "consump_corpProfLag", NA,
@@ -2686,7 +2708,7 @@ print(limlResult)
 
 Theoretically, the LIML results should be identical to OLS results.
 Therefore, we re-estimate this model by OLS with \code{systemfit}.
-<<systemfit_sem,keep.source=TRUE>>=
+<<tidy=FALSE>>=
 eqConsump <- consump ~ corpProf + corpProfLag + wages
 eqInvest <- invest ~ corpProf + corpProfLag + capitalLag
 eqPrivWage <- privWage ~ gnp + gnpLag + trend
@@ -2699,7 +2721,8 @@ As expected, the results are identical.
 
 Now, we estimate the system by full information maximum likelihood
 (FIML) with \code{sem}:
-<<systemfit_sem,keep.source = TRUE>>=
+<<tidy=FALSE,eval = requireNamespace("sem", quietly = TRUE)>>=
+### this code chunk is evaluated only if the 'sem' package is available
 fimlRam <- rbind(limlRam,
    c("consump  <-> invest",   "s12", NA),
    c("consump  <-> privWage", "s13", NA),
@@ -2714,7 +2737,7 @@ print(fimlResult)
 Theoretically, results of an iterated SUR estimation should
 converge to FIML results.
 Therefore, we re-estimate this model by iterated SUR with \code{systemfit}.
-<<systemfit_sem>>=
+<<>>=
 surResult <- systemfit( system, method = "SUR", data = KleinI,
    methodResidCov = "noDfCor", maxit = 500 )
 print( surResult )

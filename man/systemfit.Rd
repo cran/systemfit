@@ -1,5 +1,5 @@
 
-%    $Id: systemfit.Rd 1147 2017-03-08 21:16:07Z arne $
+%    $Id: systemfit.Rd 1171 2022-06-20 07:42:53Z arne $
 
 
 \name{systemfit}
@@ -302,6 +302,7 @@ print( fit3sls )
 ## Examples how to use systemfit() with panel-like data
 ## Repeating the SUR estimations in Greene (2003, p. 351)
 data( "GrunfeldGreene" )
+if( requireNamespace( 'plm', quietly = TRUE ) ) {
 library( "plm" )
 GGPanel <- pdata.frame( GrunfeldGreene, c( "firm", "year" ) )
 formulaGrunfeld <- invest ~ value + capital
@@ -314,6 +315,7 @@ greeneSurPooled <- systemfit( formulaGrunfeld, "SUR",
    data = GGPanel, pooled = TRUE, methodResidCov = "noDfCor",
    residCovWeighted = TRUE )
 summary( greeneSurPooled )
+}
 
 ## Further examples are in the documentation to the data sets
 ## 'KleinI' and 'GrunfeldGreene'.

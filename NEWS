@@ -5,6 +5,15 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-26 (2022-06-20)
+
+* corrected a typo in the vignette (in the equation for calculating the 
+variance-covariance matrix of the coefficients estimated by the "3SLS-Schmidt" 
+estimator in the presence of restrictions)
+
+* fixed a few minor issues pointed out by 'R CMD check'
+
+
             CHANGES IN VERSION 1.1-24 (2019-12-08)
 
 * implemented 2SLS and 3SLS (instrumental variable) estimations for panel data

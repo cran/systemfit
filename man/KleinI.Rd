@@ -31,7 +31,7 @@ A data frame containing annual observations from 1920 to 1941
 \source{
    Greene (2003), Appendix F, Data Sets Used in Applications, Table F15.1.
 
-   \url{http://pages.stern.nyu.edu/~wgreene/Text/econometricanalysis.htm}
+   \url{https://pages.stern.nyu.edu/~wgreene/Text/econometricanalysis.htm}
 }
 
 \references{
