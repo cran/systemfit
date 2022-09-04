@@ -524,7 +524,7 @@ print( round( coef( summary( fit3sls[[ 4 ]]$e1c$eq[[ 2 ]], useDfSys = FALSE ) ),
 print( round( coef( summary( fit3slsd[[ 2 ]]$e1w, useDfSys = FALSE ) ),
    digits = 6 ) )
 print( round( coef( summary( fit3slsd[[ 3 ]]$e1w$eq[[ 2 ]], useDfSys = FALSE ) ),
-   digits = 6 ) )
+   digits = 3 ) )
 
 print( round( coef( summary( fit3slsi[[ 4 ]]$e2 ) ), digits = 6 ) )
 print( round( coef( summary( fit3slsi[[ 5 ]]$e2$eq[[ 1 ]] ) ), digits = 6 ) )

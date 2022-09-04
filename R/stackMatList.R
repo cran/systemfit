@@ -16,7 +16,7 @@
    }
 
    if( useMatrix ){
-      result <- as( result, "dgCMatrix" )
+      result <- as( result, "CsparseMatrix" )
    }
 
    return( result )
@@ -32,7 +32,7 @@
    result <- rbind2( cbind2( as.matrix( upperleft ), t(R.restr) ), lowerRows )
 
    if( useMatrix ){
-      result <- as( result, "dgeMatrix" )
+      result <- as( result, "denseMatrix")
    }
 
    return( result )

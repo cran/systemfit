@@ -4,10 +4,10 @@
    nEq <- ncol( validObsEq )
 
    if( useMatrix && warnMatrix ){
-      if( !inherits( sigma, "dspMatrix" ) ){
+      if( !inherits( sigma, "dsyMatrix" ) ){
          warning( "class of 'sigma' is '", 
             paste( class( sigma ), collapse = ", " ),
-            "', but it should be 'dspMatrix'" )
+            "', but it should be 'dsyMatrix'" )
       }
       if( !inherits( xMat,"dgCMatrix" ) ){
          warning( "class of 'xMat' is '", 
@@ -79,10 +79,10 @@
             paste( class( xMat2 ), collapse = ", " ),
             "', but it should be 'dgCMatrix'" )
       }
-      if( !inherits( sigma, "dspMatrix" ) ){
+      if( !inherits( sigma, "dsyMatrix" ) ){
          warning( "class of 'sigma' is '", 
             paste( class( sigma ), collapse = ", " ),
-            "', but it should be 'dspMatrix'" )
+            "', but it should be 'dsyMatrix'" )
       }
    }
 

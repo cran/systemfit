@@ -11,3 +11,7 @@
          "https://r-forge.r-project.org/projects/systemfit/"),
       domain = NULL,  appendLF = TRUE )
 }
+
+# .onLoad <- function( lib, pkg ) {
+#    options(Matrix.warnDeprecatedCoerce = 2) # where n >= 1
+# }

@@ -1,4 +1,4 @@
-###   $Id: systemfit.R 1164 2019-12-08 20:55:07Z arne $
+###   $Id: systemfit.R 1178 2022-09-04 18:54:35Z arne $
 ###
 ###            Simultaneous Equation Estimation for R
 ###
@@ -301,9 +301,9 @@ systemfit <- function(  formula,
       xMatEqAttr <- list()
       for( i in 1:nEq ) {
          xMatEqAttr[[ i ]] <- attributes( xMatEq[[i]] )
-         xMatEq[[ i ]] <- as( xMatEq[[ i ]], "dgeMatrix" )
+         xMatEq[[ i ]] <- as( xMatEq[[ i ]], "denseMatrix")
          if( !is.null( inst ) ) {
-            zMatEq[[ i ]] <- as( zMatEq[[ i ]], "dgeMatrix" )
+            zMatEq[[ i ]] <- as( zMatEq[[ i ]], "denseMatrix")
          }
       }
    }
@@ -350,7 +350,7 @@ systemfit <- function(  formula,
       XU <- xMatAll
       xMatAll  <- XU %*% restrict.regMat
       if( control$useMatrix ){
-         xMatAll <- as( xMatAll, "dgCMatrix" )
+         xMatAll <- as( xMatAll, "CsparseMatrix" )
       }
    }
 

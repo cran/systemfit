@@ -71,7 +71,7 @@
    }
 
    if( useMatrix ){
-      result <- as( result, "dspMatrix" )
+      result <- as( result, "symmetricMatrix" )
    }
    return( result )
 }

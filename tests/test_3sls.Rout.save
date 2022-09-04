@@ -1,6 +1,6 @@
 
-R version 3.3.2 (2016-10-31) -- "Sincere Pumpkin Patch"
-Copyright (C) 2016 The R Foundation for Statistical Computing
+R version 4.2.1 (2022-06-23) -- "Funny-Looking Kid"
+Copyright (C) 2022 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -18,6 +18,7 @@ Type 'q()' to quit R.
 > library( systemfit )
 Loading required package: Matrix
 Loading required package: car
+Loading required package: carData
 Loading required package: lmtest
 Loading required package: zoo
 
@@ -17801,12 +17802,12 @@ supply_price          0.137     0.0979    1.40 0.179781
 supply_farmPrice      0.266     0.0483    5.51 0.000048
 supply_trend          0.397     0.0672    5.91 0.000022
 > print( round( coef( summary( fit3slsd[[ 3 ]]$e1w$eq[[ 2 ]], useDfSys = FALSE ) ),
-+    digits = 6 ) )
++    digits = 3 ) )
             Estimate Std. Error t value Pr(>|t|)
-(Intercept)   49.532    12.0105    4.12 0.000795
-price          0.240     0.0999    2.40 0.028785
-farmPrice      0.256     0.0473    5.41 0.000058
-trend          0.253     0.0997    2.54 0.021929
+(Intercept)   49.532     12.011    4.12    0.001
+price          0.240      0.100    2.40    0.029
+farmPrice      0.256      0.047    5.41    0.000
+trend          0.253      0.100    2.54    0.022
 > 
 > print( round( coef( summary( fit3slsi[[ 4 ]]$e2 ) ), digits = 6 ) )
                    Estimate Std. Error t value Pr(>|t|)
@@ -23857,4 +23858,4 @@ In estfun.systemfit(fit3slsd[[1]]$e1w, residFit = FALSE) :
 > 
 > proc.time()
    user  system elapsed 
-  6.688   0.228   6.916 
+  4.028   0.219   4.239 

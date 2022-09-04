@@ -97,8 +97,8 @@ summary.systemfit <- function( object, useDfSys = NULL,
    # (first formula, numerator modified to save memory)
    xMat <- matrix( resid, ncol = 1 )
    if( object$control$useMatrix ){
-      object$residCov <- as( object$residCov, "dspMatrix" )
-      xMat <- as( xMat, "dgCMatrix" )
+      object$residCov <- as( object$residCov, "symmetricMatrix")
+      xMat <- as( xMat, "CsparseMatrix" )
    }
    rtOmega <- .calcXtOmegaInv( xMat = xMat,
       sigma = object$residCov, validObsEq = validObsEq,

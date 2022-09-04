@@ -5,6 +5,12 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-28 (2022-09-04)
+
+* some adjustments to make the 'systemfit' package compatible with future 
+versions (i.e., >= 1.4.2) of the 'Matrix' package
+
+
             CHANGES IN VERSION 1.1-26 (2022-06-20)
 
 * corrected a typo in the vignette (in the equation for calculating the 
