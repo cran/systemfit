@@ -1,11 +1,11 @@
 citHeader("To cite systemfit in publications use:")
 
-citEntry(
-   entry       = "Article",
+bibentry(
+   bibtype     = "Article",
    title       = paste( "systemfit: A Package for Estimating Systems",
                         "of Simultaneous Equations in R" ),
-   author      = personList( as.person( "Arne Henningsen" ),
-                             as.person( "Jeff D. Hamann" ) ),
+   author      = c( person( "Arne", "Henningsen" ),
+                             person( c( "Jeff", "D." ), "Hamann" ) ),
    journal     = "Journal of Statistical Software",
    year        = "2007",
    volume      = "23",

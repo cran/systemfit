@@ -9,11 +9,11 @@
 }
 
 \usage{
-\method{bread}{systemfit}( obj, ... )
+\method{bread}{systemfit}( x, ... )
 }
 
 \arguments{
-   \item{obj}{an object of class \code{systemfit}.}
+   \item{x}{an object of class \code{systemfit}.}
    \item{\dots}{further arguments (currently ignored).}
 }
 

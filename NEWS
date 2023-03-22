@@ -5,6 +5,12 @@ A full ChangeLog is available in the log messages of the SVN repository
 on R-Forge.
 
 
+            CHANGES IN VERSION 1.1-30 (2023-03-22)
+
+* adjusted bread.systemfit() and estfun.systemfit() to recent changes of the
+'sandwich' package
+
+
             CHANGES IN VERSION 1.1-28 (2022-09-04)
 
 * some adjustments to make the 'systemfit' package compatible with future 

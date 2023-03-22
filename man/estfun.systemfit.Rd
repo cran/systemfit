@@ -12,11 +12,11 @@
 }
 
 \usage{
-\method{estfun}{systemfit}( obj, residFit = TRUE, ... )
+\method{estfun}{systemfit}( x, residFit = TRUE, ... )
 }
 
 \arguments{
-   \item{obj}{an object of class \code{systemfit}.}
+   \item{x}{an object of class \code{systemfit}.}
    \item{residFit}{logical. 
       If \code{FALSE}, the residuals are calculated based on observed regressors.
       If \code{TRUE}, the residuals are calculated based on fitted regressors.

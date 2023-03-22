@@ -1,21 +1,21 @@
-estfun.systemfit <- function ( obj, residFit = TRUE, ... ) {
-   if( !is.null( obj$restrict.matrix ) || !is.null( obj$restrict.rhs ) ||
-        !is.null( obj$restrict.regMat ) ) {
+estfun.systemfit <- function ( x, residFit = TRUE, ... ) {
+   if( !is.null( x$restrict.matrix ) || !is.null( x$restrict.rhs ) ||
+        !is.null( x$restrict.regMat ) ) {
       stop( "returning the estimation function for models with restrictions",
             " has not yet been implemented.")
    }
    
    # residuals
-   res <- unlist(  residuals( obj ) )
+   res <- unlist(  residuals( x ) )
    
    # model matrix
-   if( is.null( obj$eq[[1]]$inst ) ) {
-      mm <- model.matrix( obj )
+   if( is.null( x$eq[[1]]$inst ) ) {
+      mm <- model.matrix( x )
    } else {
-      mm <- model.matrix( obj, which = "xHat" )
+      mm <- model.matrix( x, which = "xHat" )
       if( residFit ) {
          res[ !is.na( res ) ] <- res[ !is.na( res ) ] +
-            ( model.matrix( obj ) - mm ) %*% coef( obj )
+            ( model.matrix( x ) - mm ) %*% coef( x )
          #       resid_fit = y - x_fit b
          #       resid = y - x b
          #       resid_fit - resid = - x_fit b + x b
@@ -28,11 +28,11 @@ estfun.systemfit <- function ( obj, residFit = TRUE, ... ) {
          " number of rows of the model matrix. Please contact the maintainer." )
    }
 
-   if( is.null( obj$residCovEst ) ) {
+   if( is.null( x$residCovEst ) ) {
       omegaInvXmat <- mm
    } else {
-      omegaInvXmat <- t( .calcXtOmegaInv( xMat = mm, sigma = obj$residCovEst, 
-         validObsEq = !is.na( residuals( obj ) ), invertSigma = TRUE ) )
+      omegaInvXmat <- t( .calcXtOmegaInv( xMat = mm, sigma = x$residCovEst, 
+         validObsEq = !is.na( residuals( x ) ), invertSigma = TRUE ) )
    }
    
    result <- res[ !is.na( res ) ] * omegaInvXmat

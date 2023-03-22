@@ -1,6 +1,6 @@
 Package: systemfit
-Version: 1.1-28
-Date: 2022-09-04
+Version: 1.1-30
+Date: 2023-03-22
 Title: Estimating Systems of Simultaneous Equations
 Author: Arne Henningsen and Jeff D. Hamann
 Maintainer: Arne Henningsen <arne.henningsen@gmail.com>
@@ -16,9 +16,9 @@ Description: Econometric estimation of simultaneous
  Zellner and Theil (1962) <doi:10.2307/1911287>, and
  Schmidt (1990) <doi:10.1016/0304-4076(90)90127-F>.
 License: GPL (>= 2)
-URL: http://www.systemfit.org
+URL: https://r-forge.r-project.org/projects/systemfit/
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-09-04 19:53:59 UTC; gsl324
+Packaged: 2023-03-22 13:15:35 UTC; gsl324
 Repository: CRAN
-Date/Publication: 2022-09-04 23:30:02 UTC
+Date/Publication: 2023-03-22 17:00:02 UTC
